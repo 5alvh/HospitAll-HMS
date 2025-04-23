@@ -1,0 +1,41 @@
+package com.tfg.back.service.serviceImpl;
+
+import com.tfg.back.model.Client;
+import com.tfg.back.repository.ClientRepository;
+import com.tfg.back.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ClientServiceImpl implements UserService<Client> {
+
+    private final ClientRepository clientRepository;
+
+    @Autowired
+    public ClientServiceImpl(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
+    @Override
+    public Client save(Client client) {
+        return clientRepository.save(client);
+    }
+
+    @Override
+    public Optional<Client> findById(Long id) {
+        return clientRepository.findById(id);
+    }
+
+    @Override
+    public List<Client> findAll() {
+        return clientRepository.findAll();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        clientRepository.deleteById(id);
+    }
+}
