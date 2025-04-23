@@ -1,0 +1,38 @@
+package com.tfg.back.model;
+
+import com.tfg.back.enums.MembershipLevel;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "clients",
+        indexes = @Index(name = "idx_client_membership", columnList = "membershipLevel"))
+@DiscriminatorValue("CLIENT")
+@PrimaryKeyJoinColumn(name = "client_id")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class Client extends User {
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private MembershipLevel membershipLevel;
+
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
+
+    @Embedded
+    private EmergencyContact emergencyContact;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments = new ArrayList<>();
+
+}

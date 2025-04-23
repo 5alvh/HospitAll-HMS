@@ -1,0 +1,73 @@
+<header class="bg-white rounded-lg shadow-md p-4 mb-6 flex justify-between items-center">
+    <div class="flex items-center">
+      <div class="w-10 h-10 bg-primary-600 rounded-md flex items-center justify-center mr-3"> <svg
+          class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM17 17H7V15H17V17ZM17 13H7V11H17V13ZM17 9H7V7H17V9Z"
+            fill="currentColor"></path>
+        </svg> </div>
+      <h1 class="text-2xl font-bold text-gray-800">MediManage</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative"> <input type="text" placeholder="Search..."
+          class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200" />
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-500">search</span> </div>
+      <details class="relative">
+        <summary class="flex items-center cursor-pointer list-none"> <span
+            class="material-symbols-outlined text-gray-600 bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition">notifications</span>
+          <span
+            class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">3</span>
+        </summary>
+        <div class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-10 py-2">
+          <div class="px-4 py-2 border-b border-gray-200">
+            <h3 class="font-semibold">Notifications</h3>
+          </div>
+          <div class="px-4 py-2 hover:bg-gray-100 transition cursor-pointer">
+            <div class="flex gap-2"> <span class="material-symbols-outlined text-primary-600">person</span>
+              <div>
+                <p class="text-sm">New patient admission: John Doe</p>
+                <p class="text-xs text-gray-500">5 minutes ago</p>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 hover:bg-gray-100 transition cursor-pointer">
+            <div class="flex gap-2"> <span class="material-symbols-outlined text-amber-600">calendar_today</span>
+              <div>
+                <p class="text-sm">Staff meeting at 3:00 PM</p>
+                <p class="text-xs text-gray-500">1 hour ago</p>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 hover:bg-gray-100 transition cursor-pointer">
+            <div class="flex gap-2"> <span class="material-symbols-outlined text-red-600">medical_services</span>
+              <div>
+                <p class="text-sm">Medicine inventory update required</p>
+                <p class="text-xs text-gray-500">2 hours ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+      <details class="relative">
+        <summary class="flex items-center gap-2 cursor-pointer list-none">
+          <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden"> <img
+              src="https://randomuser.me/api/portraits/women/24.jpg" alt="Dr. Maria Andrews"
+              class="w-full h-full object-cover" /> </div>
+          <div>
+            <p class="text-sm font-medium text-gray-800">Dr. Maria Andrews</p>
+            <p class="text-xs text-gray-500">Chief Medical Officer</p>
+          </div> <span class="material-symbols-outlined text-gray-600">expand_more</span>
+        </summary>
+        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 py-2"> <a
+            href="https://webcrumbs.cloud/placeholder"
+            class="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition"> <span
+              class="material-symbols-outlined">person</span> <span>Profile</span> </a> <a
+            href="https://webcrumbs.cloud/placeholder"
+            class="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition"> <span
+              class="material-symbols-outlined">settings</span> <span>Settings</span> </a> <a
+            href="https://webcrumbs.cloud/placeholder"
+            class="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition text-red-600"> <span
+              class="material-symbols-outlined">logout</span> <span>Logout</span> </a> </div>
+      </details>
+    </div>
+</header>
