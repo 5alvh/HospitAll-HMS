@@ -26,7 +26,7 @@ public class Client extends User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private MembershipLevel membershipLevel;
-
+    
 
     @Embedded
     private EmergencyContact emergencyContact;

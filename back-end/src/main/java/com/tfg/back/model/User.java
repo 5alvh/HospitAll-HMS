@@ -9,9 +9,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "user_type")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -47,7 +51,7 @@ public abstract class User {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
@@ -59,5 +63,6 @@ public abstract class User {
     @NotNull(message = "Password confirmation is required")
     private transient String passwordConfirmation;
 
-
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
 }

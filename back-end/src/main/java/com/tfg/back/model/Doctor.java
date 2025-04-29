@@ -10,11 +10,10 @@ import lombok.Setter;
 import java.util.*;
 
 @Entity
-@Table(name = "doctors",
-        indexes = {
-                @Index(name = "idx_doctor_specialization", columnList = "specialization"),
-                @Index(name = "idx_doctor_license", columnList = "medicalLicenseNumber")
-        })
+@Table(name = "doctors", indexes = {
+        @Index(name = "idx_doctor_specialization", columnList = "specialization"),
+        @Index(name = "idx_doctor_license", columnList = "medicalLicenseNumber")
+})
 @DiscriminatorValue("DOCTOR")
 @PrimaryKeyJoinColumn(name = "doctor_id")
 @NoArgsConstructor
@@ -39,7 +38,7 @@ public class Doctor extends User {
     @Column(name = "license_expiration_date")
     private Date licenseExpiration;
 
-    @OneToMany(mappedBy = "attendingDoctor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Appointment> appointments = new ArrayList<>();
 
     @ElementCollection
