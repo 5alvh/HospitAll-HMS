@@ -37,7 +37,7 @@ public class Department {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "head_doctor_id")
+    @JoinColumn(name = "head_doctor_id", nullable = true)
     private Doctor headDoctor;
 
     @NotBlank(message = "Contact number is required")
@@ -53,7 +53,7 @@ public class Department {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
     private LocalDateTime updatedAt;

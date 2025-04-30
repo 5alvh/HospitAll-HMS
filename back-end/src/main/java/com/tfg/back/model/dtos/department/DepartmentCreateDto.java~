@@ -1,0 +1,10 @@
+package com.tfg.back.model.dtos.department;
+
+public class DepartmentCreateDto {
+
+    private String name;
+    private String description;
+    private String contactNumber;
+    private String location;
+
+}

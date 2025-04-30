@@ -12,6 +12,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "departments",
@@ -35,7 +37,7 @@ public class Department {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "head_doctor_id")
+    @JoinColumn(name = "head_doctor_id", nullable = true)
     private Doctor headDoctor;
 
     @NotBlank(message = "Contact number is required")

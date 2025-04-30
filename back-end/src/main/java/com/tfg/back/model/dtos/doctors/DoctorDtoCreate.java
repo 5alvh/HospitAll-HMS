@@ -1,0 +1,29 @@
+package com.tfg.back.model.dtos.doctors;
+
+import com.tfg.back.enums.Specialization;
+import com.tfg.back.model.WorkingHours;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class DoctorDtoCreate {
+
+    private String fullName;
+    private String email;
+    private String hashedPassword;
+    private String passwordConfirmation;
+    private String phoneNumber;
+    private Date dateOfBirth;
+
+    private String medicalLicenseNumber;
+    private String departmentId;
+    private Specialization specialization;
+
+    private List<WorkingHours> workingHours;
+}

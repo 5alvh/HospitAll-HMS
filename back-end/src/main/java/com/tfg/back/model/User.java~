@@ -41,10 +41,6 @@ public abstract class User {
     @Column(nullable = false)
     private String hashedPassword;
 
-    @Transient
-    @NotNull(message = "Password confirmation is required")
-    private transient String passwordConfirmation;
-
     @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
     @Column(length = 20)
     private String phoneNumber;
@@ -62,6 +58,10 @@ public abstract class User {
 
     @Version
     private Long version;
+
+    @Transient
+    @NotNull(message = "Password confirmation is required")
+    private transient String passwordConfirmation;
 
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;

@@ -1,0 +1,4 @@
+package com.tfg.back.annotations;
+
+public @interface ListSize {
+}

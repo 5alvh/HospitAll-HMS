@@ -1,7 +1,6 @@
 package com.tfg.back.model;
 
 import com.tfg.back.annotations.ListSize;
-import com.tfg.back.enums.Specialization;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
