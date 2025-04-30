@@ -9,5 +9,5 @@ public interface DoctorService {
     Doctor createDoctor(DoctorDtoCreate dto);
     Doctor getDoctor(Long id);
     List<Doctor> getAllDoctors();
-    void deleteDoctor(Long id);
+    boolean deleteDoctor(Long id);
 }

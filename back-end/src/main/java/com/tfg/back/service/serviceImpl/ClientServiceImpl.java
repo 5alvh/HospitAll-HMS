@@ -1,12 +1,15 @@
 package com.tfg.back.service.serviceImpl;
 
+import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -19,13 +22,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client createClient(Client client) {
-        return clientRepository.save(client);
+    public Client createClient(ClientDtoCreate client) {
+        Client newClient = ClientMapper.toEntity(client);
+        return clientRepository.save(newClient);
     }
 
     @Override
     public Client getClient(Long id) {
-        return clientRepository.findById(id).get();
+        Optional<Client> clientCheck = clientRepository.findById(id);
+        return clientCheck.orElse(null);
     }
 
     @Override
@@ -34,7 +39,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteClient(Long id) {
-        clientRepository.deleteById(id);
+    public boolean deleteClient(Long id) {
+        boolean deleted = false;
+        boolean exists = clientRepository.existsById(id);
+        if (exists) {
+            clientRepository.deleteById(id);
+            deleted = true;
+        }
+        return deleted;
     }
 }

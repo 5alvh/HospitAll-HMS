@@ -1,6 +1,7 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Client;
+import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.service.serviceImpl.ClientServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class ClientController {
     private final ClientServiceImpl clientService;
 
     @PostMapping
-    public ResponseEntity<Client> createClient(@Valid @RequestBody Client client) {
+    public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDtoCreate client) {
         return ResponseEntity.ok(clientService.createClient(client));
     }
 

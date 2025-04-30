@@ -24,7 +24,6 @@ public class ClientMapper {
 
         client.setStatus(UserStatus.ACTIVE);
         client.setCreatedAt(LocalDateTime.now());
-        client.setUpdatedAt(LocalDateTime.now());
 
         client.setMembershipLevel(dto.getMembershipLevel());
         client.setEmergencyContact(dto.getEmergencyContact());
