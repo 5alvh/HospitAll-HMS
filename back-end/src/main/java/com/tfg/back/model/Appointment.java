@@ -6,10 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -25,6 +22,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Appointment {
 
     @Id
@@ -43,23 +41,21 @@ public class Appointment {
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    @NotNull(message = "Appointment date and time is required")
-    @Future(message = "Appointment date must be in the future")
     private LocalDateTime appointmentDateTime;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private AppointmentStatus status = AppointmentStatus.SCHEDULED;
+    private AppointmentStatus status;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private AppointmentType type = AppointmentType.IN_PERSON;
 
-    @Size(max = 500, message = "Reason must be less than 500 characters")
     private String reason;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
