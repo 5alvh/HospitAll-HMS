@@ -2,15 +2,14 @@ package com.tfg.back.service.serviceImpl;
 
 import com.tfg.back.model.Client;
 import com.tfg.back.repository.ClientRepository;
-import com.tfg.back.service.UserService;
+import com.tfg.back.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class ClientServiceImpl implements UserService<Client> {
+public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
 
@@ -20,22 +19,22 @@ public class ClientServiceImpl implements UserService<Client> {
     }
 
     @Override
-    public Client save(Client client) {
+    public Client createClient(Client client) {
         return clientRepository.save(client);
     }
 
     @Override
-    public Optional<Client> findById(Long id) {
-        return clientRepository.findById(id);
+    public Client getClient(Long id) {
+        return clientRepository.findById(id).get();
     }
 
     @Override
-    public List<Client> findAll() {
+    public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteClient(Long id) {
         clientRepository.deleteById(id);
     }
 }

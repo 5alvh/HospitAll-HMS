@@ -1,9 +1,7 @@
 package com.tfg.back.model;
 
-import com.tfg.back.annotations.ListSize;
 import com.tfg.back.enums.Specialization;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +22,6 @@ import java.util.*;
 @Setter
 public class Doctor extends User {
 
-    @NotBlank(message = "Medical license number is required")
     @Column(unique = true, nullable = false, length = 50)
     private String medicalLicenseNumber;
 
@@ -42,9 +39,6 @@ public class Doctor extends User {
 
     @ElementCollection
     @CollectionTable(name = "doctor_working_hours", joinColumns = @JoinColumn(name = "doctor_id"))
-    @ListSize(value = 7, message = "Working hours must be provided for all 7 days of the week")
-    @OrderBy("dayOfWeek")
     private Set<WorkingHours> workingHours = new HashSet<>();
-
 
 }

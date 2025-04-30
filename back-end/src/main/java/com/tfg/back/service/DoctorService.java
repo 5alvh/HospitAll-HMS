@@ -1,7 +1,7 @@
 package com.tfg.back.service;
 
 import com.tfg.back.model.Doctor;
-import com.tfg.back.model.dtos.doctors.DoctorDtoCreate;
+import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 
 import java.util.List;
 

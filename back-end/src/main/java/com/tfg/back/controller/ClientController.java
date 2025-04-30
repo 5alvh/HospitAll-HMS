@@ -18,24 +18,25 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<Client> createClient(@Valid @RequestBody Client client) {
-        return ResponseEntity.ok(clientService.save(client));
+        return ResponseEntity.ok(clientService.createClient(client));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable Long id) {
-        return clientService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return null;
+        //return clientService.getClient(id)
+        //        .map(ResponseEntity::ok)
+        //        .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
-        return ResponseEntity.ok(clientService.findAll());
+        return ResponseEntity.ok(clientService.getAllClients());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        clientService.deleteById(id);
+        clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
     }
 }

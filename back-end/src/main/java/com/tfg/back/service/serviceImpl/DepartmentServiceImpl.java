@@ -1,6 +1,6 @@
 package com.tfg.back.service.serviceImpl;
 
-import com.tfg.back.mappers.DepCreateToEntity;
+import com.tfg.back.mappers.DepartmentMapper;
 import com.tfg.back.model.Department;
 import com.tfg.back.model.dtos.department.DepartmentCreateDto;
 import com.tfg.back.repository.DepartmentRepository;
@@ -22,7 +22,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void createDepartment(DepartmentCreateDto createDto) {
-        Department dep = DepCreateToEntity.toEntity(createDto);
+        Department dep = DepartmentMapper.toEntity(createDto);
         departmentRepository.save(dep);
     }
 

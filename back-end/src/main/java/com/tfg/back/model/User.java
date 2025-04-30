@@ -26,32 +26,26 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Full name is required")
-    @Size(max = 100, message = "Name must be less than 100 characters")
+
     @Column(nullable = false, length = 100)
     private String fullName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+
     @Column(unique = true, nullable = false, length = 100)
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
     @Column(nullable = false)
     private String hashedPassword;
 
-    @Transient
-    @NotNull(message = "Password confirmation is required")
-    private transient String passwordConfirmation;
-
-    @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
     @Column(length = 20)
     private String phoneNumber;
 
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserStatus status;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -63,6 +57,5 @@ public abstract class User {
     @Version
     private Long version;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+
 }

@@ -3,10 +3,9 @@ package com.tfg.back.annotations;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.util.Collection;
 import java.util.List;
 
-public class ListSizeValidator implements ConstraintValidator<ListSize, Collection<?>> {
+public class ListSizeValidator implements ConstraintValidator<ListSize, List<?>> {
     private int size;
 
     @Override
@@ -15,7 +14,7 @@ public class ListSizeValidator implements ConstraintValidator<ListSize, Collecti
     }
 
     @Override
-    public boolean isValid(Collection<?> list, ConstraintValidatorContext context) {
+    public boolean isValid(List<?> list, ConstraintValidatorContext context) {
         return list != null && list.size() == size;
     }
 }

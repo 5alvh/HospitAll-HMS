@@ -1,10 +1,10 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Doctor;
-import com.tfg.back.model.dtos.doctors.DoctorDtoCreate;
+import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 import com.tfg.back.service.serviceImpl.DoctorServiceImpl;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +12,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/doctors")
-@RequiredArgsConstructor
 public class DoctorController {
 
     private final DoctorServiceImpl doctorService;
+
+    @Autowired
+    public DoctorController(DoctorServiceImpl doctorService) {
+        this.doctorService = doctorService;
+    }
 
     @PostMapping
     public ResponseEntity<Doctor> createDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
