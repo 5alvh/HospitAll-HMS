@@ -3,10 +3,12 @@ package com.tfg.back.service.serviceImpl;
 import com.tfg.back.mappers.DoctorMapper;
 import com.tfg.back.model.Department;
 import com.tfg.back.model.Doctor;
+import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 import com.tfg.back.repository.DoctorRepository;
 import com.tfg.back.service.DepartmentService;
 import com.tfg.back.service.DoctorService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,9 +41,9 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor getDoctorByEmail(String email) {
-        Optional<Doctor> doctor = doctorRepository.findByEmail(email);
-        return doctor.orElse(null);
+    public Doctor getDoctorByEmail(EmailRequest email) {
+        return doctorRepository.findByEmail(email.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("Doctor not found with email: " + email));
     }
 
     @Override

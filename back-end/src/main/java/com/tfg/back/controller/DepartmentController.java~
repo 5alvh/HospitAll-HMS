@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/departments")
 public class DepartmentController {
 
-    private final DepartmentService departmentService;
+    private DepartmentService departmentService;
 
     @Autowired
     public DepartmentController(DepartmentService departmentService) {

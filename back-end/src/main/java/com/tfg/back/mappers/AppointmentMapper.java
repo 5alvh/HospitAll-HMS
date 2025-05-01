@@ -6,15 +6,15 @@ import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Department;
 import com.tfg.back.model.Doctor;
+import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.service.ClientService;
 import com.tfg.back.service.DoctorService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@AllArgsConstructor
 @Component
-
+@AllArgsConstructor
 public class AppointmentMapper {
 
     private final ClientService clientService;
@@ -22,11 +22,12 @@ public class AppointmentMapper {
 
     public Appointment toEntity(AppointmentCreateDto dto) {
         Client client = clientService.getClientByEmail(dto.getClientEmail());
-        Doctor doctor = doctorService.getDoctorByEmail(dto.getDoctorEmail()); // or findByEmail()
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setEmail(dto.getDoctorEmail());
+        Doctor doctor = doctorService.getDoctorByEmail(emailRequest); // or findByEmail()
 
-        Department department = doctor.getDepartment(); // assuming doctor has department
+        Department department = doctor.getDepartment();
 
-        Appointment appointment = new Appointment();
         return Appointment.builder()
                 .client(client)
                 .doctor(doctor)

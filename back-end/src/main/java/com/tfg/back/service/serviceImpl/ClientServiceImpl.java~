@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
@@ -45,12 +44,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public boolean deleteClient(Long id) {
+    public void deleteClient(Long id) {
         boolean exists = clientRepository.existsById(id);
         if (exists) {
             clientRepository.deleteById(id);
-            return true;
         }
-        return false;
     }
 }

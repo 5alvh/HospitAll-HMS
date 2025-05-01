@@ -25,7 +25,7 @@ public class Doctor extends User {
     @Column(unique = true, nullable = false, length = 50)
     private String medicalLicenseNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 

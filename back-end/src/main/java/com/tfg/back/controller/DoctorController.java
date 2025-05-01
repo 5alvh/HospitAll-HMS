@@ -1,7 +1,9 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Doctor;
+import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
+import com.tfg.back.service.DoctorService;
 import com.tfg.back.service.serviceImpl.DoctorServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,10 @@ import java.util.List;
 @RequestMapping("/api/doctors")
 public class DoctorController {
 
-    private final DoctorServiceImpl doctorService;
+    private final DoctorService doctorService;
 
     @Autowired
-    public DoctorController(DoctorServiceImpl doctorService) {
+    public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
 
@@ -29,6 +31,11 @@ public class DoctorController {
     @GetMapping("/{id}")
     public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.getDoctor(id));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<Doctor> getDoctorByEmail(@RequestBody EmailRequest email) {
+        return ResponseEntity.ok(doctorService.getDoctorByEmail(email));
     }
 
     @GetMapping
