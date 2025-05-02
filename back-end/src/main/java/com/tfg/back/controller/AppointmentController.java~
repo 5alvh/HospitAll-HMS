@@ -28,7 +28,7 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public Appointment createAppointment(@RequestBody AppointmentCreateDto appointmentDto) {
+    public Appointment createAppointment(AppointmentCreateDto appointmentDto) {
         return appointmentService.createAppointment(appointmentDto);
     }
 

@@ -1,5 +1,6 @@
 package com.tfg.back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tfg.back.enums.MembershipLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class Client extends User {
     private EmergencyContact emergencyContact;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Appointment> appointments = new ArrayList<>();
 }
 
