@@ -1,5 +1,7 @@
 package com.tfg.back.service.serviceImpl;
 
+import com.tfg.back.enums.SearchType;
+import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
@@ -28,14 +31,23 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client getClientById(Long id) {
-        Optional<Client> clientCheck = clientRepository.findById(id);
-        return clientCheck.orElse(null);
+
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Client ID must be a positive number");
+        }
+
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id, SearchType.ID));
     }
 
     @Override
     public Client getClientByEmail(String email) {
-        Optional<Client> clientCheck = clientRepository.findByEmail(email);
-        return clientCheck.orElse(null);
+        if (email == null || email.isBlank()){
+            throw new IllegalArgumentException("Client email mustn't be null");
+        }
+
+        return clientRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
     }
 
     @Override
@@ -44,10 +56,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteClient(Long id) {
-        boolean exists = clientRepository.existsById(id);
-        if (exists) {
-            clientRepository.deleteById(id);
-        }
+    public void deleteClient(String email) {
+        Client client = this.getClientByEmail(email);
+        clientRepository.deleteById(client.getId());
     }
 }

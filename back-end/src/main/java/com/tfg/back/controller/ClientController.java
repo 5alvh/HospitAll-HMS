@@ -1,10 +1,12 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Client;
+import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,34 +19,37 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDtoCreate client) {
         return ResponseEntity.ok(clientService.createClient(client));
     }
 
-    @GetMapping("id/{id}")
+    @GetMapping("/by-id/{id}")
     public ResponseEntity<Client> getClientById(@PathVariable Long id) {
-        return null;
-        //return clientService.getClient(id)
-        //        .map(ResponseEntity::ok)
-        //        .orElse(ResponseEntity.notFound().build());
+        Client client = clientService.getClientById(id);
+        return ResponseEntity.ok(client);
     }
 
-    @GetMapping("email/{email}")
-    public ResponseEntity<Client> getClientByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(clientService.getClientByEmail(email));
-        //return clientService.getClient(id)
-        //        .map(ResponseEntity::ok)
-        //        .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/by-email")
+    public ResponseEntity<Client> getClientByEmail(@Valid @RequestBody EmailRequest emailRequest) {
+        String email = emailRequest.getEmail();
+        Client client = clientService.getClientByEmail(email);
+        return ResponseEntity.ok(client);
     }
-    @GetMapping
+
+    @GetMapping("/all")
     public ResponseEntity<List<Client>> getAllClients() {
-        return ResponseEntity.ok(clientService.getAllClients());
+        List<Client> clients = clientService.getAllClients();
+        if (clients.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(clients);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        clientService.deleteClient(id);
+    @DeleteMapping("/by-email")
+    public ResponseEntity<Void> deleteClient(@Valid @RequestBody EmailRequest emailRequest) {
+        String email = emailRequest.getEmail();
+        clientService.deleteClient(email);
         return ResponseEntity.noContent().build();
     }
 }
