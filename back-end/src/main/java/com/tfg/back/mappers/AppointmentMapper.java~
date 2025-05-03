@@ -22,11 +22,12 @@ import java.time.LocalDateTime;
 public class AppointmentMapper {
 
     private final ClientService clientService;
-    private final DoctorService doctorService;
+    private final DoctorRepository doctorRep;
 
     public Appointment toEntity(AppointmentCreateDto dto) {
         Client client = clientService.getClientByEmail(dto.getClientEmail());
-        Doctor doctor = doctorService.getDoctorByEmail(dto.getDoctorEmail());
+        Doctor doctor = doctorRep.findByEmail(dto.getDoctorEmail())
+                .orElseThrow(() -> new EntityNotFoundException("Doctor not found with email: " + dto.getDoctorEmail()));
 
         Department department = doctor.getDepartment();
 

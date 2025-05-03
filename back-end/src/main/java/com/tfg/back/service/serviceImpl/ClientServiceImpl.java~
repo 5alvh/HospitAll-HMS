@@ -72,7 +72,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteClient(String email) {
         Client client = getClientByEmail(email);
-        clientRepository.delete(client);
+        clientRepository.deleteById(client.getId());
     }
 
     @Override

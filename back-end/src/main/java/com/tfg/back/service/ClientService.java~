@@ -1,6 +1,5 @@
 package com.tfg.back.service;
 
-import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
@@ -14,5 +13,4 @@ public interface ClientService {
     List<Client> getAllClients();
     Client updateClient(Long id, ClientDtoUpdate dto);
     void deleteClient(String email);
-    List<Appointment> getAppointmentsByClientEmail(String email);
 }

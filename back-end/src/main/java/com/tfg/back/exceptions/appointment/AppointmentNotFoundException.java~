@@ -1,0 +1,4 @@
+package com.tfg.back.exceptions.appointment;
+
+public class AppointmentNotFoundException {
+}

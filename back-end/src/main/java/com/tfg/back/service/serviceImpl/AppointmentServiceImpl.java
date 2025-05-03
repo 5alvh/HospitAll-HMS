@@ -1,5 +1,6 @@
 package com.tfg.back.service.serviceImpl;
 
+import com.tfg.back.exceptions.appointment.AppointmentNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
 import com.tfg.back.model.Appointment;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
@@ -36,13 +37,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment getAppointmentById(Long id) {
-        Optional<Appointment> appointment = appointmentRepository.findById(id);
-        return appointment.orElse(null);
+        return appointmentRepository.findById(id)
+                .orElseThrow(()-> new AppointmentNotFoundException(id));
     }
 
     @Override
     public void deleteAppointment(Long id) {
-        Optional<Appointment> appointment = appointmentRepository.findById(id);
-        appointment.ifPresent(appointmentRepository::delete);
+        Appointment appointment = getAppointmentById(id);
+        appointmentRepository.delete(appointment);
     }
 }
