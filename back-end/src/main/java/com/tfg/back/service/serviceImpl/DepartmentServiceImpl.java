@@ -22,6 +22,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void createDepartment(DepartmentCreateDto createDto) {
+        boolean exists = departmentRepository.existsByName(createDto.getName());
+        if(exists){
+
+        }
         Department dep = DepartmentMapper.toEntity(createDto);
         departmentRepository.save(dep);
     }

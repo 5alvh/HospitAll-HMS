@@ -1,6 +1,7 @@
 package com.tfg.back.service.serviceImpl;
 
 import com.tfg.back.enums.SearchType;
+import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.model.Client;
@@ -25,6 +26,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client createClient(ClientDtoCreate client) {
+        String email = client.getEmail();
+        boolean exists = clientRepository.existsByEmail(client.getEmail());
+        if (exists){
+            throw new UserAlreadyExistsException(email);
+        }
         Client newClient = ClientMapper.toEntity(client);
         return clientRepository.save(newClient);
     }

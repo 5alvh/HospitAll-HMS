@@ -1,14 +1,13 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Client;
-import com.tfg.back.model.EmergencyContact;
 import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.model.dtos.client.EmergencyContactDto;
 import com.tfg.back.service.ClientService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +16,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
-@RequiredArgsConstructor
 public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping("/")
+    @Autowired
+    public ClientController(ClientService clientService){
+        this.clientService = clientService;
+    }
+
+    @PostMapping("/register")
     public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDtoCreate client) {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(client));
     }
@@ -50,7 +53,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long id,@RequestBody ClientDtoUpdate dto){
+    public ResponseEntity<Client> updateClient(@PathVariable Long id,@Valid @RequestBody ClientDtoUpdate dto){
         Client client = clientService.updateClient(id, dto);
         return ResponseEntity.ok(client);
     }

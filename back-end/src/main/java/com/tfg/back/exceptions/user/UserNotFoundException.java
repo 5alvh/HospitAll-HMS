@@ -11,5 +11,4 @@ public class UserNotFoundException extends RuntimeException {
         super("Client not found with "+st+": "+ email);
     }
 
-
 }
