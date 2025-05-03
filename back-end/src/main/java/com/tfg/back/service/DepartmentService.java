@@ -1,14 +1,16 @@
 package com.tfg.back.service;
 
 import com.tfg.back.model.Department;
-import com.tfg.back.model.dtos.department.DepartmentCreateDto;
+import com.tfg.back.model.dtos.department.DepartmentDtoCreate;
+import com.tfg.back.model.dtos.department.DepartmentDtoUpdate;
 
 import java.util.List;
 
 public interface DepartmentService {
-    void createDepartment(DepartmentCreateDto departmentCreateDto);
-    Department findByName(String name);
-    List<Department> findAll();
+    Department createDepartment(DepartmentDtoCreate departmentDtoCreate);
+    Department getDepartmentByName(String name);
+    List<Department> getAllDepartments();
     void deleteById(Long id);
-    Department findById(Long id);
+    Department getDepartmentById(Long id);
+    Department updateDepartment(Long id, DepartmentDtoUpdate departmentUpdateDto);
 }

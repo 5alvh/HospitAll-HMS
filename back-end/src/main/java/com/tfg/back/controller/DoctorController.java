@@ -34,7 +34,8 @@ public class DoctorController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<Doctor> getDoctorByEmail(@RequestBody EmailRequest email) {
+    public ResponseEntity<Doctor> getDoctorByEmail(@RequestBody EmailRequest request) {
+        String email = request.getEmail();
         return ResponseEntity.ok(doctorService.getDoctorByEmail(email));
     }
 

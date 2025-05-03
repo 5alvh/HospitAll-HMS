@@ -31,7 +31,7 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor createDoctor(DoctorDtoCreate doctor) {
         String email = doctor.getEmail();
         boolean exists = doctorRepository.existsByEmail(email);
-        Department department = departmentService.findById(doctor.getDepartmentId());
+        Department department = departmentService.getDepartmentById(doctor.getDepartmentId());
         Doctor newDoctor = DoctorMapper.toEntity(doctor, department);
         return doctorRepository.save(newDoctor);
     }
@@ -43,8 +43,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor getDoctorByEmail(EmailRequest email) {
-        return doctorRepository.findByEmail(email.getEmail())
+    public Doctor getDoctorByEmail(String email) {
+        return doctorRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with email: " + email));
     }
 

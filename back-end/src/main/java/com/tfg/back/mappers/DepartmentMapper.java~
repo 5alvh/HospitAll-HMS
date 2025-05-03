@@ -27,8 +27,6 @@ public class DepartmentMapper {
         department.setDescription(dto.getDescription());
         department.setContactNumber(dto.getContactNumber());
         department.setLocation(dto.getLocation());
-
-        // Only update head doctor if a new one is provided
         if (headDoctor != null) {
             department.setHeadDoctor(headDoctor);
         }

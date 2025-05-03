@@ -1,10 +1,11 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Department;
-import com.tfg.back.model.dtos.department.DepartmentCreateDto;
+import com.tfg.back.model.dtos.department.DepartmentDtoCreate;
 import com.tfg.back.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +22,37 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Department>> getAllDepartments() {
-        return ResponseEntity.ok(departmentService.findAll());
+        List<Department> departments = departmentService.getAllDepartments();
+        if (departments.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(departments);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> createDepartment(@Valid @RequestBody DepartmentCreateDto department) {
-        departmentService.createDepartment(department);
-        return ResponseEntity.ok().build();
+    @GetMapping("/by-id/{id}")
+    public ResponseEntity<Department> getDepartmentById(@PathVariable Long id) {
+        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+    }
+
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<Department> getDepartmentByName(@PathVariable String name) {
+        return ResponseEntity.ok(departmentService.getDepartmentByName(name));
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Department> createDepartment(@Valid @RequestBody DepartmentDtoCreate department) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(departmentService.createDepartment(department));
+    }
+
+    /*@PutMapping("/{id}")
+    public ResponseEntity<Department> updateDepartment(@PathVariable Long id, @Valid @RequestBody DepartmentCreateDto department) {
+        return ResponseEntity.ok(departmentService.updateDepartment(id, department));
+    }*/
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
+        departmentService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
