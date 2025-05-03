@@ -38,7 +38,7 @@ public class DoctorServiceImpl implements DoctorService {
         if (exists){
             throw new UserAlreadyExistsException(email);
         }
-
+        
         Department department = departmentRepository.findById(doctor.getDepartmentId())
                 .orElseThrow(() ->  new DepartmentNotFoundException("department with ID: "+id+" is not found"));
 

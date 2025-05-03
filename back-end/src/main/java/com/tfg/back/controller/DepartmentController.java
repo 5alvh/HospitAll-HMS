@@ -2,6 +2,7 @@ package com.tfg.back.controller;
 
 import com.tfg.back.model.Department;
 import com.tfg.back.model.dtos.department.DepartmentDtoCreate;
+import com.tfg.back.model.dtos.department.DepartmentDtoUpdate;
 import com.tfg.back.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,11 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(departmentService.createDepartment(department));
     }
 
-    /*@PutMapping("/{id}")
-    public ResponseEntity<Department> updateDepartment(@PathVariable Long id, @Valid @RequestBody DepartmentCreateDto department) {
-        return ResponseEntity.ok(departmentService.updateDepartment(id, department));
-    }*/
+    @PutMapping("/{id}")
+    public ResponseEntity<Department> updateDepartment(@PathVariable Long id, @Valid @RequestBody DepartmentDtoUpdate dtoUpdate) {
+        return ResponseEntity.ok(departmentService.updateDepartment(id, dtoUpdate));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
         departmentService.deleteById(id);

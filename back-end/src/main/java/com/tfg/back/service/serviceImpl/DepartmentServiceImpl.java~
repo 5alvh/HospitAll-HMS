@@ -55,21 +55,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Department updateDepartment(Long id, DepartmentDtoUpdate departmentUpdateDto) {
         String name = departmentUpdateDto.getName();
-        /*
-        //Exists by Name?
-        boolean existsByName = departmentRepository.existsByName(name);
-        //Exists is it the same department or another who has the same name?
-        boolean sameID = getDepartmentByName(name).getId().equals(id);
-        //If it's the same department then it's ok. if not, throw error that it already exists
-        if(existsByName && !sameID){
-            throw new DepartmentAlreadyExistsException(departmentUpdateDto.getName());
-        }
-        */
+        
+
         Optional<Department> existing = departmentRepository.findByName(name);
         existing.ifPresent(ex -> {
             if (!ex.getId().equals(id)) {
-                throw new DepartmentAlreadyExistsException(name);
-        }});
+                throw new DepartmentAlreadyExistsException();
+        });
 
         String email = departmentUpdateDto.getHeadDoctorEmail();
         Doctor doctor= null;

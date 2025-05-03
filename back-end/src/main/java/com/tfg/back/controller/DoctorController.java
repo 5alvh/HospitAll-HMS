@@ -4,7 +4,6 @@ import com.tfg.back.model.Doctor;
 import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 import com.tfg.back.service.DoctorService;
-import com.tfg.back.service.serviceImpl.DoctorServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
