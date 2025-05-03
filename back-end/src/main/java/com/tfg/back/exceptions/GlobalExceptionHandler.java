@@ -19,6 +19,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false)
         );
+        errorResponse.addDetail("USER_NOT_FOUND: ","This may occur if the user ID or email is incorrect or no longer exists.");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false)
         );
-
+        errorResponse.addDetail("USER_NOT_FOUND: ","This may occur if the user ID or email is incorrect or no longer exists.");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

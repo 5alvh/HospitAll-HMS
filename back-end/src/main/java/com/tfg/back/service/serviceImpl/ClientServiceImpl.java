@@ -5,6 +5,7 @@ import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
+import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,12 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> getAllClients() {
         return clientRepository.findAll();
+    }
+
+    @Override
+    public Client updateClient(Long id, ClientDtoUpdate dto) {
+        Client client = ClientMapper.updateEntity(getClientById(id), dto);
+        return clientRepository.save(client);
     }
 
     @Override

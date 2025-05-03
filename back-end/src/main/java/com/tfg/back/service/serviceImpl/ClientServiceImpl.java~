@@ -5,13 +5,13 @@ import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
+import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -53,6 +53,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> getAllClients() {
         return clientRepository.findAll();
+    }
+
+    @Override
+    public Client updateClient(Long id, ClientDtoUpdate dto) {
+        return ClientMapper.updateEntity(getClientById(id), dto);
     }
 
     @Override

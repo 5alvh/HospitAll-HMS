@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class DoctorDtoCreate {
     @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
     private String phoneNumber;
 
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     @NotBlank(message = "Medical license number is required")
     private String medicalLicenseNumber;

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -33,7 +34,7 @@ public class ClientDtoCreate {
     @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
     private String phoneNumber;
 
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     private MembershipLevel membershipLevel;
 

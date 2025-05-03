@@ -5,10 +5,11 @@ import com.tfg.back.enums.SearchType;
 public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException(Long id, SearchType st) {
-        super(String.format("Client not found with "+st+": %d", id));
+        super("Client not found with "+st+": "+ id);
     }
     public UserNotFoundException(String email, SearchType st) {
-        super(String.format("Client not found with "+st+": %d", email));
+        super("Client not found with "+st+": "+ email);
     }
+
 
 }
