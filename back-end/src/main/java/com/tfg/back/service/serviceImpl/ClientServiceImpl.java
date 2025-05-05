@@ -20,20 +20,21 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository,ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
     }
 
     @Override
     public Client createClient(ClientDtoCreate client) {
         String email = client.getEmail();
-        boolean exists = clientRepository.existsByEmail(client.getEmail());
-        if (exists){
-            throw new UserAlreadyExistsException(email);
+        if (clientRepository.existsByEmail(client.getEmail())) {
+            throw new UserAlreadyExistsException(client.getEmail());
         }
-        Client newClient = ClientMapper.toEntity(client);
+        Client newClient = clientMapper.toEntity(client);
         return clientRepository.save(newClient);
     }
 

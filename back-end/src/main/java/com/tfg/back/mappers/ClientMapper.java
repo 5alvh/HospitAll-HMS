@@ -5,15 +5,24 @@ import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+@Component
 public class ClientMapper {
 
-    public static Client toEntity(ClientDtoCreate dto) {
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public ClientMapper(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public Client toEntity(ClientDtoCreate dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Client is null");
         }
@@ -22,7 +31,7 @@ public class ClientMapper {
 
         client.setFullName(dto.getFullName());
         client.setEmail(dto.getEmail());
-        client.setHashedPassword(dto.getPassword());
+        client.setHashedPassword(passwordEncoder.encode(dto.getPassword()));
         client.setPhoneNumber(dto.getPhoneNumber());
         client.setDateOfBirth(dto.getDateOfBirth());
 

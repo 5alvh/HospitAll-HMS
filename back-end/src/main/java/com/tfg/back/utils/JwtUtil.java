@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "your_jwt_secret";
+    private final String SECRET_KEY = "JdXVC0DH+c8EWvFl5f6MJzn1s4clAr239p35MBp16hw=";
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()

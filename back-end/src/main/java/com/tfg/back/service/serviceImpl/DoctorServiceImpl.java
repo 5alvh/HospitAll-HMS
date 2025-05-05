@@ -22,11 +22,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final DepartmentRepository departmentRepository;
+    private final DoctorMapper doctorMapper;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper) {
         this.doctorRepository = doctorRepository;
         this.departmentRepository = departmentRepository;
+        this.doctorMapper = doctorMapper;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class DoctorServiceImpl implements DoctorService {
         Department department = departmentRepository.findById(doctor.getDepartmentId())
                 .orElseThrow(() ->  new DepartmentNotFoundException("department with ID: "+id+" is not found"));
 
-        Doctor newDoctor = DoctorMapper.toEntity(doctor, department);
+        Doctor newDoctor = doctorMapper.toEntity(doctor, department);
         return doctorRepository.save(newDoctor);
     }
 
