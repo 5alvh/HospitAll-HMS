@@ -22,7 +22,7 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<Doctor> createDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
         return ResponseEntity.ok(doctorService.createDoctor(doctor));
     }

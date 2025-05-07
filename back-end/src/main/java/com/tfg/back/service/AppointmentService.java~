@@ -3,8 +3,6 @@ package com.tfg.back.service;
 import com.tfg.back.model.Appointment;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService {
@@ -12,5 +10,4 @@ public interface AppointmentService {
     List<Appointment> getAllAppointments();
     Appointment getAppointmentById(Long id);
     void deleteAppointment(Long id);
-    public List<LocalDateTime> getAvailableSlots(Long doctorId, LocalDate date);
 }

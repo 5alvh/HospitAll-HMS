@@ -5,10 +5,13 @@ import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -49,4 +52,15 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<LocalDateTime>> getAvailableSlots(
+            @RequestParam Long doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        List<LocalDateTime> slots = appointmentService.getAvailableSlots(doctorId, date);
+        if (slots.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(slots);
+    }
 }

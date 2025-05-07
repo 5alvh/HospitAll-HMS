@@ -1,0 +1,182 @@
+<!-- appointment.component.html -->
+<div class="appointment-container">
+    <div class="appointment-header">
+      <h1>Book an Appointment</h1>
+      <p class="subtitle">Schedule a consultation with our specialists</p>
+    </div>
+  
+    <div class="appointment-content">
+      <!-- Success Message -->
+      <div *ngIf="appointmentSuccess" class="success-message">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>Appointment Booked Successfully!</h3>
+        <p>We have sent a confirmation email with all details.</p>
+      </div>
+  
+      <!-- Appointment Form -->
+      <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" *ngIf="!appointmentSuccess">
+        <div class="form-section">
+          <h3>Patient Information</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patientName">Full Name *</label>
+              <input 
+                type="text" 
+                id="patientName" 
+                formControlName="patientName"
+                [ngClass]="{'is-invalid': submitted && f['patientName'].errors}"
+              >
+              <div *ngIf="submitted && f['patientName'].errors" class="invalid-feedback">
+                <div *ngIf="f['patientName'].errors['required']">Name is required</div>
+                <div *ngIf="f['patientName'].errors['minlength']">Name must be at least 3 characters</div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="patientEmail">Email Address *</label>
+              <input 
+                type="email" 
+                id="patientEmail" 
+                formControlName="patientEmail"
+                [ngClass]="{'is-invalid': submitted && f['patientEmail'].errors}"
+              >
+              <div *ngIf="submitted && f['patientEmail'].errors" class="invalid-feedback">
+                <div *ngIf="f['patientEmail'].errors['required']">Email is required</div>
+                <div *ngIf="f['patientEmail'].errors['email']">Please enter a valid email</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patientPhone">Phone Number *</label>
+              <input 
+                type="tel" 
+                id="patientPhone" 
+                formControlName="patientPhone"
+                placeholder="10 digits"
+                [ngClass]="{'is-invalid': submitted && f['patientPhone.errors']}"
+              >
+              <div *ngIf="submitted && f['patientPhone'].errors" class="invalid-feedback">
+                <div *ngIf="f['patientPhone'].errors['required']">Phone number is required</div>
+                <div *ngIf="f['patientPhone'].errors['pattern']">Please enter a valid 10-digit phone number</div>
+              </div>
+            </div>
+            
+            <div class="form-group checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="isNewPatient">
+                <span>I am a new patient</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Appointment Details</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="department">Department/Specialty *</label>
+              <select 
+                id="department" 
+                formControlName="department"
+                [ngClass]="{'is-invalid': submitted && f['department'].errors}"
+              >
+                <option [ngValue]="null" disabled>Select Department</option>
+                <option *ngFor="let dept of departments" [ngValue]="dept.id">{{dept.name}}</option>
+              </select>
+              <div *ngIf="submitted && f['department'].errors" class="invalid-feedback">
+                <div *ngIf="f['department'].errors['required']">Department is required</div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="doctor">Doctor *</label>
+              <select 
+                id="doctor" 
+                formControlName="doctor"
+                [disabled]="!appointmentForm.get('department')!.value"
+                [ngClass]="{'is-invalid': submitted && f['doctor'].errors}"
+              >
+                <option [ngValue]="null" disabled>Select Doctor</option>
+                <option *ngFor="let doctor of filteredDoctors" [ngValue]="doctor.id">{{doctor.name}}</option>
+              </select>
+              <div *ngIf="submitted && f['doctor'].errors" class="invalid-feedback">
+                <div *ngIf="f['doctor'].errors['required']">Doctor is required</div>
+              </div>
+              <small *ngIf="appointmentForm.get('department')!.value && filteredDoctors.length === 0" class="text-info">
+                No doctors available for this department
+              </small>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="date">Preferred Date *</label>
+              <input 
+                type="date" 
+                id="date" 
+                formControlName="date"
+                [min]="minDate | date:'yyyy-MM-dd'"
+                [max]="maxDate | date:'yyyy-MM-dd'"
+                [disabled]="!appointmentForm.get('doctor')!.value"
+                [ngClass]="{'is-invalid': submitted && f['date'].errors}"
+              >
+              <div *ngIf="submitted && f['date'].errors" class="invalid-feedback">
+                <div *ngIf="f['date'].errors['required']">Date is required</div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="timeSlot">Preferred Time *</label>
+              <select 
+                id="timeSlot" 
+                formControlName="timeSlot"
+                [disabled]="!appointmentForm.get('date')!.value"
+                [ngClass]="{'is-invalid': submitted && f['timeSlot'].errors}"
+              >
+                <option [ngValue]="null" disabled>Select Time</option>
+                <option *ngFor="let slot of timeSlots" [ngValue]="slot.id" [disabled]="!slot.available">
+                  {{slot.time}} {{!slot.available ? '(Not Available)' : ''}}
+                </option>
+              </select>
+              <div *ngIf="submitted && f['timeSlot'].errors" class="invalid-feedback">
+                <div *ngIf="f['timeSlot'].errors['required']">Time slot is required</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="reasonForVisit">Reason for Visit *</label>
+            <textarea 
+              id="reasonForVisit" 
+              rows="4" 
+              formControlName="reasonForVisit"
+              placeholder="Please describe your symptoms or reason for consultation"
+              [ngClass]="{'is-invalid': submitted && f['reasonForVisit'].errors}"
+            ></textarea>
+            <div *ngIf="submitted && f['reasonForVisit'].errors" class="invalid-feedback">
+              <div *ngIf="f['reasonForVisit'].errors['required']">Reason for visit is required</div>
+              <div *ngIf="f['reasonForVisit'].errors['minlength']">Please provide at least 10 characters</div>
+              <div *ngIf="f['reasonForVisit'].errors['maxlength']">Maximum 500 characters allowed</div>
+            </div>
+            <small class="character-count" [ngClass]="{'text-danger': f['reasonForVisit'].value?.length > 500}">
+              {{f['reasonForVisit'].value?.length || 0}}/500 characters
+            </small>
+          </div>
+        </div>
+        
+        <div class="form-footer">
+          <button type="button" class="btn-reset" (click)="resetForm()">Reset</button>
+          <button type="submit" class="btn-submit" [disabled]="submitting">
+            <span *ngIf="!submitting">Book Appointment</span>
+            <span *ngIf="submitting" class="loading-spinner">
+              <i class="fas fa-circle-notch fa-spin"></i> Processing...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
