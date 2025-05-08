@@ -3,29 +3,14 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ClientDtoCreate } from '../models/client-dto-create';
+import { AuthService } from '../services/auth/auth-service.service';
 
 enum MembershipLevel {
   BASIC = 'BASIC',
   PREMIUM = 'PREMIUM',
   VIP = 'VIP',
   INSURANCE_COVERED = 'INSURANCE_COVERED'
-}
-
-interface EmergencyContact {
-  contactName: string;
-  contactPhone: string;
-  relationship: string;
-}
-
-interface ClientSignup {
-  fullName: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
-  phoneNumber: string;
-  dateOfBirth: Date | null;
-  membershipLevel: MembershipLevel;
-  emergencyContact: EmergencyContact;
 }
 
 @Component({
@@ -47,6 +32,7 @@ export class ClientSignupComponent implements OnInit {
   includeEmergencyContact = false;
 
   constructor(
+    private authService: AuthService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -130,7 +116,6 @@ export class ClientSignupComponent implements OnInit {
     this.submitted = true;
     
     if (this.signupForm.invalid) {
-      // Scroll to first error
       const firstElementWithError = document.querySelector('.ng-invalid');
       if (firstElementWithError) {
         firstElementWithError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -140,9 +125,9 @@ export class ClientSignupComponent implements OnInit {
     
     this.processing = true;
     
-    // Prepare client data
+    // Preparar el cliente
     const formValue = this.signupForm.value;
-    const clientData: ClientSignup = {
+    const clientData: ClientDtoCreate = {
       fullName: formValue.fullName,
       email: formValue.email,
       password: formValue.password,
@@ -153,17 +138,23 @@ export class ClientSignupComponent implements OnInit {
       emergencyContact: formValue.includeEmergencyContact ? formValue.emergencyContact : null
     };
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Client signup data:', clientData);
-      this.processing = false;
-      this.signupSuccess = true;
-      
-      // Redirect to login after 3 seconds
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 3000);
-    }, 1500);
+    this.authService.registerClient(clientData).subscribe({
+      next: response => {
+        setTimeout(() => {
+          console.log('Client signup data:', clientData);
+          this.processing = false;
+          this.signupSuccess = true;
+          
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 3000);
+        }, 1500);
+      },
+      error: error => {
+        console.error('Error registering client:', error);
+        this.processing = false;
+      }
+    })    
   }
 
   // Helper getters for form controls
