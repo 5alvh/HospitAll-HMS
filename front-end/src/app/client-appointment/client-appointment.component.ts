@@ -2,6 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, NgIf, NgFor  } from '@angular/common';
 import { DatePipe } from '@angular/common';
+import { DepartmentsService } from '../services/shared-service/departments.service';
 interface Doctor {
   id: number;
   name: string;
@@ -12,6 +13,13 @@ interface Doctor {
 interface Department {
   id: number;
   name: string;
+  /*description: string;
+  headDoctor: string;
+  contactNumber: string;
+  location: string;
+  version: number;
+  updatedAt: Date;
+  createdAt: Date;*/
 }
 
 interface TimeSlot {
@@ -87,6 +95,9 @@ export class ClientAppointmentComponent {
   }
   
   loadDepartments(): void {
+    /*this.departmentsService.getDepartments().subscribe((departments: any) => {
+      this.departments = departments;
+    })*/
     this.departments = [
       { id: 1, name: 'Cardiology' },
       { id: 2, name: 'Neurology' },
