@@ -41,6 +41,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDtoGet createAppointment(AppointmentCreateDto appointment, String email) {
+        //TO BE IMPLEMENTED
         //Check if doctor exists
         Doctor doctor = getDoctor(appointment.getDoctorEmail());
         Appointment newAppointment = appointmentMapper.toEntity(appointment, email);

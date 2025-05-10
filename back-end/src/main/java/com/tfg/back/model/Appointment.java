@@ -79,4 +79,8 @@ public class Appointment {
         return status == AppointmentStatus.SCHEDULED || status == AppointmentStatus.CONFIRMED;
     }
 
+    public boolean isScheduled() {
+        return status == AppointmentStatus.SCHEDULED;
+    }
+
 }

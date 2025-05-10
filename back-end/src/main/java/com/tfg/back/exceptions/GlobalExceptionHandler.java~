@@ -59,7 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UnauthorizedToPerformThisAction.class)
-    public ResponseEntity<ErrorResponse> handleException(UnauthorizedToPerformThisAction ex, WebRequest request){
+    public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request){
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED,
                 ex.getMessage(),

@@ -15,5 +15,4 @@ public interface AppointmentService {
     void deleteAppointment(Long id);
     List<LocalDateTime> getAvailableSlots(Long doctorId, LocalDate date);
     void cancelAppointment(Long id, String email);
-    void confirmAppointment(Long id, String email);
 }

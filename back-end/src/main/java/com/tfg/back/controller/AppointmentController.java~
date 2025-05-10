@@ -1,5 +1,6 @@
 package com.tfg.back.controller;
 
+import com.tfg.back.model.Appointment;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.service.AppointmentService;

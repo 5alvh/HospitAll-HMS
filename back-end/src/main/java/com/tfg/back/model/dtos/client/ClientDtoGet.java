@@ -3,7 +3,9 @@ package com.tfg.back.model.dtos.client;
 import com.tfg.back.enums.MembershipLevel;
 import com.tfg.back.model.Appointment;
 import com.tfg.back.model.EmergencyContact;
+import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,10 +14,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientDtoGet {
 
+    private Long id;
     private String fullName;
     private String email;
     private String phoneNumber;
@@ -23,5 +27,5 @@ public class ClientDtoGet {
     private MembershipLevel membershipLevel;
     private EmergencyContact emergencyContact;
     private LocalDateTime createdAt;
-    private List<Appointment> appointments;
+    private List<AppointmentDtoGet> appointments;
 }

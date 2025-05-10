@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientDtoUpdate {
+
     @NotBlank(message = "Full name is required")
     @Size(max = 100, message = "Name must be less than 100 characters")
     private String fullName;
