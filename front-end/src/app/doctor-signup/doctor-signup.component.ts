@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Specialization } from '../enums/specialization';
-import { AuthService } from '../services/auth/auth-service.service';
+import { AuthService } from '../services/auth/auth.service';
 import { DepartmentsService } from '../services/shared-services/departments.service';
 import { Router } from '@angular/router';
 import { Department } from '../models/department';

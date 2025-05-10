@@ -1,7 +1,6 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Client;
-import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
@@ -38,7 +37,7 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
-    @GetMapping("/by-email")
+    @GetMapping("/profile")
     public ResponseEntity<ClientDtoGet> getClientByEmail(Authentication authentication) {
         String email = authentication.getName();
         ClientDtoGet client = clientService.getClientByEmail(email);

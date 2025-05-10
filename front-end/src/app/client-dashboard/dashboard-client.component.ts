@@ -1,6 +1,8 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
+import { ClientService } from '../services/client-services/client.service';
+import { ClientDtoGet } from '../models/client-dto-get';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -8,18 +10,41 @@ import { FormsModule, NgModel } from '@angular/forms';
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss'
 })
-export class DashboardClientComponent {
-title = 'MediCare Hospital Dashboard';
+export class DashboardClientComponent implements OnInit {
+
+  constructor(private clientService: ClientService) { }
+  ngOnInit(): void {
+    this.getProfile();
+  }
+  profileDetails!: ClientDtoGet;
+
+  getProfile(): void {
+    this.clientService.getProfile().subscribe(
+      (profile: ClientDtoGet) => {
+        this.profileDetails = profile;
+      },
+      (error) => {
+        console.error('Error fetching profile:', error);
+      }
+    );
+  }
+  
+  title = 'MediCare Hospital Dashboard';
   activeSection = 'dashboard';
   
-  // User data
+  /*bloodType: 'O+',
+    address: '123 Main St, Anytown, AN 12345',
+    insuranceProvider: 'BlueCross Health',
+    insuranceNumber: 'BCH-987654321',*/
+
   patient = {
     name: 'John Smith',
     id: 'PAT-2023-4598',
-    dob: '12/05/1985',
+    dateOfBirth: '12/05/1985',
     contact: '+1 (555) 123-4567',
     email: 'john.smith@example.com',
     bloodType: 'O+',
+    dob: '12/05/1985',
     address: '123 Main St, Anytown, AN 12345',
     insuranceProvider: 'BlueCross Health',
     insuranceNumber: 'BCH-987654321',
@@ -250,4 +275,5 @@ title = 'MediCare Hospital Dashboard';
     // In a real app, this would redirect to payment gateway
     alert(`Redirecting to payment gateway for invoice ${id}`);
   }
+  
 }

@@ -24,7 +24,7 @@ export const routes: Routes = [
     {
       path: 'dashboard-client',
       loadComponent: () =>
-        import('./dashboard-client/dashboard-client.component').then((c) => c.DashboardClientComponent)
+        import('./client-dashboard/dashboard-client.component').then((c) => c.DashboardClientComponent)
     }
 
 ];

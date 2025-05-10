@@ -1,0 +1,6 @@
+export enum AppointmentType {
+  IN_PERSON = 'IN_PERSON',
+  TELEHEALTH = 'TELEHEALTH',
+  EMERGENCY = 'EMERGENCY',
+  FOLLOW_UP = 'FOLLOW_UP',
+}

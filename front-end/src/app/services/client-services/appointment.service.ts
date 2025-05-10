@@ -5,7 +5,7 @@ import { AppointmentCreateDto } from '../../models/appointment-dto-create';
 @Injectable({
   providedIn: 'root'
 })
-export class AppointmentServiceService {
+export class AppointmentService {
 
   constructor(private httpClient: HttpClient) { }
 

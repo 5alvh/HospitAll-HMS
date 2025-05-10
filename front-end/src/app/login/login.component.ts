@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../services/auth/auth-service.service';
+import { AuthService } from '../services/auth/auth.service';
 import { LocalStorageManagerService } from '../services/auth/local-storage-manager.service';
 
 @Component({
@@ -64,14 +64,13 @@ export class LoginComponent implements OnInit {
     this.authService.login(email, password, rememberMe).subscribe({
       next: response => {
         this.localStorageManager.setToken(response.token);
-        this.localStorageManager.setItem('email', email);
         setTimeout(() => {
           console.log('Login successful');
           this.processing = false;
           this.loginSuccess = true;
           
           setTimeout(() => {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/dashboard-client']);
           }, 2000);
         }, 1500);
       },

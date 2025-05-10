@@ -27,8 +27,9 @@ export class DepartmentsService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = '';
-    
-    if (error.error instanceof ErrorEvent) {
+  
+    // Safely check for ErrorEvent in case it's undefined (e.g. Node/Vite)
+    if (typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       if (error.status === 409) {
@@ -40,7 +41,7 @@ export class DepartmentsService {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       }
     }
-    
+  
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
