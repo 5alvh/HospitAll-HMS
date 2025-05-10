@@ -30,7 +30,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client createClient(ClientDtoCreate client) {
-
+        
         if (!client.getPassword().equals(client.getPasswordConfirmation())) {
             throw new IllegalArgumentException("Passwords do not match");
         }

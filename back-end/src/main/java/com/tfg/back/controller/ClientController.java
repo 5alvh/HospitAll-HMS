@@ -4,7 +4,6 @@ import com.tfg.back.model.Client;
 import com.tfg.back.model.dtos.EmailRequest;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
-import com.tfg.back.model.dtos.client.EmergencyContactDto;
 import com.tfg.back.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +62,6 @@ public class ClientController {
         String email = emailRequest.getEmail();
         clientService.deleteClient(email);
         return ResponseEntity.noContent().build();
-    }
-
-    //FOR LATER
-    @GetMapping("/emergency-contact")
-    public ResponseEntity<EmergencyContactDto> getEmergencyContact(@RequestBody EmailRequest emailRequest){
-        /*
-        NEED TO BE IMPLEMENTED
-         */
-        return null;
     }
 
 }

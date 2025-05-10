@@ -10,6 +10,21 @@ export const routes: Routes = [
       path: '',
       loadComponent: () =>
         import('./client-appointment/client-appointment.component').then((c) => c.ClientAppointmentComponent)
+    },
+    {
+      path: 'signup-doctor',
+      loadComponent: () =>
+        import('./doctor-signup/doctor-signup.component').then((c) => c.DoctorSignupComponent)
+    },
+    {
+      path: 'login',
+      loadComponent: () =>
+        import('./login/login.component').then((c) => c.LoginComponent)
+    },
+    {
+      path: 'dashboard-client',
+      loadComponent: () =>
+        import('./dashboard-client/dashboard-client.component').then((c) => c.DashboardClientComponent)
     }
 
 ];

@@ -1,5 +1,0 @@
-package com.tfg.back.model.dtos.client;
-
-public class EmergencyContactDto {
-    //Need to be implemented
-}

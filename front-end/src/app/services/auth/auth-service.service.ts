@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ClientDtoCreate } from '../../models/client-dto-create';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { DoctorDtoCreate } from '../../models/doctor-dto-create';
 
 export interface ErrorResponse {
   status: string;
@@ -16,6 +17,7 @@ export class AuthService{
 
   private baseUrlClients = 'http://localhost:8080/clients';
   private baseUrlDoctors = 'http://localhost:8080/doctors';
+  private baseUrlLogin = 'http://localhost:8080/auth/login';
   constructor(private httpClient: HttpClient) { }
 
   registerClient(data: ClientDtoCreate): Observable<any> {
@@ -26,8 +28,12 @@ export class AuthService{
       );
   }
 
-  registerDoctor(data: ClientDtoCreate) {
-    return this.httpClient.post(`${this.baseUrlDoctors}/register`, data);
+  registerDoctor(data: DoctorDtoCreate): Observable<any> {
+    return this.httpClient.post(`${this.baseUrlDoctors}/register`, data)
+    .pipe(
+      tap(response => console.log('Doctor registered successfully:', response)),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -48,6 +54,10 @@ export class AuthService{
     
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
+  }
+
+  login(email: string, password: string, rememberMe: boolean): Observable<any> {
+    return this.httpClient.post(`${this.baseUrlLogin}`, { email, password, rememberMe });
   }
 
 }

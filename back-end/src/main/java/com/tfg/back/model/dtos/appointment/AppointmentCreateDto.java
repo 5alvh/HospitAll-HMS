@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AppointmentCreateDto {
 
-    @NotNull(message = "Client is required")
-    private String clientEmail;
 
     @NotNull(message = "Doctor is required")
     private String doctorEmail;

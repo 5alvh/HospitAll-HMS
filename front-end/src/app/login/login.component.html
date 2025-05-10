@@ -1,0 +1,94 @@
+<div class="login-container">
+    <div class="login-header">
+      <h1>Login to Your Account</h1>
+      <p class="subtitle">Access your healthcare portal and manage your appointments</p>
+    </div>
+  
+    <div class="login-content">
+      <!-- Success Message -->
+      <div *ngIf="loginSuccess" class="success-message">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>Login Successful!</h3>
+        <p>You will be redirected to your dashboard shortly.</p>
+      </div>
+  
+      <!-- Error Message -->
+      <div *ngIf="loginError" class="error-message">
+        <div class="error-icon">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h3>Login Failed</h3>
+        <p>{{ errorMessage }}</p>
+      </div>
+  
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" *ngIf="!loginSuccess">
+        <div class="form-section">
+          <h3>Account Information</h3>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="email">Email Address *</label>
+              <input 
+                type="email" 
+                id="email" 
+                formControlName="email"
+                [ngClass]="{'is-invalid': submitted && f['email'].errors}"
+              >
+              <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                <div *ngIf="f['email'].errors['required']">Email is required</div>
+                <div *ngIf="f['email'].errors['email']">Invalid email format</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="password">Password *</label>
+              <div class="password-field">
+                <input 
+                  [type]="passwordVisible ? 'text' : 'password'" 
+                  id="password" 
+                  formControlName="password"
+                  [ngClass]="{'is-invalid': submitted && f['password'].errors}"
+                >
+                <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                  <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
+              </div>
+              <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                <div *ngIf="f['password'].errors['required']">Password is required</div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="form-row remember-me">
+            <div class="form-group full-width">
+              <div class="checkbox-container">
+                <input type="checkbox" id="rememberMe" formControlName="rememberMe">
+                <label for="rememberMe">Remember me</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="forgot-password">
+          <a [routerLink]="['/forgot-password']">Forgot your password?</a>
+        </div>
+        
+        <div class="form-footer">
+          <div class="signup-link">
+            <span>Don't have an account?</span>
+            <a [routerLink]="['/signup-client']">Create Account</a>
+          </div>
+          <button type="submit" class="btn-submit" [disabled]="processing">
+            <span *ngIf="!processing">Login</span>
+            <span *ngIf="processing" class="loading-spinner">
+              <i class="fas fa-circle-notch fa-spin"></i> Processing...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

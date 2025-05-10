@@ -1,0 +1,253 @@
+import { NgFor, NgIf } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule, NgModel } from '@angular/forms';
+
+@Component({
+  selector: 'app-dashboard-client',
+  imports: [NgIf, NgFor, FormsModule],
+  templateUrl: './dashboard-client.component.html',
+  styleUrl: './dashboard-client.component.scss'
+})
+export class DashboardClientComponent {
+title = 'MediCare Hospital Dashboard';
+  activeSection = 'dashboard';
+  
+  // User data
+  patient = {
+    name: 'John Smith',
+    id: 'PAT-2023-4598',
+    dob: '12/05/1985',
+    contact: '+1 (555) 123-4567',
+    email: 'john.smith@example.com',
+    bloodType: 'O+',
+    address: '123 Main St, Anytown, AN 12345',
+    insuranceProvider: 'BlueCross Health',
+    insuranceNumber: 'BCH-987654321',
+    emergencyContact: {
+      name: 'Jane Smith',
+      relation: 'Spouse',
+      phone: '+1 (555) 987-6543'
+    }
+  };
+  
+  // Upcoming appointments
+  upcomingAppointments = [
+    {
+      id: 'APT-2025-001',
+      date: '15 May 2025',
+      time: '10:30 AM',
+      doctor: 'Dr. Sarah Johnson',
+      department: 'Cardiology',
+      status: 'Confirmed'
+    },
+    {
+      id: 'APT-2025-008',
+      date: '22 May 2025',
+      time: '2:15 PM',
+      doctor: 'Dr. Michael Chen',
+      department: 'Neurology',
+      status: 'Pending'
+    }
+  ];
+  
+  // Past appointments
+  pastAppointments = [
+    {
+      id: 'APT-2025-123',
+      date: '3 April 2025',
+      doctor: 'Dr. Sarah Johnson',
+      department: 'Cardiology',
+      diagnosis: 'Mild hypertension',
+      followUp: 'Monthly checkup'
+    },
+    {
+      id: 'APT-2025-098',
+      date: '15 March 2025',
+      doctor: 'Dr. Robert Williams',
+      department: 'General Medicine',
+      diagnosis: 'Seasonal flu',
+      followUp: 'None required'
+    }
+  ];
+  
+  // Medications
+  medications = [
+    {
+      name: 'Lisinopril',
+      dosage: '10mg',
+      frequency: 'Once daily',
+      startDate: '3 April 2025',
+      endDate: '3 July 2025',
+      prescribedBy: 'Dr. Sarah Johnson'
+    },
+    {
+      name: 'Atorvastatin',
+      dosage: '20mg',
+      frequency: 'Once daily at bedtime',
+      startDate: '3 April 2025',
+      endDate: 'Ongoing',
+      prescribedBy: 'Dr. Sarah Johnson'
+    }
+  ];
+  
+  // Lab results
+  labResults = [
+    {
+      id: 'LAB-2025-456',
+      test: 'Comprehensive Metabolic Panel',
+      date: '3 April 2025',
+      status: 'Completed',
+      resultUrl: 'assets/results/lab-2025-456.pdf'
+    },
+    {
+      id: 'LAB-2025-457',
+      test: 'Lipid Profile',
+      date: '3 April 2025',
+      status: 'Completed',
+      resultUrl: 'assets/results/lab-2025-457.pdf'
+    },
+    {
+      id: 'LAB-2025-490',
+      test: 'HbA1c',
+      date: '10 May 2025',
+      status: 'Pending',
+      resultUrl: ''
+    }
+  ];
+  
+  // Invoices
+  invoices = [
+    {
+      id: 'INV-2025-789',
+      date: '3 April 2025',
+      description: 'Cardiology consultation',
+      amount: 150.00,
+      insurance: 120.00,
+      balance: 30.00,
+      status: 'Unpaid'
+    },
+    {
+      id: 'INV-2025-790',
+      date: '3 April 2025',
+      description: 'Laboratory tests',
+      amount: 210.00,
+      insurance: 168.00,
+      balance: 42.00,
+      status: 'Unpaid'
+    },
+    {
+      id: 'INV-2025-730',
+      date: '15 March 2025',
+      description: 'General consultation',
+      amount: 100.00,
+      insurance: 80.00,
+      balance: 20.00,
+      status: 'Paid'
+    }
+  ];
+  
+  // Notifications
+  notifications = [
+    {
+      type: 'Appointment',
+      message: 'Reminder: Cardiology appointment tomorrow at 10:30 AM',
+      date: '14 May 2025',
+      read: false
+    },
+    {
+      type: 'Lab Result',
+      message: 'New lab results available for Lipid Profile',
+      date: '4 April 2025',
+      read: true
+    },
+    {
+      type: 'Medication',
+      message: 'Refill reminder: Lisinopril - 7 days remaining',
+      date: '10 May 2025',
+      read: false
+    },
+    {
+      type: 'Announcement',
+      message: 'Free diabetes screening camp on May 25th',
+      date: '8 May 2025',
+      read: false
+    }
+  ];
+  
+  // Departments for booking
+  departments = [
+    'Cardiology',
+    'Dermatology',
+    'Endocrinology',
+    'Gastroenterology',
+    'General Medicine',
+    'Neurology',
+    'Obstetrics & Gynecology',
+    'Ophthalmology',
+    'Orthopedics',
+    'Pediatrics',
+    'Psychiatry',
+    'Urology'
+  ];
+
+  // Doctors by department
+  doctors = {
+    'Cardiology': ['Dr. Sarah Johnson', 'Dr. James Rodriguez'],
+    'Dermatology': ['Dr. Emily Chen', 'Dr. David Brown'],
+    'Neurology': ['Dr. Michael Chen', 'Dr. Lisa Wong'],
+    'General Medicine': ['Dr. Robert Williams', 'Dr. Maria Garcia']
+  };
+
+  selectedDepartment = 'Cardiology'; //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  selectedDoctor = '';
+  selectedDate = '';
+  availableSlots: string[] = [];
+  
+  // Function to change active section
+  setActiveSection(section: string) {
+    this.activeSection = section;
+  }
+  
+  // Function to load doctors when department is selected
+  onDepartmentChange() {
+    this.selectedDoctor = '';
+    this.selectedDate = '';
+    this.availableSlots = [];
+  }
+  
+  // Function to check available slots
+  checkAvailability() {
+    if (this.selectedDoctor && this.selectedDate) {
+      // In a real app, this would make an API call
+      this.availableSlots = ['9:00 AM', '10:30 AM', '1:15 PM', '3:45 PM'];
+    }
+  }
+  
+  // Function to book appointment
+  bookAppointment(slot: string) {
+    // In a real app, this would make an API call to book the appointment
+    alert(`Appointment booked successfully with ${this.selectedDoctor} on ${this.selectedDate} at ${slot}`);
+    
+    // Reset form
+    this.selectedDepartment = '';
+    this.selectedDoctor = '';
+    this.selectedDate = '';
+    this.availableSlots = [];
+  }
+  
+  // Function to mark notification as read
+  markAsRead(index: number) {
+    this.notifications[index].read = true;
+  }
+  
+  // Function to get unread notification count
+  getUnreadCount() {
+    return this.notifications.filter(notification => !notification.read).length;
+  }
+  
+  // Function to pay invoice
+  payInvoice(id: string) {
+    // In a real app, this would redirect to payment gateway
+    alert(`Redirecting to payment gateway for invoice ${id}`);
+  }
+}

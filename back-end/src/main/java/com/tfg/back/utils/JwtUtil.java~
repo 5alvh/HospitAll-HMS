@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtUtil {
     private final String SECRET_KEY = "JdXVC0DH+c8EWvFl5f6MJzn1s4clAr239p35MBp16hw=";
 
-    public String generateToken(UserDetails userDetails, long expiration) {
+    public String generateToken(UserDetails userDetails, expiration Long) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))

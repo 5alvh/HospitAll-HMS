@@ -39,7 +39,11 @@ public class AuthController {
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-        String jwt = jwtUtil.generateToken(userDetails);
+
+        long expiration = request.isRememberMe() ? 30 * 24 * 60 * 60 * 1000L : 60 * 60 * 1000L; // 30 days vs 1 hour
+
+
+        String jwt = jwtUtil.generateToken(userDetails, expiration);
 
         return ResponseEntity.ok(new AuthResponse(jwt));
     }
