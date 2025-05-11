@@ -22,4 +22,5 @@ public class AppointmentDtoGet {
     private LocalDateTime appointmentDateTime;
     private AppointmentStatus status;
     private AppointmentType type;
+    private String departmentName;
 }

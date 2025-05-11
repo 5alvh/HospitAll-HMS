@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { ClientService } from '../services/client-services/client.service';
 import { ClientDtoGet } from '../models/client-dto-get';
+import { AppointmentDtoGet } from '../models/appointment-dto-get';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -11,23 +12,32 @@ import { ClientDtoGet } from '../models/client-dto-get';
   styleUrl: './dashboard-client.component.scss'
 })
 export class DashboardClientComponent implements OnInit {
-
+  
+  patient!:ClientDtoGet;
+  isLoading: boolean = true;
+  upcomingAppointments: AppointmentDtoGet[] = [];
   constructor(private clientService: ClientService) { }
   ngOnInit(): void {
     this.getProfile();
   }
-  profileDetails!: ClientDtoGet;
 
-  getProfile(): void {
-    this.clientService.getProfile().subscribe(
-      (profile: ClientDtoGet) => {
-        this.profileDetails = profile;
-      },
-      (error) => {
-        console.error('Error fetching profile:', error);
+  getProfile() {
+  this.clientService.getProfile().subscribe(
+    (response) => {
+      if (response) {
+        console.log('User:', response);
+        this.patient = response; 
+        this.isLoading = false; 
+        this.upcomingAppointments = response.appointments;
+      } else {
+        console.error('Profile data is missing');
       }
-    );
-  }
+    },
+    (error) => {
+      console.error('Error fetching profile', error);
+    }
+  );
+}
   
   title = 'MediCare Hospital Dashboard';
   activeSection = 'dashboard';
@@ -37,43 +47,26 @@ export class DashboardClientComponent implements OnInit {
     insuranceProvider: 'BlueCross Health',
     insuranceNumber: 'BCH-987654321',*/
 
-  patient = {
-    name: 'John Smith',
-    id: 'PAT-2023-4598',
-    dateOfBirth: '12/05/1985',
-    contact: '+1 (555) 123-4567',
-    email: 'john.smith@example.com',
-    bloodType: 'O+',
-    dob: '12/05/1985',
-    address: '123 Main St, Anytown, AN 12345',
-    insuranceProvider: 'BlueCross Health',
-    insuranceNumber: 'BCH-987654321',
-    emergencyContact: {
-      name: 'Jane Smith',
-      relation: 'Spouse',
-      phone: '+1 (555) 987-6543'
-    }
-  };
   
   // Upcoming appointments
-  upcomingAppointments = [
+  /*upcomingAppointments = [
     {
       id: 'APT-2025-001',
-      date: '15 May 2025',
+      appointmentDateTime: '15 May 2025',
       time: '10:30 AM',
-      doctor: 'Dr. Sarah Johnson',
-      department: 'Cardiology',
+      doctorFullName: 'Dr. Sarah Johnson',
+      departmentName: 'Cardiology',
       status: 'Confirmed'
     },
     {
       id: 'APT-2025-008',
       date: '22 May 2025',
       time: '2:15 PM',
-      doctor: 'Dr. Michael Chen',
-      department: 'Neurology',
+      doctorFullName: 'Dr. Michael Chen',
+      departmentName: 'Neurology',
       status: 'Pending'
     }
-  ];
+  ];*/
   
   // Past appointments
   pastAppointments = [

@@ -5,7 +5,7 @@ import { inject } from '@angular/core';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const localStorageManager = inject(LocalStorageManagerService);
   const authToken = localStorageManager.getToken();
-
+  
   const excludedUrls = [
     'http://localhost:8080/clients/register',
     'http://localhost:8080/auth/login'

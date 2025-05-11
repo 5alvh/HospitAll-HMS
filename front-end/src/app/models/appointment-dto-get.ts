@@ -9,4 +9,5 @@ export interface AppointmentDtoGet {
   appointmentDateTime: string;
   status: AppointmentStatus;
   type: AppointmentType;
+  departmentName: string;
 }

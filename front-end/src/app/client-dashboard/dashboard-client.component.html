@@ -1,9 +1,14 @@
+
+<div *ngIf="isLoading">
+  <p>Loading...</p>
+</div>
+
 <!-- app.component.html -->
-<div class="app-container">
+<div class="app-container" *ngIf="!isLoading && patient">
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <img src="assets/logo.png" alt="MediCare Logo">
+      <img src="./logo.png" alt="MediCare Logo">
       <h2>MediCare</h2>
     </div>
     <div class="menu">
@@ -63,8 +68,8 @@
           <span class="badge" *ngIf="getUnreadCount() > 0">{{getUnreadCount()}}</span>
         </div>
         <div class="user-profile">
-          <img src="assets/user-profile.jpg" alt="User Profile">
-          <span>{{patient.name}}</span>
+          <img src="./user-profile.jpg" alt="User Profile">
+          <span>{{patient.fullName}}</span>
         </div>
       </div>
     </div>
@@ -74,7 +79,7 @@
       <!-- Dashboard Overview -->
       <div *ngIf="activeSection === 'dashboard'">
         <div class="dashboard-welcome">
-          <h2>Welcome back, {{patient.name}}!</h2>
+          <h2>Welcome back, {{patient.fullName}}!</h2>
           <p>Here's your health summary at a glance.</p>
         </div>
         
@@ -90,14 +95,14 @@
               </div>
               <div *ngFor="let appointment of upcomingAppointments.slice(0, 2)" class="appointment-item">
                 <div class="appointment-date">
-                  <span class="day">{{appointment.date.split(' ')[0]}}</span>
-                  <span class="month">{{appointment.date.split(' ')[1]}}</span>
+                  <span class="day">{{appointment.appointmentDateTime!.split(' ')[0]}}</span>
+                  <span class="month">{{appointment.appointmentDateTime!.split(' ')[1]}}</span>
                 </div>
                 <div class="appointment-details">
-                  <h4>{{appointment.doctor}}</h4>
-                  <p>{{appointment.department}} - {{appointment.time}}</p>
-                  <span class="status-badge" [class.status-confirmed]="appointment.status === 'Confirmed'" 
-                    [class.status-pending]="appointment.status === 'Pending'">
+                  <h4>{{appointment.doctorFullName}}</h4>
+                  <p>{{appointment.departmentName}} - '2:15 PM'</p>
+                  <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'" 
+                    [class.status-pending]="appointment.status === 'SCHEDULED'">
                     {{appointment.status}}
                   </span>
                 </div>
@@ -197,13 +202,13 @@
           <div class="profile-card">
             <div class="profile-header">
               <div class="profile-avatar">
-                <img src="assets/user-profile.jpg" alt="User Profile">
+                <img src="./user-profile.jpg" alt="User Profile">
               </div>
               <div class="profile-info">
-                <h3>{{patient.name}}</h3>
+                <h3>{{patient.fullName}}</h3>
                 <p>Patient ID: {{patient.id}}</p>
-                <p>DOB: {{patient.dob}} (39 years)</p>
-                <p>Blood Type: {{patient.bloodType}}</p>
+                <p>DOB: {{patient.dateOfBirth}} (39 years)</p>
+                <p>Blood Type: O+</p>
               </div>
             </div>
             
@@ -212,7 +217,7 @@
                 <h4>Contact Information</h4>
                 <div class="info-row">
                   <span class="info-label">Phone:</span>
-                  <span class="info-value">{{patient.contact}}</span>
+                  <span class="info-value">{{patient.phoneNumber}}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Email:</span>
@@ -220,7 +225,7 @@
                 </div>
                 <div class="info-row">
                   <span class="info-label">Address:</span>
-                  <span class="info-value">{{patient.address}}</span>
+                  <span class="info-value">123 Main St, Anytown, AN 12345</span>
                 </div>
               </div>
               
@@ -228,27 +233,27 @@
                 <h4>Emergency Contact</h4>
                 <div class="info-row">
                   <span class="info-label">Name:</span>
-                  <span class="info-value">{{patient.emergencyContact.name}}</span>
+                  <span class="info-value">{{patient.emergencyContact.contactName}}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Relation:</span>
-                  <span class="info-value">{{patient.emergencyContact.relation}}</span>
+                  <span class="info-value">{{patient.emergencyContact.relationship}}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Phone:</span>
-                  <span class="info-value">{{patient.emergencyContact.phone}}</span>
+                  <span class="info-value">{{patient.emergencyContact.contactPhone}}</span>
                 </div>
               </div>
               
               <div class="info-group">
                 <h4>Insurance Information</h4>
                 <div class="info-row">
-                  <span class="info-label">Provider:</span>
-                  <span class="info-value">{{patient.insuranceProvider}}</span>
+                  <span class="info-label">Membership Type:</span>
+                  <span class="info-value">{{patient.membershipLevel}}</span>
                 </div>
                 <div class="info-row">
-                  <span class="info-label">Insurance ID:</span>
-                  <span class="info-value">{{patient.insuranceNumber}}</span>
+                  <span class="info-label">created At:</span>
+                  <span class="info-value">{{patient.createdAt}}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Validity:</span>
@@ -287,12 +292,12 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let appointment of upcomingAppointments">
-                    <td>{{appointment.date}} - {{appointment.time}}</td>
-                    <td>{{appointment.doctor}}</td>
-                    <td>{{appointment.department}}</td>
+                    <td>{{appointment.appointmentDateTime}} - '2:15 PM'</td>
+                    <td>{{appointment.doctorFullName}}</td>
+                    <td>{{appointment.departmentName}}</td>
                     <td>
-                      <span class="status-badge" [class.status-confirmed]="appointment.status === 'Confirmed'" 
-                      [class.status-pending]="appointment.status === 'Pending'">
+                      <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'" 
+                      [class.status-pending]="appointment.status === 'SCHEDULED'">
                       {{appointment.status}}
                       </span>
                     </td>
@@ -561,9 +566,9 @@
                 </div>
                 <div *ngFor="let appointment of upcomingAppointments.slice(0, 1)" class="teleconsult-item">
                   <div class="teleconsult-details">
-                    <h5>{{appointment.doctor}}</h5>
-                    <p>{{appointment.department}}</p>
-                    <p>{{appointment.date}} at {{appointment.time}}</p>
+                    <h5>{{appointment.doctorFullName}}</h5>
+                    <p>{{appointment.departmentName}}</p>
+                    <p>{{appointment.appointmentDateTime}} at '2:15 PM'</p>
                   </div>
                   <div class="teleconsult-actions">
                     <button class="btn-primary" [disabled]="true">Join Call</button>
