@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-client',
-  imports: [NgIf, NgFor, FormsModule],
+  imports: [NgIf, NgFor, FormsModule, RouterLink],
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
   providers: [DatePipe],
@@ -20,54 +21,87 @@ export class DashboardClientComponent implements OnInit {
   isLoading: boolean = true;
   upcomingAppointments: AppointmentDtoGet[] = [];
   clientService = inject(ClientService);
+  pastAppointments: AppointmentDtoGet[] = [];
 
-  constructor(private datePipe: DatePipe) { }
+  constructor(private datePipe: DatePipe, private route: Router) { }
 
   ngOnInit(): void {
     this.getProfile();
-    
+
   }
+
   formatDate(dateString: string): string {
-    return this.datePipe.transform(dateString, 'dd MMMM yyyy') || '';
+    const date = new Date(dateString);
+    const formattedDate = new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
+
+    const formattedTime = date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    return `${formattedDate} ${formattedTime}`;
   }
+
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
         console.log('User:', response);
+
         response.createdAt = response.createdAt.split('T')[0];
+        const now = new Date();
+
         this.patient = response;
-        this.isLoading = false;
-        this.upcomingAppointments = response.appointments;
+
         if (this.patient && this.patient.appointments) {
-        this.patient.appointments.forEach(appointment => {
-        appointment.appointmentDateTime = this.formatDate(appointment.appointmentDateTime);
-      });
-    }
+          this.patient.appointments.forEach(appointment => {
+
+            const appointmentDate = new Date(appointment.appointmentDateTime);
+
+            if (appointmentDate >= now) {
+              this.upcomingAppointments.push({
+                ...appointment,
+                appointmentDateTime: this.formatDate(appointment.appointmentDateTime)
+              });
+            } else {
+              this.pastAppointments.push({
+                ...appointment,
+                appointmentDateTime: this.formatDate(appointment.appointmentDateTime)
+              });
+            }
+          });
+        }
+        console.log('Upcoming Appointments:', this.upcomingAppointments);
+        console.log('Past Appointments:', this.pastAppointments);
+        this.isLoading = false;
+
       }
     });
   }
 
-
-
-  // Past appointments
-  pastAppointments = [
-    {
-      id: 'APT-2025-123',
-      date: '3 April 2025',
-      doctor: 'Dr. Sarah Johnson',
-      department: 'Cardiology',
-      diagnosis: 'Mild hypertension',
-      followUp: 'Monthly checkup'
-    },
-    {
-      id: 'APT-2025-098',
-      date: '15 March 2025',
-      doctor: 'Dr. Robert Williams',
-      department: 'General Medicine',
-      diagnosis: 'Seasonal flu',
-      followUp: 'None required'
+  onDeleteAccount() {
+    if (confirm('Are you sure you want to inactivate your account? This action cannot be undone.')) {
+      this.clientService.inactivateAccount().subscribe({
+        next: () => {
+          alert('Your account has been inactivated successfully.');
+          this.route.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Error inactivating account:', error);
+          alert('An error occurred while inactivating your account. Please try again later.');
+        }
+      });
+      console.log('Account inactivated.');
     }
-  ];
+  }
+
+  toBookAppointment() {
+    this.route.navigate(['/book-appointment']);
+  }
 
   // Medications
   medications = [
@@ -233,6 +267,7 @@ export class DashboardClientComponent implements OnInit {
     this.selectedDate = '';
     this.availableSlots = [];
   }
+
 
   // Function to mark notification as read
   markAsRead(index: number) {

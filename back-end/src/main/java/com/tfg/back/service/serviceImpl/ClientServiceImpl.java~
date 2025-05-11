@@ -1,7 +1,6 @@
 package com.tfg.back.service.serviceImpl;
 
 import com.tfg.back.enums.SearchType;
-import com.tfg.back.enums.UserStatus;
 import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
@@ -86,13 +85,6 @@ public class ClientServiceImpl implements ClientService {
     public List<AppointmentDtoGet> getAppointmentsByClientEmail(String email) {
         Client client = findClientByEmail(email);
         return appointmentMapper.toDtoGetList(client.getAppointments());
-    }
-
-    @Override
-    public void inactivateClient(String email) {
-        Client client = findClientByEmail(email);
-        client.setStatus(UserStatus.INACTIVE);
-        clientRepository.save(client);
     }
 
     private Client findClientByEmail(String email) {

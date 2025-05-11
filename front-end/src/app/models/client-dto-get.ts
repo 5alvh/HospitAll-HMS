@@ -19,8 +19,5 @@ export class ClientDtoGet {
 
   constructor(init?: Partial<ClientDtoGet>) {
     Object.assign(this, init);
-    if (this.createdAt) {
-      this.createdAt = this.createdAt.split('T')[0];
-    }
   }
 }

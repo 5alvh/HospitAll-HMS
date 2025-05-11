@@ -76,7 +76,7 @@ public class ClientController {
     @PutMapping("/inactivateAccount")
     public ResponseEntity<Void> inactivateAccount(Authentication authentication) {
         String email = authentication.getName();
-        clientService.inactivateClient(email);
+        clientService.inactivateAccount(email);
         return ResponseEntity.noContent().build();
     }
 }

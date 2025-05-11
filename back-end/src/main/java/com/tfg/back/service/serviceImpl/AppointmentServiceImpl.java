@@ -69,7 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void cancelAppointment(Long id, String email) {
         Appointment appointment = getAppointment(id);
-        if (appointment.getClient().getEmail().equals(email) && appointment.canBeCancelled()){
+        if (appointment.getClient().getEmail().equals(email) || appointment.getDoctor().getEmail().equals(email) && appointment.canBeCancelled()){
             appointment.setStatus(AppointmentStatus.CANCELLED);
             appointmentRepository.save(appointment);
         }else {

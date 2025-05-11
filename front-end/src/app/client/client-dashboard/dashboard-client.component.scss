@@ -300,9 +300,14 @@ body {
   color: #166534;
 }
 
-.status-pending {
+.status-scheduled {
   background-color: #fef3c7;
   color: #92400e;
+}
+
+.status-cancelled {
+  background-color: #fee2e2; 
+  color: #991b1b;            
 }
 
 .status-paid {
@@ -561,6 +566,10 @@ body {
   background-color: #f1f5f9;
   border-radius: 8px;
   overflow: hidden;
+}
+
+.v-all{
+  cursor: pointer;
 }
 
 .tab {
@@ -1188,4 +1197,24 @@ body {
   color: #94a3b8;
   cursor: pointer;
   font-size: 20px;
+}
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.delete-account {
+  margin-top: 30px;
+  text-align: right;
 }

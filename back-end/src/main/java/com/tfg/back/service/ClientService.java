@@ -17,4 +17,5 @@ public interface ClientService {
     Client updateClient(Long id, ClientDtoUpdate dto);
     void deleteClient(String email);
     List<AppointmentDtoGet> getAppointmentsByClientEmail(String email);
+    void inactivateClient(String email);
 }

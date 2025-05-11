@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BloodType } from '../../models/enums/blood-type';
 import { AuthService } from '../../services/auth/auth.service';
 import { ClientDtoCreate } from '../../models/client-dto-create';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 enum MembershipLevel {
   BASIC = 'BASIC',
   PREMIUM = 'PREMIUM',
@@ -35,10 +36,18 @@ export class ClientSignupComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private localStorageManager: LocalStorageManagerService
   ) {}
 
   ngOnInit(): void {
+
+    const token = this.localStorageManager.getToken();
+    if (token) {
+      this.router.navigate(['/dashboard-client']);
+      return;
+    }
+
     this.initForm();
     
     // Watch for includeEmergencyContact changes
