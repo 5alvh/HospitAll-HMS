@@ -208,7 +208,7 @@
                 <h3>{{patient.fullName}}</h3>
                 <p>Patient ID: {{patient.id}}</p>
                 <p>DOB: {{patient.dateOfBirth}} (39 years)</p>
-                <p>Blood Type: O+</p>
+                <p>Blood Type: {{patient.bloodType}}</p>
               </div>
             </div>
             
@@ -225,7 +225,7 @@
                 </div>
                 <div class="info-row">
                   <span class="info-label">Address:</span>
-                  <span class="info-value">123 Main St, Anytown, AN 12345</span>
+                  <span class="info-value">{{patient.address}}</span>
                 </div>
               </div>
               

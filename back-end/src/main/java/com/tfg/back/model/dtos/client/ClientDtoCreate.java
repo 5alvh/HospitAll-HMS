@@ -1,5 +1,6 @@
 package com.tfg.back.model.dtos.client;
 
+import com.tfg.back.enums.BloodType;
 import com.tfg.back.enums.MembershipLevel;
 import com.tfg.back.model.EmergencyContact;
 import jakarta.validation.constraints.*;
@@ -38,5 +39,9 @@ public class ClientDtoCreate {
     private MembershipLevel membershipLevel;
 
     private EmergencyContact emergencyContact;
+
+    private String address;
+
+    private BloodType bloodType;
 
 }

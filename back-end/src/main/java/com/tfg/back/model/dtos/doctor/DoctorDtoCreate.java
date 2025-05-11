@@ -48,4 +48,6 @@ public class DoctorDtoCreate {
 
     @ListSize(value = 7, message = "Working hours must be provided for all 7 days of the week")
     private List<WorkingHours> workingHours;
+
+    private String address;
 }

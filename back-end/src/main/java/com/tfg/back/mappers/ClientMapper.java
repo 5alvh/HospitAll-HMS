@@ -36,9 +36,11 @@ public class ClientMapper {
 
         client.setFullName(dto.getFullName());
         client.setEmail(dto.getEmail());
+        client.setAddress(dto.getAddress());
         client.setHashedPassword(passwordEncoder.encode(dto.getPassword()));
         client.setPhoneNumber(dto.getPhoneNumber());
         client.setDateOfBirth(dto.getDateOfBirth());
+        client.setBloodType(dto.getBloodType());
 
         client.setStatus(UserStatus.ACTIVE);
         client.setCreatedAt(LocalDateTime.now());
@@ -61,8 +63,9 @@ public class ClientMapper {
         client.setHashedPassword(dto.getPassword());
         client.setPhoneNumber(dto.getPhoneNumber());
         client.setDateOfBirth(dto.getDateOfBirth());
-
+        client.setAddress(dto.getAddress());
         client.setStatus(UserStatus.ACTIVE);
+        client.setBloodType(dto.getBloodType());
 
         client.setMembershipLevel(dto.getMembershipLevel());
         client.setEmergencyContact(dto.getEmergencyContact());
@@ -81,9 +84,11 @@ public class ClientMapper {
                 .id(client.getId())
                 .fullName(client.getFullName())
                 .email(client.getEmail())
+                .bloodType(client.getBloodType())
                 .phoneNumber(client.getPhoneNumber())
                 .dateOfBirth(client.getDateOfBirth())
                 .membershipLevel(client.getMembershipLevel())
+                .address(client.getAddress())
                 .emergencyContact(client.getEmergencyContact())
                 .createdAt(client.getCreatedAt())
                 .appointments(appointmentMapper.toDtoGetList(client.getAppointments()))

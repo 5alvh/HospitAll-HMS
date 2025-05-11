@@ -52,6 +52,4 @@ public abstract class User {
     @Version
     private Long version;
 
-    private String address;
-
 }

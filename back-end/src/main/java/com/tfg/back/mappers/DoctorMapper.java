@@ -30,6 +30,7 @@ public class DoctorMapper {
 
         doctor.setFullName(dto.getFullName());
         doctor.setEmail(dto.getEmail());
+        doctor.setAddress(dto.getAddress());
         doctor.setHashedPassword(passwordEncoder.encode(dto.getHashedPassword()));
         doctor.setPhoneNumber(dto.getPhoneNumber());
         doctor.setDateOfBirth(dto.getDateOfBirth());

@@ -4,7 +4,7 @@ export const routes: Routes = [
     {
         path: 'signup-client',
         loadComponent: () =>
-          import('./client-signup/client-signup.component').then((c) => c.ClientSignupComponent)
+            import('./client-signup/client-signup.component').then((c) => c.ClientSignupComponent)
     },
     {
       path: '',

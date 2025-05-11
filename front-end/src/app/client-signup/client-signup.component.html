@@ -85,7 +85,37 @@
             </div>
           </div>
         </div>
-        
+        <div class="form-row">
+  <div class="form-group full-width">
+    <label for="address">Address</label>
+    <input 
+      type="text"
+      id="address"
+      formControlName="address"
+      placeholder="Street, City, State"
+      [ngClass]="{'is-invalid': submitted && f['address'].errors}"
+    >
+    <div *ngIf="submitted && f['address'].errors" class="invalid-feedback">
+      <div *ngIf="f['address'].errors['maxlength']">Address must be less than 200 characters</div>
+    </div>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-group full-width">
+    <label for="bloodType">Blood Type *</label>
+    <select id="bloodType" formControlName="bloodType" [ngClass]="{'is-invalid': submitted && f['bloodType'].errors}">
+      <option value="">Select Blood Type</option>
+      <option *ngFor="let type of bloodTypes" [value]="type">
+        {{type.replace('_', ' ') | titlecase}}
+      </option>
+    </select>
+    <div *ngIf="submitted && f['bloodType'].errors" class="invalid-feedback">
+      <div *ngIf="f['bloodType'].errors['required']">Blood type is required</div>
+    </div>
+  </div>
+</div>
+
         <div class="form-section">
           <h3>Security Information</h3>
           <div class="form-row">

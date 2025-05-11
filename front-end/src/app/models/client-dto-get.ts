@@ -1,3 +1,4 @@
+import { BloodType } from "../enums/blood-type";
 import { MembershipLevel } from "../enums/membership-level";
 import { AppointmentDtoGet } from "./appointment-dto-get";
 import { EmergencyContact } from "./emergency-contact";
@@ -7,13 +8,18 @@ export class ClientDtoGet {
   fullName!: string;
   email!: string;
   phoneNumber!: string;
-  dateOfBirth!: string; 
+  dateOfBirth!: string;
   membershipLevel!: MembershipLevel;
   emergencyContact!: EmergencyContact;
-  createdAt!: string; 
+  createdAt!: string;
   appointments!: AppointmentDtoGet[];
+  address!: string;
+  bloodType!: BloodType;
 
   constructor(init?: Partial<ClientDtoGet>) {
-      Object.assign(this, init);
+    Object.assign(this, init);
+    if (this.createdAt) {
+      this.createdAt = this.createdAt.split('T')[0];
     }
+  }
 }

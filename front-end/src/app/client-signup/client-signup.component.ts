@@ -5,6 +5,7 @@ import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ClientDtoCreate } from '../models/client-dto-create';
 import { AuthService } from '../services/auth/auth.service';
+import { BloodType } from '../enums/blood-type';
 
 enum MembershipLevel {
   BASIC = 'BASIC',
@@ -30,6 +31,7 @@ export class ClientSignupComponent implements OnInit {
   passwordVisible = false;
   confirmPasswordVisible = false;
   includeEmergencyContact = false;
+  bloodTypes = Object.values(BloodType);
 
   constructor(
     private authService: AuthService,
@@ -73,6 +75,8 @@ export class ClientSignupComponent implements OnInit {
       passwordConfirmation: ['', [Validators.required]],
       phoneNumber: ['', [Validators.pattern('^\\+?[0-9\\-\\s()]*$')]],
       dateOfBirth: [null],
+      address: ['', [Validators.maxLength(200)]], // NEW
+      bloodType: [null, Validators.required], 
       membershipLevel: [MembershipLevel.BASIC],
       includeEmergencyContact: [false],
       emergencyContact: this.fb.group({
@@ -135,6 +139,8 @@ export class ClientSignupComponent implements OnInit {
       phoneNumber: formValue.phoneNumber,
       dateOfBirth: formValue.dateOfBirth,
       membershipLevel: formValue.membershipLevel,
+      address: formValue.address, // NEW
+      bloodType: formValue.bloodType,
       emergencyContact: formValue.includeEmergencyContact ? formValue.emergencyContact : null
     };
     

@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { ClientService } from '../services/client-services/client.service';
 import { ClientDtoGet } from '../models/client-dto-get';
@@ -12,62 +12,35 @@ import { AppointmentDtoGet } from '../models/appointment-dto-get';
   styleUrl: './dashboard-client.component.scss'
 })
 export class DashboardClientComponent implements OnInit {
-  
-  patient!:ClientDtoGet;
+
+  title = 'MediCare Hospital Dashboard';
+  activeSection = 'dashboard';
+  patient!: ClientDtoGet;
   isLoading: boolean = true;
   upcomingAppointments: AppointmentDtoGet[] = [];
-  constructor(private clientService: ClientService) { }
+  clientService = inject(ClientService);
+
+  constructor() { }
+
   ngOnInit(): void {
     this.getProfile();
   }
 
   getProfile() {
-  this.clientService.getProfile().subscribe(
-    (response) => {
-      if (response) {
-        console.log('User:', response);
-        this.patient = response; 
-        this.isLoading = false; 
-        this.upcomingAppointments = response.appointments;
-      } else {
-        console.error('Profile data is missing');
+    this.clientService.getProfile().subscribe({
+      next: (response) => {
+          console.log('User:', response);
+          response.createdAt = response.createdAt.split('T')[0];
+          this.patient = response;
+          this.isLoading = false;
+          this.upcomingAppointments = response.appointments;
+        
       }
-    },
-    (error) => {
-      console.error('Error fetching profile', error);
-    }
-  );
-}
-  
-  title = 'MediCare Hospital Dashboard';
-  activeSection = 'dashboard';
-  
-  /*bloodType: 'O+',
-    address: '123 Main St, Anytown, AN 12345',
-    insuranceProvider: 'BlueCross Health',
-    insuranceNumber: 'BCH-987654321',*/
+    });
+  }
 
   
-  // Upcoming appointments
-  /*upcomingAppointments = [
-    {
-      id: 'APT-2025-001',
-      appointmentDateTime: '15 May 2025',
-      time: '10:30 AM',
-      doctorFullName: 'Dr. Sarah Johnson',
-      departmentName: 'Cardiology',
-      status: 'Confirmed'
-    },
-    {
-      id: 'APT-2025-008',
-      date: '22 May 2025',
-      time: '2:15 PM',
-      doctorFullName: 'Dr. Michael Chen',
-      departmentName: 'Neurology',
-      status: 'Pending'
-    }
-  ];*/
-  
+
   // Past appointments
   pastAppointments = [
     {
@@ -87,7 +60,7 @@ export class DashboardClientComponent implements OnInit {
       followUp: 'None required'
     }
   ];
-  
+
   // Medications
   medications = [
     {
@@ -107,7 +80,7 @@ export class DashboardClientComponent implements OnInit {
       prescribedBy: 'Dr. Sarah Johnson'
     }
   ];
-  
+
   // Lab results
   labResults = [
     {
@@ -132,7 +105,7 @@ export class DashboardClientComponent implements OnInit {
       resultUrl: ''
     }
   ];
-  
+
   // Invoices
   invoices = [
     {
@@ -163,7 +136,7 @@ export class DashboardClientComponent implements OnInit {
       status: 'Paid'
     }
   ];
-  
+
   // Notifications
   notifications = [
     {
@@ -191,7 +164,7 @@ export class DashboardClientComponent implements OnInit {
       read: false
     }
   ];
-  
+
   // Departments for booking
   departments = [
     'Cardiology',
@@ -220,19 +193,19 @@ export class DashboardClientComponent implements OnInit {
   selectedDoctor = '';
   selectedDate = '';
   availableSlots: string[] = [];
-  
+
   // Function to change active section
   setActiveSection(section: string) {
     this.activeSection = section;
   }
-  
+
   // Function to load doctors when department is selected
   onDepartmentChange() {
     this.selectedDoctor = '';
     this.selectedDate = '';
     this.availableSlots = [];
   }
-  
+
   // Function to check available slots
   checkAvailability() {
     if (this.selectedDoctor && this.selectedDate) {
@@ -240,33 +213,33 @@ export class DashboardClientComponent implements OnInit {
       this.availableSlots = ['9:00 AM', '10:30 AM', '1:15 PM', '3:45 PM'];
     }
   }
-  
+
   // Function to book appointment
   bookAppointment(slot: string) {
     // In a real app, this would make an API call to book the appointment
     alert(`Appointment booked successfully with ${this.selectedDoctor} on ${this.selectedDate} at ${slot}`);
-    
+
     // Reset form
     this.selectedDepartment = '';
     this.selectedDoctor = '';
     this.selectedDate = '';
     this.availableSlots = [];
   }
-  
+
   // Function to mark notification as read
   markAsRead(index: number) {
     this.notifications[index].read = true;
   }
-  
+
   // Function to get unread notification count
   getUnreadCount() {
     return this.notifications.filter(notification => !notification.read).length;
   }
-  
+
   // Function to pay invoice
   payInvoice(id: string) {
     // In a real app, this would redirect to payment gateway
     alert(`Redirecting to payment gateway for invoice ${id}`);
   }
-  
+
 }
