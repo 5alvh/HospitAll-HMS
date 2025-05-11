@@ -1,4 +1,4 @@
-import { Specialization } from "../enums/specialization";
+import { Specialization } from "./enums/specialization";
 import { WorkingHours } from "./working-hours";
 
 export class DoctorDtoCreate {

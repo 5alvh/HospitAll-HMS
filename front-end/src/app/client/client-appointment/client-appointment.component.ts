@@ -1,8 +1,7 @@
-import { Component, NgModule } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, NgIf, NgFor  } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { DepartmentsService } from '../services/shared-services/departments.service';
 interface Doctor {
   id: number;
   name: string;

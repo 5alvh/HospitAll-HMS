@@ -2,13 +2,13 @@ import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Specialization } from '../enums/specialization';
-import { AuthService } from '../services/auth/auth.service';
-import { DepartmentsService } from '../services/shared-services/departments.service';
 import { Router } from '@angular/router';
-import { Department } from '../models/department';
-import { WorkingHours } from '../models/working-hours';
-import { DoctorDtoCreate } from '../models/doctor-dto-create';
+import { Specialization } from '../../models/enums/specialization';
+import { Department } from '../../models/department';
+import { AuthService } from '../../services/auth/auth.service';
+import { DepartmentsService } from '../../services/shared-services/departments.service';
+import { WorkingHours } from '../../models/working-hours';
+import { DoctorDtoCreate } from '../../models/doctor-dto-create';
 
 
 @Component({

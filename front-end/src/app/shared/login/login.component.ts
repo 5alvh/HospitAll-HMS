@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../services/auth/auth.service';
-import { LocalStorageManagerService } from '../services/auth/local-storage-manager.service';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',

@@ -1,15 +1,16 @@
-import { NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
-import { ClientService } from '../services/client-services/client.service';
-import { ClientDtoGet } from '../models/client-dto-get';
-import { AppointmentDtoGet } from '../models/appointment-dto-get';
+import { FormsModule } from '@angular/forms';
+import { ClientDtoGet } from '../../models/client-dto-get';
+import { AppointmentDtoGet } from '../../models/appointment-dto-get';
+import { ClientService } from '../../services/client-services/client.service';
 
 @Component({
   selector: 'app-dashboard-client',
   imports: [NgIf, NgFor, FormsModule],
   templateUrl: './dashboard-client.component.html',
-  styleUrl: './dashboard-client.component.scss'
+  styleUrl: './dashboard-client.component.scss',
+  providers: [DatePipe],
 })
 export class DashboardClientComponent implements OnInit {
 
@@ -20,26 +21,33 @@ export class DashboardClientComponent implements OnInit {
   upcomingAppointments: AppointmentDtoGet[] = [];
   clientService = inject(ClientService);
 
-  constructor() { }
+  constructor(private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     this.getProfile();
+    
   }
-
+  formatDate(dateString: string): string {
+    return this.datePipe.transform(dateString, 'dd MMMM yyyy') || '';
+  }
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
-          console.log('User:', response);
-          response.createdAt = response.createdAt.split('T')[0];
-          this.patient = response;
-          this.isLoading = false;
-          this.upcomingAppointments = response.appointments;
-        
+        console.log('User:', response);
+        response.createdAt = response.createdAt.split('T')[0];
+        this.patient = response;
+        this.isLoading = false;
+        this.upcomingAppointments = response.appointments;
+        if (this.patient && this.patient.appointments) {
+        this.patient.appointments.forEach(appointment => {
+        appointment.appointmentDateTime = this.formatDate(appointment.appointmentDateTime);
+      });
+    }
       }
     });
   }
 
-  
+
 
   // Past appointments
   pastAppointments = [

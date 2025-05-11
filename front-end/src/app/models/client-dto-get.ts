@@ -1,7 +1,8 @@
-import { BloodType } from "../enums/blood-type";
-import { MembershipLevel } from "../enums/membership-level";
+
 import { AppointmentDtoGet } from "./appointment-dto-get";
 import { EmergencyContact } from "./emergency-contact";
+import { BloodType } from "./enums/blood-type";
+import { MembershipLevel } from "./enums/membership-level";
 
 export class ClientDtoGet {
   id!: number;

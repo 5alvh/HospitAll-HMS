@@ -1,5 +1,6 @@
-import { AppointmentStatus } from "../enums/appointment-status";
-import { AppointmentType } from "../enums/appointment-type";
+import { AppointmentStatus } from "./enums/appointment-status";
+import { AppointmentType } from "./enums/appointment-type";
+
 
 export interface AppointmentDtoGet {
   id: number;

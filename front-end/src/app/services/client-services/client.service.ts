@@ -18,10 +18,9 @@ export class ClientService {
   return this.httpClient.get<ClientDtoGet>(`${this.baseUrl}/profile`).pipe(
     catchError((error) => {
       if (error.status === 403) {
-        console.error('Access denied. Redirecting to login...');
         this.router.navigate(['/login']);
       }
-      return throwError(() => error);
+      return throwError(() => "IDK WHY THIS IS AN error"); //TODO: handle error
     })
   );
 }

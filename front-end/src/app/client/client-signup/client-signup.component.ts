@@ -3,10 +3,9 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ClientDtoCreate } from '../models/client-dto-create';
-import { AuthService } from '../services/auth/auth.service';
-import { BloodType } from '../enums/blood-type';
-
+import { BloodType } from '../../models/enums/blood-type';
+import { AuthService } from '../../services/auth/auth.service';
+import { ClientDtoCreate } from '../../models/client-dto-create';
 enum MembershipLevel {
   BASIC = 'BASIC',
   PREMIUM = 'PREMIUM',

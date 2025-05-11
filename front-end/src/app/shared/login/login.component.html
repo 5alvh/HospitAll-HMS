@@ -5,7 +5,6 @@
     </div>
   
     <div class="login-content">
-      <!-- Success Message -->
       <div *ngIf="loginSuccess" class="success-message">
         <div class="success-icon">
           <i class="fas fa-check-circle"></i>
@@ -14,7 +13,6 @@
         <p>You will be redirected to your dashboard shortly.</p>
       </div>
   
-      <!-- Error Message -->
       <div *ngIf="loginError" class="error-message">
         <div class="error-icon">
           <i class="fas fa-exclamation-circle"></i>
@@ -23,7 +21,6 @@
         <p>{{ errorMessage }}</p>
       </div>
   
-      <!-- Login Form -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" *ngIf="!loginSuccess">
         <div class="form-section">
           <h3>Account Information</h3>
