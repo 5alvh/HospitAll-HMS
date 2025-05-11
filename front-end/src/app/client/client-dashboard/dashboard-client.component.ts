@@ -223,49 +223,10 @@ export class DashboardClientComponent implements OnInit {
     'Urology'
   ];
 
-  // Doctors by department
-  doctors = {
-    'Cardiology': ['Dr. Sarah Johnson', 'Dr. James Rodriguez'],
-    'Dermatology': ['Dr. Emily Chen', 'Dr. David Brown'],
-    'Neurology': ['Dr. Michael Chen', 'Dr. Lisa Wong'],
-    'General Medicine': ['Dr. Robert Williams', 'Dr. Maria Garcia']
-  };
-
-  selectedDepartment = 'Cardiology'; //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  selectedDoctor = '';
-  selectedDate = '';
-  availableSlots: string[] = [];
-
+ 
   // Function to change active section
   setActiveSection(section: string) {
     this.activeSection = section;
-  }
-
-  // Function to load doctors when department is selected
-  onDepartmentChange() {
-    this.selectedDoctor = '';
-    this.selectedDate = '';
-    this.availableSlots = [];
-  }
-
-  // Function to check available slots
-  checkAvailability() {
-    if (this.selectedDoctor && this.selectedDate) {
-      // In a real app, this would make an API call
-      this.availableSlots = ['9:00 AM', '10:30 AM', '1:15 PM', '3:45 PM'];
-    }
-  }
-
-  // Function to book appointment
-  bookAppointment(slot: string) {
-    // In a real app, this would make an API call to book the appointment
-    alert(`Appointment booked successfully with ${this.selectedDoctor} on ${this.selectedDate} at ${slot}`);
-
-    // Reset form
-    this.selectedDepartment = '';
-    this.selectedDoctor = '';
-    this.selectedDate = '';
-    this.availableSlots = [];
   }
 
 

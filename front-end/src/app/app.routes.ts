@@ -25,6 +25,11 @@ export const routes: Routes = [
       path: 'dashboard-client',
       loadComponent: () =>
         import('./client/client-dashboard/dashboard-client.component').then((c) => c.DashboardClientComponent)
+    },
+    {
+      path: 'edit-profile',
+      loadComponent: () =>
+        import('./client/client-update/client-update.component').then((c) => c.ClientUpdateComponent)
     }
 
 ];
