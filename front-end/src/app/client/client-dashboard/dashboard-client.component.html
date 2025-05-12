@@ -68,9 +68,9 @@
           <i class="fas fa-bell"></i>
           <span class="badge" *ngIf="getUnreadCount() > 0">{{getUnreadCount()}}</span>
         </div>
-        <div class="user-profile">
+        <div (click)="setActiveSection('profile')" class="user-profile">
           <img src="./user-profile.jpg" alt="User Profile">
-          <span>{{patient.fullName}}</span>
+          <span >{{patient.fullName}}</span>
         </div>
       </div>
     </div>

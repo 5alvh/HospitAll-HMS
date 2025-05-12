@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { Router } from '@angular/router';
 import { LocalStorageManagerService } from '../auth/local-storage-manager.service';
@@ -11,12 +11,15 @@ import { LocalStorageManagerService } from '../auth/local-storage-manager.servic
 export class ClientService {
 
   private baseUrl = 'http://localhost:8080/clients';
-  constructor(private httpClient: HttpClient, private router: Router, private localStorageManager: LocalStorageManagerService) { }
+  private patientSource = new BehaviorSubject<ClientDtoGet>({} as ClientDtoGet);
+  patient$ = this.patientSource.asObservable();
 
+  constructor(private httpClient: HttpClient, private router: Router, private localStorageManager: LocalStorageManagerService) { }
 
 
   getProfile(): Observable<ClientDtoGet> {
     return this.httpClient.get<ClientDtoGet>(`${this.baseUrl}/profile`).pipe(
+      tap((response) => this.setPatient(response)),
       catchError((error) => {
         if (error.status === 403) {
           this.router.navigate(['/login']);
@@ -37,5 +40,13 @@ export class ClientService {
         return throwError(() => error);
       })
     );
+  }
+
+  setPatient(patient: ClientDtoGet) {
+    this.patientSource.next(patient);
+  }
+
+  getPatient(): ClientDtoGet {
+    return this.patientSource.getValue();
   }
 }

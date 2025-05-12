@@ -1,0 +1,90 @@
+<div *ngIf="!isLoading">
+  <div class="section-header">
+    <h2>Update Profile Information</h2>
+    <button class="btn-outline" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Go Back
+    </button>
+  </div>
+
+  <div class="profile-section">
+    <form (ngSubmit)="onUpdateProfile()" class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <img [src]="'./user-profile.jpg'" alt="User Profile">
+          <input type="file" id="profileImage" (change)="onFileSelected($event)" hidden>
+          <label for="profileImage" class="btn-outline mt-2" style="cursor: pointer;">
+            <i class="fas fa-camera"></i> Change Photo
+          </label>
+        </div>
+        <div class="profile-info">
+          <div class="form-group">
+            <input type="text" class="form-control" [(ngModel)]="patient.fullName" name="fullName" required>
+          </div>
+          <p>Patient ID: {{patient.id}}</p>
+          <div class="form-group">
+            <input type="date" class="form-control" [(ngModel)]="patient.dateOfBirth" name="dob" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-body">
+        <div class="info-group">
+          <h4>Contact Information</h4>
+          <div class="info-row">
+            <span class="info-label">Phone:</span>
+            <input type="tel" class="form-control" [(ngModel)]="patient.phoneNumber" name="phone" required>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email:</span>
+            <input type="email" class="form-control" [(ngModel)]="patient.email" name="email" required>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Address:</span>
+            <textarea class="form-control" [(ngModel)]="patient.address" name="address" required></textarea>
+          </div>
+        </div>
+
+        <div class="info-group">
+          <h4>Emergency Contact</h4>
+          <div class="info-row">
+            <span class="info-label">Name:</span>
+            <input type="text" class="form-control" [(ngModel)]="patient.emergencyContact.contactName" name="emergencyName" required>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Relation:</span>
+            <input type="text" class="form-control" [(ngModel)]="patient.emergencyContact.relationship" name="relation" required>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Phone:</span>
+            <input type="tel" class="form-control" [(ngModel)]="patient.emergencyContact.contactPhone" name="emergencyPhone" required>
+          </div>
+        </div>
+
+        <div class="info-group">
+          <h4>Insurance Information</h4>
+          <div class="info-row">
+            <span class="info-label">Membership Type:</span>
+            <select class="form-control" [(ngModel)]="patient.membershipLevel" name="membership" required>
+              <option value="basic">Basic</option>
+              <option value="premium">Premium</option>
+              <option value="vip">VIP</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-outline" (click)="goBack()">Cancel</button>
+          <button type="submit" class="btn-primary">Update Profile</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Loading spinner can be added here -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner">
+    <i class="fas fa-circle-notch fa-spin"></i>
+    <span>Loading profile information...</span>
+  </div>
+</div>

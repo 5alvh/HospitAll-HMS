@@ -1,0 +1,261 @@
+/* update-profile.component.scss */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+:host {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  padding: 40px 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  
+  h2 {
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .btn-outline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #3498db;
+    color: #3498db;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    i {
+      font-size: 12px;
+    }
+  }
+}
+
+.profile-section {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.profile-header {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3498db;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mt-2 {
+    margin-top: 12px;
+  }
+  
+  label.btn-outline {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+.profile-info {
+  flex: 1;
+  
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  input[type="text"] {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border: 1px solid #dfe4ea;
+    border-radius: 4px;
+    width: 100%;
+    color: #2c3e50;
+    
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+  }
+  
+  p {
+    color: #7f8c8d;
+    margin: 8px 0;
+    font-size: 14px;
+  }
+  
+  input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #dfe4ea;
+    border-radius: 4px;
+    width: 100%;
+    color: #2c3e50;
+    font-size: 14px;
+    
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+  }
+}
+
+.profile-body {
+  padding: 0 10px;
+}
+
+.info-group {
+  margin-bottom: 30px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 6px;
+  
+  h4 {
+    color: #3498db;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+}
+
+.info-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  align-items: center;
+  
+  .info-label {
+    flex: 0 0 120px;
+    color: #34495e;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  input, select, textarea {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #dfe4ea;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #2c3e50;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+  }
+  
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+}
+
+.form-actions {
+  margin-top: 30px;
+  
+  .btn-outline {
+    padding: 12px 25px;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid #3498db;
+    color: #3498db;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+  }
+  
+  .btn-primary {
+    padding: 12px 25px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #3498db;
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: #2980b9;
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// For responsive layout
+@media (max-width: 768px) {
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    .info-label {
+      flex: 0 0 100%;
+      margin-bottom: 5px;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+    }
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

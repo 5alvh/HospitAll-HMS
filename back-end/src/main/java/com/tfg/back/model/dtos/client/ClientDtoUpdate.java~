@@ -43,6 +43,5 @@ public class ClientDtoUpdate {
 
     private String address;
 
-    //TODO: UPDATE PASSWORD
     private BloodType bloodType;
 }
