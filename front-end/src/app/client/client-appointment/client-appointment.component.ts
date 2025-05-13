@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, NgIf, NgFor  } from '@angular/common';
 import { DatePipe } from '@angular/common';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
+import { Roles } from '../../models/roles';
+import { Router } from '@angular/router';
 interface Doctor {
   id: number;
   name: string;
@@ -48,10 +51,13 @@ export class ClientAppointmentComponent {
   
   constructor(
     private fb: FormBuilder,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private localStorageManager: LocalStorageManagerService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
+    this.checkIfClient();
     this.initForm();
     this.loadDepartments();
     this.generateAvailableDates();
@@ -77,6 +83,11 @@ export class ClientAppointmentComponent {
         this.appointmentForm.get('timeSlot')!.setValue(null);
       }
     });
+  }
+  checkIfClient() {
+    if (this.localStorageManager.getUserData() !== Roles.ROLE_PATIENT) {
+      this.router.navigate(['/login']);
+    }
   }
   
   initForm(): void {

@@ -5,6 +5,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { RouterService } from '../../services/auth/router.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
     private localStorageManager: LocalStorageManagerService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private routingService: RouterService
   ) { }
 
   ngOnInit(): void {
@@ -68,14 +70,17 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(email, password, rememberMe).subscribe({
       next: response => {
+        const role = response.role;
         this.localStorageManager.setToken(response.token);
+        this.localStorageManager.setUserData(role);
         setTimeout(() => {
           console.log('Login successful');
           this.processing = false;
           this.loginSuccess = true;
 
           setTimeout(() => {
-            this.router.navigate(['/dashboard-client']);
+
+            this.routingService.routeUserByRole(role);
           }, 2000);
         }, 1500);
       },
@@ -90,4 +95,5 @@ export class LoginComponent implements OnInit {
     });
   }
   get f() { return this.loginForm.controls; }
+
 }

@@ -5,6 +5,8 @@ import { ClientDtoGet } from '../../models/client-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
 import { Router, RouterLink } from '@angular/router';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
+import { Roles } from '../../models/roles';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -23,13 +25,19 @@ export class DashboardClientComponent implements OnInit {
   clientService = inject(ClientService);
   pastAppointments: AppointmentDtoGet[] = [];
 
-  constructor(private datePipe: DatePipe, private route: Router) { }
+  constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService) { }
 
   ngOnInit(): void {
+    this.checkIfClient();
     this.getProfile();
-
   }
 
+  checkIfClient() {
+      if (this.localS.getUserData() !== Roles.ROLE_PATIENT) {
+        this.localS.clearAuth();
+        this.router.navigate(['/login']);
+      }
+    }
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     const formattedDate = new Intl.DateTimeFormat('en-GB', {
@@ -79,6 +87,11 @@ export class DashboardClientComponent implements OnInit {
         console.log('Past Appointments:', this.pastAppointments);
         this.isLoading = false;
 
+      },
+      error: (error) => {
+        this.localS.clearAuth();
+        this.router.navigate(['/login']);
+        console.error('Error fetching profile:', error);
       }
     });
   }
@@ -88,7 +101,7 @@ export class DashboardClientComponent implements OnInit {
       this.clientService.inactivateAccount().subscribe({
         next: () => {
           alert('Your account has been inactivated successfully.');
-          this.route.navigate(['/login']);
+          this.router.navigate(['/login']);
         },
         error: (error) => {
           console.error('Error inactivating account:', error);
@@ -100,7 +113,7 @@ export class DashboardClientComponent implements OnInit {
   }
 
   toBookAppointment() {
-    this.route.navigate(['/book-appointment']);
+    this.router.navigate(['/book-appointment']);
   }
 
   // Medications

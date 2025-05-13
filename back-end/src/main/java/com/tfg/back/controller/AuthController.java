@@ -40,11 +40,12 @@ public class AuthController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
-        long expiration = request.isRememberMe() ? 30 * 24 * 60 * 60 * 1000L : 60 * 60 * 1000L; // 30 days vs 1 hour
+        long expiration = request.isRememberMe() ? 30 * 24 * 60 * 60 * 1000L : 60 * 60 * 1000L;
 
 
         String jwt = jwtUtil.generateToken(userDetails, expiration);
+        String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthResponse(jwt, role));
     }
 }

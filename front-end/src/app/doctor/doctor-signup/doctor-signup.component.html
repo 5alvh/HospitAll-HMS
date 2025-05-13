@@ -1,239 +1,200 @@
 <div class="signup-container">
-    <div class="signup-header">
-      <h1>Join Our Medical Team</h1>
-      <p class="subtitle">Create your doctor account and start managing your patients</p>
-    </div>
-  
-    <div class="signup-content">
-      <!-- Success Message -->
-      <div *ngIf="signupSuccess" class="success-message">
-        <div class="success-icon">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <h3>Account Created Successfully!</h3>
-        <p>Thank you for registering. You will be redirected to the login page shortly.</p>
-      </div>
-  
-      <!-- Signup Form -->
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" *ngIf="!signupSuccess">
-        <div class="form-section">
-          <h3>Personal Information</h3>
-          <div class="form-row">
-            <div class="form-group full-width">
-              <label for="fullName">Full Name *</label>
-              <input 
-                type="text" 
-                id="fullName" 
-                formControlName="fullName"
-                [ngClass]="{'is-invalid': submitted && f['fullName'].errors}"
-              >
-              <div *ngIf="submitted && f['fullName'].errors" class="invalid-feedback">
-                <div *ngIf="f['fullName'].errors['required']">Full name is required</div>
-                <div *ngIf="f['fullName'].errors['maxlength']">Name must be less than 100 characters</div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="email">Email Address *</label>
-              <input 
-                type="email" 
-                id="email" 
-                formControlName="email"
-                [ngClass]="{'is-invalid': submitted && f['email'].errors}"
-              >
-              <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-                <div *ngIf="f['email'].errors['required']">Email is required</div>
-                <div *ngIf="f['email'].errors['email']">Invalid email format</div>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="phoneNumber">Phone Number *</label>
-              <input 
-                type="tel" 
-                id="phoneNumber" 
-                formControlName="phoneNumber"
-                placeholder="e.g. +1 (555) 123-4567"
-                [ngClass]="{'is-invalid': submitted && f['phoneNumber'].errors}"
-              >
-              <div *ngIf="submitted && f['phoneNumber'].errors" class="invalid-feedback">
-                <div *ngIf="f['phoneNumber'].errors['required']">Phone number is required</div>
-                <div *ngIf="f['phoneNumber'].errors['pattern']">Invalid phone number format</div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="dateOfBirth">Date of Birth</label>
-              <input 
-                type="date" 
-                id="dateOfBirth" 
-                formControlName="dateOfBirth"
-                [max]="maxDate | date:'yyyy-MM-dd'"
-              >
-            </div>
-            
-            <div class="form-group">
-              <label for="medicalLicenseNumber">Medical License Number *</label>
-              <input 
-                type="text" 
-                id="medicalLicenseNumber" 
-                formControlName="medicalLicenseNumber"
-                [ngClass]="{'is-invalid': submitted && f['medicalLicenseNumber'].errors}"
-              >
-              <div *ngIf="submitted && f['medicalLicenseNumber'].errors" class="invalid-feedback">
-                <div *ngIf="f['medicalLicenseNumber'].errors['required']">Medical license number is required</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-section">
-          <h3>Professional Information</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="departmentId">Department *</label>
-              <select 
-                id="departmentId" 
-                formControlName="departmentId"
-                [ngClass]="{'is-invalid': submitted && f['departmentId'].errors}"
-              >
-                <option [ngValue]="null" disabled>Select a department</option>
-                <option *ngFor="let department of departments" [value]="department.id">
-                  {{department.name}}
-                </option>
-              </select>
-              <div *ngIf="submitted && f['departmentId'].errors" class="invalid-feedback">
-                <div *ngIf="f['departmentId'].errors['required']">Department is required</div>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="specialization">Specialization</label>
-              <select id="specialization" formControlName="specialization">
-                <option [ngValue]="null">None</option>
-                <option *ngFor="let spec of specializations" [value]="spec">
-                  {{spec.replace('_', ' ') | titlecase}}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-section">
-          <h3>Working Hours</h3>
-          <p class="section-description">Set your regular working hours for each day of the week</p>
-          
-          <div formArrayName="workingHours">
-            <div *ngFor="let workingDay of workingHoursArray.controls; let i = index" class="working-hours-day">
-              <div [formGroupName]="i" class="form-row working-hours-row">
-                <div class="day-label">
-                  <span>{{getDayName(i)}}</span>
-                </div>
-                
-                <div class="form-group available-toggle">
-                  <label class="toggle-switch">
-                    <input type="checkbox" formControlName="available">
-                    <span class="toggle-slider"></span>
-                    <span class="toggle-label">{{workingDay.get('available')?.value ? 'Available' : 'Not Available'}}</span>
-                  </label>
-                </div>
-                
-                <ng-container *ngIf="workingDay.get('available')?.value">
-                  <div class="form-group time-input">
-                    <label for="startTime-{{i}}">Start Time</label>
-                    <input 
-                      type="time" 
-                      id="startTime-{{i}}" 
-                      formControlName="startTime"
-                      [ngClass]="{'is-invalid': submitted && workingDay.get('startTime')?.errors}"
-                    >
-                    <div *ngIf="submitted && workingDay.get('startTime')?.errors" class="invalid-feedback">
-                      <div *ngIf="workingDay.get('startTime')?.errors?.['required']">Start time is required</div>
-                    </div>
-                  </div>
-                  
-                  <div class="form-group time-input">
-                    <label for="endTime-{{i}}">End Time</label>
-                    <input 
-                      type="time" 
-                      id="endTime-{{i}}" 
-                      formControlName="endTime"
-                      [ngClass]="{'is-invalid': submitted && (workingDay.get('endTime')?.errors || workingDay.errors?.['endTimeAfterStart'])}"
-                    >
-                    <div *ngIf="submitted && (workingDay.get('endTime')?.errors || workingDay.errors?.['endTimeAfterStart'])" class="invalid-feedback">
-                      <div *ngIf="workingDay.get('endTime')?.errors?.['required']">End time is required</div>
-                      <div *ngIf="workingDay.errors?.['endTimeAfterStart']">End time must be after start time</div>
-                    </div>
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-section">
-          <h3>Security Information</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="password">Password *</label>
-              <div class="password-field">
-                <input 
-                  [type]="passwordVisible ? 'text' : 'password'" 
-                  id="password" 
-                  formControlName="password"
-                  [ngClass]="{'is-invalid': submitted && f['password'].errors}"
-                >
-                <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                  <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
-                </button>
-              </div>
-              <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-                <div *ngIf="f['password'].errors['required']">Password is required</div>
-                <div *ngIf="f['password'].errors['minlength']">Password must be at least 8 characters</div>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="passwordConfirmation">Confirm Password *</label>
-              <div class="password-field">
-                <input 
-                  [type]="confirmPasswordVisible ? 'text' : 'password'" 
-                  id="passwordConfirmation" 
-                  formControlName="passwordConfirmation"
-                  [ngClass]="{'is-invalid': submitted && (f['passwordConfirmation'].errors || signupForm.hasError('passwordMismatch'))}"
-                >
-                <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
-                  <i class="fas" [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
-                </button>
-              </div>
-              <div *ngIf="submitted && (f['passwordConfirmation'].errors || signupForm.hasError('passwordMismatch'))" class="invalid-feedback">
-                <div *ngIf="f['passwordConfirmation'].errors?.['required']">Password confirmation is required</div>
-                <div *ngIf="signupForm.hasError('passwordMismatch')">Passwords do not match</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="terms-section">
-          <p>By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
-        </div>
-        
-        <div class="form-footer">
-          <div class="login-link">
-            <span>Already have an account?</span>
-            <a [routerLink]="['/login']">Login</a>
-          </div>
-          <button type="submit" class="btn-submit" [disabled]="processing">
-            <span *ngIf="!processing">Create Account</span>
-            <span *ngIf="processing" class="loading-spinner">
-              <i class="fas fa-circle-notch fa-spin"></i> Processing...
-            </span>
-          </button>
-        </div>
-      </form>
-    </div>
+  <div class="signup-header">
+    <h1>Join Our Medical Team</h1>
+    <p class="subtitle">Create your doctor account and start managing your patients</p>
   </div>
+
+  <div class="signup-content">
+    <!-- Success Message -->
+    <div *ngIf="signupSuccess" class="success-message">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3>Account Created Successfully!</h3>
+      <p>Thank you for registering. You will be redirected to the login page shortly.</p>
+    </div>
+
+    <!-- Signup Form -->
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" *ngIf="!signupSuccess">
+      <div class="form-section">
+        <h3>Personal Information</h3>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" formControlName="fullName"
+              [ngClass]="{'is-invalid': submitted && f['fullName'].errors}">
+            <div *ngIf="submitted && f['fullName'].errors" class="invalid-feedback">
+              <div *ngIf="f['fullName'].errors['required']">Full name is required</div>
+              <div *ngIf="f['fullName'].errors['maxlength']">Name must be less than 100 characters</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" formControlName="email"
+              [ngClass]="{'is-invalid': submitted && f['email'].errors}">
+            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+              <div *ngIf="f['email'].errors['required']">Email is required</div>
+              <div *ngIf="f['email'].errors['email']">Invalid email format</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number *</label>
+            <input type="tel" id="phoneNumber" formControlName="phoneNumber" placeholder="e.g. +1 (555) 123-4567"
+              [ngClass]="{'is-invalid': submitted && f['phoneNumber'].errors}">
+            <div *ngIf="submitted && f['phoneNumber'].errors" class="invalid-feedback">
+              <div *ngIf="f['phoneNumber'].errors['required']">Phone number is required</div>
+              <div *ngIf="f['phoneNumber'].errors['pattern']">Invalid phone number format</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateOfBirth">Date of Birth</label>
+            <input type="date" id="dateOfBirth" formControlName="dateOfBirth" [max]="maxDate | date:'yyyy-MM-dd'">
+          </div>
+
+          <div class="form-group">
+            <label for="medicalLicenseNumber">Medical License Number *</label>
+            <input type="text" id="medicalLicenseNumber" formControlName="medicalLicenseNumber"
+              [ngClass]="{'is-invalid': submitted && f['medicalLicenseNumber'].errors}">
+            <div *ngIf="submitted && f['medicalLicenseNumber'].errors" class="invalid-feedback">
+              <div *ngIf="f['medicalLicenseNumber'].errors['required']">Medical license number is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Professional Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="departmentId">Department *</label>
+            <select id="departmentId" formControlName="departmentId"
+              [ngClass]="{'is-invalid': submitted && f['departmentId'].errors}">
+              <option [ngValue]="null" disabled>Select a department</option>
+              <option *ngFor="let department of departments" [value]="department.id">
+                {{department.name}}
+              </option>
+            </select>
+            <div *ngIf="submitted && f['departmentId'].errors" class="invalid-feedback">
+              <div *ngIf="f['departmentId'].errors['required']">Department is required</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="specialization">Specialization</label>
+            <select id="specialization" formControlName="specialization">
+              <option [ngValue]="null">None</option>
+              <option *ngFor="let spec of specializations" [value]="spec">
+                {{spec.replace('_', ' ') | titlecase}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Working Hours</h3>
+        <p class="section-description">Set your regular working hours for each day of the week</p>
+
+        <div formArrayName="workingHours">
+          <div *ngFor="let workingDay of workingHoursArray.controls; let i = index" class="working-hours-day">
+            <div [formGroupName]="i" class="form-row working-hours-row">
+              <div class="day-label">
+                <span>{{getDayName(i)}}</span>
+              </div>
+
+              <div class="form-group available-toggle">
+                <label class="toggle-switch">
+                  <input type="checkbox" formControlName="available">
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-label">{{workingDay.get('available')?.value ? 'Available' : 'Not
+                    Available'}}</span>
+                </label>
+              </div>
+
+              <ng-container *ngIf="workingDay.get('available')?.value">
+                <div formArrayName="timeIntervals" class="time-intervals">
+                  <div *ngFor="let interval of getTimeIntervalsArray(i).controls; let j = index" [formGroupName]="j"
+                    class="form-row time-interval">
+                    <div class="form-group time-input">
+                      <label>Start Time</label>
+                      <input type="time" formControlName="startTime" required>
+                    </div>
+                    <div class="form-group time-input">
+                      <label>End Time</label>
+                      <input type="time" formControlName="endTime" required>
+                    </div>
+                    <button type="button" class="btn-remove" (click)="removeTimeInterval(i, j)">Remove</button>
+                  </div>
+
+                  <button type="button" class="btn-add" (click)="addTimeInterval(i)">Add Time Interval</button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Security Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <div class="password-field">
+              <input [type]="passwordVisible ? 'text' : 'password'" id="password" formControlName="password"
+                [ngClass]="{'is-invalid': submitted && f['password'].errors}">
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
+            <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+              <div *ngIf="f['password'].errors['required']">Password is required</div>
+              <div *ngIf="f['password'].errors['minlength']">Password must be at least 8 characters</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="passwordConfirmation">Confirm Password *</label>
+            <div class="password-field">
+              <input [type]="confirmPasswordVisible ? 'text' : 'password'" id="passwordConfirmation"
+                formControlName="passwordConfirmation"
+                [ngClass]="{'is-invalid': submitted && (f['passwordConfirmation'].errors || signupForm.hasError('passwordMismatch'))}">
+              <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
+                <i class="fas" [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
+            <div *ngIf="submitted && (f['passwordConfirmation'].errors || signupForm.hasError('passwordMismatch'))"
+              class="invalid-feedback">
+              <div *ngIf="f['passwordConfirmation'].errors?.['required']">Password confirmation is required</div>
+              <div *ngIf="signupForm.hasError('passwordMismatch')">Passwords do not match</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="terms-section">
+        <p>By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </p>
+      </div>
+
+      <div class="form-footer">
+        <div class="login-link">
+          <span>Already have an account?</span>
+          <a [routerLink]="['/login']">Login</a>
+        </div>
+        <button type="submit" class="btn-submit" [disabled]="processing">
+          <span *ngIf="!processing">Create Account</span>
+          <span *ngIf="processing" class="loading-spinner">
+            <i class="fas fa-circle-notch fa-spin"></i> Processing...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

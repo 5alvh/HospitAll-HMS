@@ -1,0 +1,583 @@
+<!-- doctor-dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Dashboard Header -->
+  <header class="dashboard-header">
+    <div class="dashboard-title">
+      <i class="fas fa-hospital"></i>
+      <h1>MedCore Hospital</h1>
+      <span class="badge">Cardiology Dept.</span>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Notification Bell -->
+      <div class="notification-bell" (click)="markAllNotificationsAsRead()">
+        <i class="fas fa-bell"></i>
+        <span class="badge" *ngIf="unreadNotificationsLength > 0">
+          {{unreadNotificationsLength}}
+        </span>
+        
+        <!-- Notification Dropdown -->
+        <div class="notification-dropdown" *ngIf="showNotifications">
+          <div class="dropdown-header">
+            <h3>Notifications</h3>
+            <span class="mark-read" (click)="markAllNotificationsAsRead()">Mark all as read</span>
+          </div>
+          <div class="notification-list">
+            <div class="notification-item" *ngFor="let notification of notifications" [ngClass]="{'unread': !notification.read}">
+              <div class="notification-icon" [ngClass]="notification.type">
+                <i class="fas" [ngClass]="{
+                  'fa-flask': notification.type === 'lab',
+                  'fa-calendar-check': notification.type === 'appointment',
+                  'fa-comment-medical': notification.type === 'message'
+                }"></i>
+              </div>
+              <div class="notification-content">
+                <div class="notification-message">{{ notification.message }}</div>
+                <div class="notification-time">{{ notification.time }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Doctor Avatar -->
+      <div class="avatar">
+        {{ doctor.name.split(' ')[0][0] + doctor.name.split(' ')[1][0] }}
+      </div>
+    </div>
+  </header>
+  
+  <!-- Dashboard Body -->
+  <div class="dashboard-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Doctor Profile -->
+      <div class="doctor-profile">
+        <div class="doctor-info">
+          <h2>{{ doctor.name }}</h2>
+          <div class="doctor-meta">
+            ID: {{ doctor.id }} | {{ doctor.specialization }}
+          </div>
+        </div>
+        <div class="availability">
+          <div class="hours">
+            <i class="fas fa-clock"></i> {{ doctor.workingHours }}
+          </div>
+          <div class="toggle-container">
+            <span>Teleconsultation</span>
+            <label class="toggle">
+              <input type="checkbox" [(ngModel)]="doctor.teleconsultation" (change)="toggleOnlineStatus()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Menu Items -->
+      <nav class="sidebar-menu">
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'appointments'}" (click)="changeTab('appointments')">
+          <i class="icon fas fa-calendar-alt"></i> Appointments
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'patients'}" (click)="changeTab('patients')">
+          <i class="icon fas fa-user-injured"></i> Patients
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'prescriptions'}" (click)="changeTab('prescriptions')">
+          <i class="icon fas fa-prescription"></i> Prescriptions
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'notes'}" (click)="changeTab('notes')">
+          <i class="icon fas fa-notes-medical"></i> Clinical Notes
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'messages'}" (click)="changeTab('messages')">
+          <i class="icon fas fa-comment-medical"></i> Messages
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'analytics'}" (click)="changeTab('analytics')">
+          <i class="icon fas fa-chart-line"></i> Analytics
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'billing'}" (click)="changeTab('billing')">
+          <i class="icon fas fa-file-invoice-dollar"></i> Billing
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'support'}" (click)="changeTab('support')">
+          <i class="icon fas fa-headset"></i> Support
+        </div>
+        <div class="menu-item" [ngClass]="{'active': activeTab === 'feedback'}" (click)="changeTab('feedback')">
+          <i class="icon fas fa-star"></i> Feedback
+        </div>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Appointments Tab -->
+      <div *ngIf="activeTab === 'appointments'">
+        <div class="dashboard-cards">
+          <!-- Today's Appointments -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Today's Appointments</h3>
+              <span class="view-all">View Calendar</span>
+            </div>
+            <div class="card-body">
+              <div class="appointment-list">
+                <div class="appointment-item" *ngFor="let appointment of appointmentsToday">
+                  <div class="appointment-time">{{ appointment.time }}</div>
+                  <div class="appointment-patient">
+                    <div class="patient-name">
+                      {{ appointment.patient }}
+                      <span class="new-badge" *ngIf="appointment.isNew">NEW</span>
+                    </div>
+                    <div class="patient-reason">{{ appointment.reason }}</div>
+                  </div>
+                  <div class="appointment-status" [ngClass]="appointment.status">
+                    {{ appointment.status | titlecase }}
+                  </div>
+                  <div class="appointment-actions">
+                    <button (click)="viewPatientDetails(appointment)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Upcoming Schedule -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Upcoming Schedule</h3>
+              <span class="view-all">View All</span>
+            </div>
+            <div class="card-body">
+              <div class="upcoming-schedule">
+                <div class="schedule-item" *ngFor="let schedule of upcomingAppointments">
+                  <div class="schedule-date">{{ schedule.date }}</div>
+                  <div class="schedule-info">
+                    {{ schedule.count }} appointments<br>
+                    {{ schedule.firstAppointment }} - {{ schedule.lastAppointment }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Patients Tab -->
+      <div *ngIf="activeTab === 'patients'">
+        <div class="search-box">
+          <input type="text" placeholder="Search patients by name or ID..." [(ngModel)]="searchTerm" (input)="searchPatients()">
+          <i class="fas fa-search"></i>
+          
+          <!-- Search Results -->
+          <div class="search-results" *ngIf="patientSearchResults.length > 0">
+            <div class="result-item" *ngFor="let patient of patientSearchResults" (click)="viewPatientDetails({patient: patient.name, patientId: patient.id})">
+              <div class="result-name">{{ patient.name }}</div>
+              <div class="result-meta">ID: {{ patient.id }} | Last Visit: {{ patient.lastVisit }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Recent Patients</h3>
+              <span class="view-all">View All</span>
+            </div>
+            <div class="card-body">
+              <div class="appointment-list">
+                <div class="appointment-item" *ngFor="let appointment of appointmentsToday">
+                  <div class="appointment-patient">
+                    <div class="patient-name">{{ appointment.patient }}</div>
+                    <div class="patient-reason">ID: {{ appointment.patientId }}</div>
+                  </div>
+                  <div class="appointment-actions">
+                    <button (click)="viewPatientDetails(appointment)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Prescriptions Tab -->
+      <div *ngIf="activeTab === 'prescriptions'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>E-Prescriptions</h3>
+              <button class="btn-primary" (click)="createNewPrescription()">
+                <i class="fas fa-plus"></i> New Prescription
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="tab-navigation">
+                <div class="tab-item active">Recent</div>
+                <div class="tab-item">Templates</div>
+                <div class="tab-item">Favorites</div>
+              </div>
+              
+              <div class="form-group">
+                <label>Search Medications</label>
+                <input type="text" placeholder="Type medication name...">
+              </div>
+              
+              <div class="form-group">
+                <label>Common Actions</label>
+                <div class="action-buttons">
+                  <button (click)="orderLabTest()">
+                    <i class="fas fa-flask"></i> Order Lab Test
+                  </button>
+                  <button (click)="orderImaging()">
+                    <i class="fas fa-x-ray"></i> Order Imaging
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Clinical Notes Tab -->
+      <div *ngIf="activeTab === 'notes'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Clinical Notes</h3>
+              <button class="btn-primary">
+                <i class="fas fa-plus"></i> New Note
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="tab-navigation">
+                <div class="tab-item active">Recent Notes</div>
+                <div class="tab-item">Templates</div>
+                <div class="tab-item">Shared Notes</div>
+              </div>
+              
+              <div class="form-group">
+                <label>Quick Note</label>
+                <textarea placeholder="Type your clinical observations..."></textarea>
+              </div>
+              
+              <div>
+                <button class="btn-primary">
+                  <i class="fas fa-microphone"></i> Dictate Note
+                </button>
+                <button class="btn-secondary">
+                  <i class="fas fa-save"></i> Save as Template
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Messages Tab -->
+      <div *ngIf="activeTab === 'messages'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Messages</h3>
+              <button class="btn-primary">
+                <i class="fas fa-plus"></i> New Message
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="tab-navigation">
+                <div class="tab-item active">Internal</div>
+                <div class="tab-item">Patient Messages</div>
+                <div class="tab-item">Broadcasts</div>
+              </div>
+              
+              <div class="form-group">
+                <label>Quick Message</label>
+                <textarea placeholder="Type your message..."></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label>Send To</label>
+                <select>
+                  <option>Nurse Station</option>
+                  <option>Pharmacy</option>
+                  <option>Radiology</option>
+                  <option>Laboratory</option>
+                </select>
+              </div>
+              
+              <button class="btn-primary">
+                <i class="fas fa-paper-plane"></i> Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Analytics Tab -->
+      <div *ngIf="activeTab === 'analytics'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Monthly Appointments</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Chart representation (placeholder) -->
+                <div class="chart-placeholder" style="height: 200px; background-color: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                  <span>Monthly Appointment Chart</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Patient Outcomes</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Chart representation (placeholder) -->
+                <div class="chart-placeholder" style="height: 200px; background-color: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                  <span>Patient Outcomes Chart</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Billing Tab -->
+      <div *ngIf="activeTab === 'billing'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Billing Overview</h3>
+            </div>
+            <div class="card-body">
+              <div class="tab-navigation">
+                <div class="tab-item active">Recent Claims</div>
+                <div class="tab-item">Pending Approvals</div>
+                <div class="tab-item">Insurance Verification</div>
+              </div>
+              
+              <p>View and manage patient billing information. Add notes for insurance claims.</p>
+              
+              <div class="form-group">
+                <label>Quick Billing Note</label>
+                <textarea placeholder="Add billing notes or instructions..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Support Tab -->
+      <div *ngIf="activeTab === 'support'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Support & Resources</h3>
+            </div>
+            <div class="card-body">
+              <div class="support-links">
+                <div class="support-link-item">
+                  <i class="fas fa-book-medical"></i>
+                  <h4>Hospital Protocols</h4>
+                  <p>Access hospital policies and clinical protocols</p>
+                </div>
+                <div class="support-link-item">
+                  <i class="fas fa-users"></i>
+                  <h4>Department Directory</h4>
+                  <p>Contact information for all hospital departments</p>
+                </div>
+                <div class="support-link-item">
+                  <i class="fas fa-question-circle"></i>
+                  <h4>Technical Support</h4>
+                  <p>Get help with system issues or questions</p>
+                </div>
+                <div class="support-link-item">
+                  <i class="fas fa-calendar-day"></i>
+                  <h4>Schedule Management</h4>
+                  <p>Request time off or shift changes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Feedback Tab -->
+      <div *ngIf="activeTab === 'feedback'">
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Patient Feedback</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Chart representation (placeholder) -->
+                <div class="chart-placeholder" style="height: 100px; background-color: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                  <span>Patient Satisfaction Score: 4.8/5</span>
+                </div>
+              </div>
+              
+              <div class="feedback-list">
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <div class="feedback-patient">James Wilson</div>
+                    <div class="feedback-date">May 10, 2025</div>
+                  </div>
+                  <div class="feedback-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <div class="feedback-text">
+                    "Dr. Johnson was very thorough and explained everything clearly. I felt well-cared for during my visit."
+                  </div>
+                </div>
+                
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <div class="feedback-patient">Maria Garcia</div>
+                    <div class="feedback-date">May 8, 2025</div>
+                  </div>
+                  <div class="feedback-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <div class="feedback-text">
+                    "Great experience. Would appreciate a bit more time to ask questions next time."
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Patient Details Modal -->
+  <div class="modal-backdrop" *ngIf="selectedPatient">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Patient Details</h2>
+        <button class="close-button" (click)="closePatientDetails()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="patient-detail-header">
+          <div class="patient-basic-info">
+            <h3>{{ selectedPatient.name }}</h3>
+            <div class="patient-meta">
+              <div>
+                <i class="fas fa-id-card"></i> {{ selectedPatient.id }}
+              </div>
+              <div>
+                <i class="fas fa-birthday-cake"></i> {{ selectedPatient.age }} years
+              </div>
+              <div>
+                <i class="fas fa-venus-mars"></i> {{ selectedPatient.gender }}
+              </div>
+              <div>
+                <i class="fas fa-tint"></i> {{ selectedPatient.bloodType }}
+              </div>
+            </div>
+            <div class="patient-allergies">
+              <strong>Allergies:</strong>
+              <span class="allergy-tag" *ngFor="let allergy of selectedPatient.allergies">{{ allergy }}</span>
+            </div>
+          </div>
+          <div class="patient-actions">
+            <button>
+              <i class="fas fa-calendar-plus"></i> Schedule
+            </button>
+            <button>
+              <i class="fas fa-notes-medical"></i> Add Note
+            </button>
+            <button class="secondary">
+              <i class="fas fa-prescription"></i> Prescribe
+            </button>
+          </div>
+        </div>
+        
+        <div class="patient-detail-tabs">
+          <div class="tab active">Medical History</div>
+          <div class="tab">Medications</div>
+          <div class="tab">Lab Results</div>
+          <div class="tab">Past Visits</div>
+        </div>
+        
+        <!-- Medical History Section -->
+        <div>
+          <h4>Diagnoses</h4>
+          <div class="diagnosis-list">
+            <div class="diagnosis-item" *ngFor="let diagnosis of selectedPatient.diagnoses">
+              <div class="item-header">
+                <span class="item-title">{{ diagnosis.condition }}</span>
+                <span class="item-date">{{ diagnosis.date }}</span>
+              </div>
+              <div class="item-details">{{ diagnosis.notes }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Medications Section -->
+        <div>
+          <h4>Current Medications</h4>
+          <div class="medication-list">
+            <div class="medication-item" *ngFor="let medication of selectedPatient.medications">
+              <div class="item-header">
+                <span class="item-title">{{ medication.name }} {{ medication.dosage }}</span>
+                <span class="item-date">Since {{ medication.startDate }}</span>
+              </div>
+              <div class="item-details">{{ medication.frequency }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lab Results Section -->
+        <div>
+          <h4>Recent Lab Results</h4>
+          <div class="lab-result-list">
+            <div class="lab-result-item" *ngFor="let lab of selectedPatient.labResults">
+              <div class="item-header">
+                <span class="item-title">{{ lab.test }}</span>
+                <span class="item-date">{{ lab.date }}</span>
+              </div>
+              <div class="item-details">
+                <strong>Result:</strong> {{ lab.result }}
+                <div *ngIf="lab.notes">
+                  <strong>Notes:</strong> {{ lab.notes }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Past Visits Section -->
+        <div>
+          <h4>Visit History</h4>
+          <div class="visit-list">
+            <div class="visit-item" *ngFor="let visit of selectedPatient.visits">
+              <div class="item-header">
+                <span class="item-title">{{ visit.reason }}</span>
+                <span class="item-date">{{ visit.date }}</span>
+              </div>
+              <div class="item-details">
+                <div><strong>Diagnosis:</strong> {{ visit.diagnosis }}</div>
+                <div><strong>Treatment:</strong> {{ visit.treatment }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

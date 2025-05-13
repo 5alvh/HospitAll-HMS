@@ -1,4 +1,0 @@
-package com.tfg.back.model.dtos.auth;
-
-public class AuthResponse {
-}

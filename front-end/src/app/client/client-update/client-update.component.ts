@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
 import { Router } from '@angular/router';
+import { Roles } from '../../models/roles';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 
 @Component({
   selector: 'app-client-update',
@@ -12,15 +14,23 @@ import { Router } from '@angular/router';
   styleUrl: './client-update.component.scss'
 })
 export class ClientUpdateComponent {
-  
+
   patient!: ClientDtoGet;
   isLoading: boolean = true;
 
-  constructor(private clientService: ClientService, private router: Router) { }
+  constructor(private clientService: ClientService, private router: Router, private localS: LocalStorageManagerService) { }
 
   ngOnInit(): void {
+    this.checkIfClient();
     this.getProfile();
   }
+  
+  checkIfClient() {
+    if (this.localS.getUserData() !== Roles.ROLE_PATIENT) {
+      this.router.navigate(['/login']);
+    }
+  }
+
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
@@ -45,4 +55,5 @@ export class ClientUpdateComponent {
   onFileSelected($event: Event) {
     throw new Error('Method not implemented.');
   }
+
 }

@@ -27,6 +27,11 @@ export const routes: Routes = [
         import('./client/client-dashboard/dashboard-client.component').then((c) => c.DashboardClientComponent)
     },
     {
+      path: 'dashboard-doctor',
+      loadComponent: () =>
+        import('./doctor/doctor-dashboard/doctor-dashboard.component').then((c) => c.DoctorDashboardComponent)
+    },
+    {
       path: 'edit-profile',
       loadComponent: () =>
         import('./client/client-update/client-update.component').then((c) => c.ClientUpdateComponent)
