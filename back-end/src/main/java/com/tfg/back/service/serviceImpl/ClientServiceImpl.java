@@ -14,10 +14,12 @@ import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.repository.ClientRepository;
+import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,12 +29,14 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final AppointmentMapper appointmentMapper;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository) {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
         this.appointmentMapper = appointmentMapper;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -48,6 +52,7 @@ public class ClientServiceImpl implements ClientService {
         }
         Client newClient = clientMapper.toEntity(client);
         Client clientSaved = clientRepository.save(newClient);
+        createNotifications(clientSaved);
         return clientMapper.toGetDto(clientSaved);
     }
 
@@ -71,10 +76,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client updateClient(Long id, ClientDtoUpdate dto) {
+    public ClientDtoGet updateClient(Long id, ClientDtoUpdate dto) {
         Client clientToUpdate = findClientById(id);
         Client client = clientMapper.updateEntity(clientToUpdate, dto);
-        return clientRepository.save(client);
+        Client updatedClient = clientRepository.save(client);
+        Client savedUpdatedClient = clientRepository.save(updatedClient);
+        createNotifications(savedUpdatedClient);
+        return clientMapper.toGetDto(savedUpdatedClient);
     }
 
     @Override
@@ -117,5 +125,15 @@ public class ClientServiceImpl implements ClientService {
         }
         return clientRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id, SearchType.ID));
+    }
+    public void createNotifications(Client client) {
+        Notification notification = new Notification();
+        notification.setTitle("Welcome!");
+        notification.setMessage("Welcome to our platform!");
+        notification.setType("WELCOME");
+        notification.setSeen(false);
+        notification.setDate(LocalDateTime.now());
+        notification.setUser(client);
+        notificationRepository.save(notification);
     }
 }

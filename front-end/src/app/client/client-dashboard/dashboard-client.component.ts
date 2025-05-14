@@ -13,11 +13,26 @@ import { LocalStorageManagerService } from '../../services/auth/local-storage-ma
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
   providers: [DatePipe],
-    encapsulation: ViewEncapsulation.None // This allows styles to affect all components
+  encapsulation: ViewEncapsulation.None // This allows styles to affect all components
 
 })
 export class DashboardClientComponent implements OnInit {
+
   showOptions = false;
+  title = 'MediCare Hospital Dashboard';
+  activeSection = 'dashboard';
+  patient!: ClientDtoGet;
+  isLoading: boolean = true;
+  upcomingAppointments: AppointmentDtoGet[] = [];
+  clientService = inject(ClientService);
+  pastAppointments: AppointmentDtoGet[] = [];
+
+  constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService) { }
+
+  ngOnInit(): void {
+    this.getProfile();
+  }
+
 
   onShowOptions() {
     this.showOptions = !this.showOptions;
@@ -33,38 +48,6 @@ export class DashboardClientComponent implements OnInit {
     this.router.navigate(['/']);
     console.log('Logging out...');
   }
-
-  title = 'MediCare Hospital Dashboard';
-  activeSection = 'dashboard';
-  patient!: ClientDtoGet;
-  isLoading: boolean = true;
-  upcomingAppointments: AppointmentDtoGet[] = [];
-  clientService = inject(ClientService);
-  pastAppointments: AppointmentDtoGet[] = [];
-
-  constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService) { }
-
-  ngOnInit(): void {
-    this.getProfile();
-  }
-
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const formattedDate = new Intl.DateTimeFormat('en-GB', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    }).format(date);
-
-    const formattedTime = date.toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-
-    return `${formattedDate} ${formattedTime}`;
-  }
-
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
@@ -95,6 +78,7 @@ export class DashboardClientComponent implements OnInit {
         }
         console.log('Upcoming Appointments:', this.upcomingAppointments);
         console.log('Past Appointments:', this.pastAppointments);
+        console.log('Patient:', this.patient.notifications);
         this.isLoading = false;
 
       },
@@ -125,7 +109,50 @@ export class DashboardClientComponent implements OnInit {
   toBookAppointment() {
     this.router.navigate(['/book-appointment']);
   }
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const formattedDate = new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
 
+    const formattedTime = date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    return `${formattedDate} ${formattedTime}`;
+  }
+  
+  // Notifications
+  notifications = [
+    {
+      type: 'Appointment',
+      message: 'Reminder: Cardiology appointment tomorrow at 10:30 AM',
+      date: '14 May 2025',
+      read: false
+    },
+    {
+      type: 'Lab Result',
+      message: 'New lab results available for Lipid Profile',
+      date: '4 April 2025',
+      read: true
+    },
+    {
+      type: 'Medication',
+      message: 'Refill reminder: Lisinopril - 7 days remaining',
+      date: '10 May 2025',
+      read: false
+    },
+    {
+      type: 'Announcement',
+      message: 'Free diabetes screening camp on May 25th',
+      date: '8 May 2025',
+      read: false
+    }
+  ];
   // Medications
   medications = [
     {
@@ -202,33 +229,7 @@ export class DashboardClientComponent implements OnInit {
     }
   ];
 
-  // Notifications
-  notifications = [
-    {
-      type: 'Appointment',
-      message: 'Reminder: Cardiology appointment tomorrow at 10:30 AM',
-      date: '14 May 2025',
-      read: false
-    },
-    {
-      type: 'Lab Result',
-      message: 'New lab results available for Lipid Profile',
-      date: '4 April 2025',
-      read: true
-    },
-    {
-      type: 'Medication',
-      message: 'Refill reminder: Lisinopril - 7 days remaining',
-      date: '10 May 2025',
-      read: false
-    },
-    {
-      type: 'Announcement',
-      message: 'Free diabetes screening camp on May 25th',
-      date: '8 May 2025',
-      read: false
-    }
-  ];
+  
 
   // Departments for booking
   departments = [

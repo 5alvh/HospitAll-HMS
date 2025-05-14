@@ -3,6 +3,7 @@ package com.tfg.back.exceptions;
 import com.tfg.back.exceptions.appointment.AppointmentNotFoundException;
 import com.tfg.back.exceptions.department.DepartmentAlreadyExistsException;
 import com.tfg.back.exceptions.department.DepartmentNotFoundException;
+import com.tfg.back.exceptions.notification.NotificationNotFoundException;
 import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
@@ -95,6 +96,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AppointmentNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAppointmentNotFoundException(AppointmentNotFoundException ex, WebRequest request){
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotificationNotFoundException(NotificationNotFoundException ex, WebRequest request){
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,

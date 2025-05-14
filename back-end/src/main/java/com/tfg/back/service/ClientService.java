@@ -15,7 +15,7 @@ public interface ClientService {
     ClientDtoGet getClientById(Long id);
     ClientDtoGet getClientByEmail(String email);
     List<ClientDtoGet> getAllClients();
-    Client updateClient(Long id, ClientDtoUpdate dto);
+    ClientDtoGet updateClient(Long id, ClientDtoUpdate dto);
     void deleteClient(String email);
     List<AppointmentDtoGet> getAppointmentsByClientEmail(String email);
     void inactivateClient(String email);

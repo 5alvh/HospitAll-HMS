@@ -22,13 +22,11 @@ public class ClientMapper {
 
     private final PasswordEncoder passwordEncoder;
     private final AppointmentMapper appointmentMapper;
-    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public ClientMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository) {
+    public ClientMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper) {
         this.passwordEncoder = passwordEncoder;
         this.appointmentMapper = appointmentMapper;
-        this.notificationRepository = notificationRepository;
     }
 
     public Client toEntity(ClientDtoCreate dto) {
@@ -53,7 +51,6 @@ public class ClientMapper {
         client.setEmergencyContact(dto.getEmergencyContact());
 
         client.setAppointments(new ArrayList<>());
-        createNotifications(client);
         return client;
     }
 
@@ -76,7 +73,6 @@ public class ClientMapper {
 
         client.setUpdatedAt(LocalDateTime.now());
 
-        createNotifications(client);
         return client;
     }
 
@@ -94,6 +90,7 @@ public class ClientMapper {
                 .emergencyContact(client.getEmergencyContact())
                 .createdAt(client.getCreatedAt())
                 .appointments(appointmentMapper.toDtoGetList(client.getAppointments()))
+                .notifications(client.getNotifications())
                 .build();
     }
 
@@ -101,16 +98,7 @@ public class ClientMapper {
         return clients.stream().map(this::toGetDto).toList();
     }
 
-    public void createNotifications(Client client) {
-        Notification notification = new Notification();
-        notification.setTitle("Welcome!");
-        notification.setMessage("Welcome to our platform!");
-        notification.setType("WELCOME");
-        notification.setSeen(false);
-        notification.setDate(LocalDateTime.now());
-        notification.setUser(client);
-        notificationRepository.save(notification);
-    }
+
 
 }
 

@@ -5,5 +5,4 @@ export interface NotificationDto {
   seen: boolean;
   type: string;
   date: string; 
-  userId: number;
 }

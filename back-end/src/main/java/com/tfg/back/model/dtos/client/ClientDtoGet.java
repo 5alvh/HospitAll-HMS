@@ -3,6 +3,7 @@ package com.tfg.back.model.dtos.client;
 import com.tfg.back.enums.BloodType;
 import com.tfg.back.enums.MembershipLevel;
 import com.tfg.back.model.EmergencyContact;
+import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +31,5 @@ public class ClientDtoGet {
     private List<AppointmentDtoGet> appointments;
     private String address;
     private BloodType bloodType;
+    private List<Notification> notifications;
 }

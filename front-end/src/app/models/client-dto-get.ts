@@ -16,6 +16,7 @@ export class ClientDtoGet {
   appointments!: AppointmentDtoGet[];
   address!: string;
   bloodType!: BloodType;
+  notifications!: boolean;
 
   constructor(init?: Partial<ClientDtoGet>) {
     Object.assign(this, init);
