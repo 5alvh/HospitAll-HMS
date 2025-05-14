@@ -8,6 +8,7 @@ import com.tfg.back.mappers.AppointmentMapper;
 import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
@@ -72,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client updateClient(Long id, ClientDtoUpdate dto) {
         Client clientToUpdate = findClientById(id);
-        Client client = ClientMapper.updateEntity(clientToUpdate, dto);
+        Client client = clientMapper.updateEntity(clientToUpdate, dto);
         return clientRepository.save(client);
     }
 
@@ -94,6 +95,13 @@ public class ClientServiceImpl implements ClientService {
         client.setStatus(UserStatus.INACTIVE);
         clientRepository.save(client);
     }
+
+    @Override
+    public List<Notification> getClientsNotifications(String email) {
+        Client client = findClientByEmail(email);
+        return client.getNotifications();
+    }
+
 
     private Client findClientByEmail(String email) {
         if (email == null || email.isBlank()){

@@ -6,14 +6,12 @@ import com.tfg.back.exceptions.appointment.AppointmentNotFoundException;
 import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
-import com.tfg.back.model.Appointment;
-import com.tfg.back.model.Doctor;
-import com.tfg.back.model.TimeInterval;
-import com.tfg.back.model.WorkingHours;
+import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.DoctorRepository;
+import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,12 +30,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentMapper appointmentMapper;
     private final DoctorRepository doctorRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,AppointmentMapper appointmentMapper,DoctorRepository doctorRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, DoctorRepository doctorRepository, NotificationRepository notificationRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.doctorRepository = doctorRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -45,6 +46,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Doctor doctor = getDoctor(appointment.getDoctorEmail());
         Appointment newAppointment = appointmentMapper.toEntity(appointment, email);
         Appointment savedAppointment = appointmentRepository.save(newAppointment);
+
         return appointmentMapper.toDtoGet(savedAppointment);
     }
 
@@ -72,6 +74,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointment.getClient().getEmail().equals(email) || appointment.getDoctor().getEmail().equals(email) && appointment.canBeCancelled()){
             appointment.setStatus(AppointmentStatus.CANCELLED);
             appointmentRepository.save(appointment);
+
         }else {
             throw new UnauthorizedToPerformThisAction("You are not authorized to cancel this appointment");
         }
@@ -84,6 +87,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointment.getDoctor().getEmail().equals(email) && appointment.isScheduled()){
             appointment.setStatus(AppointmentStatus.CONFIRMED);
             appointmentRepository.save(appointment);
+            createAppointmentNotification(appointment.getClient());
         }else {
             throw new UnauthorizedToPerformThisAction("You are not authorized to confirm this appointment");
         }
@@ -146,5 +150,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Doctor getDoctor(String email) {
         return doctorRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException(email, SearchType.EMAIL));
+    }
+
+    private void createAppointmentNotification(User user) {
+        Notification notification = new Notification();
+        notification.setTitle("Appointment Cancelled");
+        notification.setMessage("Appointment cancelled by: " + user.getFullName() + " at: " + new Date());
+        notification.setSeen(false);
+        notification.setType("APPOINTMENT");
+        notification.setDate(LocalDateTime.now());
+        notification.setUser(user);
+        notificationRepository.save(notification);
     }
 }

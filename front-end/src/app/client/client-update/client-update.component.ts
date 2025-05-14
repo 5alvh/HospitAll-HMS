@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
@@ -11,7 +11,9 @@ import { LocalStorageManagerService } from '../../services/auth/local-storage-ma
   selector: 'app-client-update',
   imports: [FormsModule, NgIf],
   templateUrl: './client-update.component.html',
-  styleUrl: './client-update.component.scss'
+  styleUrl: './client-update.component.scss',
+    encapsulation: ViewEncapsulation.None
+
 })
 export class ClientUpdateComponent {
 
@@ -21,14 +23,7 @@ export class ClientUpdateComponent {
   constructor(private clientService: ClientService, private router: Router, private localS: LocalStorageManagerService) { }
 
   ngOnInit(): void {
-    this.checkIfClient();
     this.getProfile();
-  }
-  
-  checkIfClient() {
-    if (this.localS.getUserData() !== Roles.ROLE_PATIENT) {
-      this.router.navigate(['/login']);
-    }
   }
 
   getProfile() {

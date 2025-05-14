@@ -68,9 +68,14 @@
           <i class="fas fa-bell"></i>
           <span class="badge" *ngIf="getUnreadCount() > 0">{{getUnreadCount()}}</span>
         </div>
-        <div (click)="setActiveSection('profile')" class="user-profile">
+        <div (click)="onShowOptions()" class="user-profile">
           <img src="./user-profile.jpg" alt="User Profile">
-          <span >{{patient.fullName}}</span>
+          <span>{{patient.fullName}}</span>
+
+          <div class="dropdown-menu" *ngIf="showOptions">
+            <button (click)="goToProfile()">Go to Profile</button>
+            <button (click)="logout()">Logout</button>
+          </div>
         </div>
       </div>
     </div>
@@ -158,7 +163,7 @@
                   <span class="notification-date">{{notification.date}}</span>
                 </div>
                 <button class="mark-read" *ngIf="!notification.read" (click)="markAsRead(i)">
-                  <i class="fas fa-check">HERE</i>
+                  <i class="fas fa-check"></i>
                 </button>
               </div>
             </div>
@@ -197,7 +202,8 @@
       <div *ngIf="activeSection === 'profile'">
         <div class="section-header">
           <h2>Profile & Personal Information</h2>
-          <button class="btn-outline" [routerLink]="['/edit-profile']"><i class="fas fa-pencil-alt"></i> Edit Profile</button>
+          <button class="btn-outline" [routerLink]="['/edit-profile']"><i class="fas fa-pencil-alt"></i> Edit
+            Profile</button>
         </div>
 
         <div class="profile-section">

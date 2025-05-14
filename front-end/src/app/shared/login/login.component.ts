@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { RouterService } from '../../services/auth/router.service';
+import { Roles } from '../../models/roles';
 
 @Component({
   selector: 'app-login',
@@ -32,14 +33,30 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const token = this.localStorageManager.getToken();
-    if (token) {
-      this.router.navigate(['/dashboard-client']);
-      return;
-    }
+    this.checkRole();
     this.initForm();
   }
 
+  checkRole(): void {
+    const role = this.localStorageManager.getUserData();
+    const token = this.localStorageManager.getToken();
+
+    if (!token || !role) {
+      this.localStorageManager.clearAuth();
+      return;
+    } else {
+      if (role === Roles.ROLE_PATIENT) {
+        console.log('ROLE_PATIENT');
+        this.router.navigate(['/dashboard-client']);
+      } else if (role === Roles.ROLE_DOCTOR) {
+        this.router.navigate(['/dashboard-doctor']);
+      } else if (role === 'ROLE_ADMIN') {
+        this.router.navigate(['/dashboard-admin']);
+      }
+    }
+
+
+  }
   initForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

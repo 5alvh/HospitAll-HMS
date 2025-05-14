@@ -4,9 +4,11 @@ import com.tfg.back.enums.SearchType;
 import com.tfg.back.enums.UserStatus;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -20,11 +22,13 @@ public class ClientMapper {
 
     private final PasswordEncoder passwordEncoder;
     private final AppointmentMapper appointmentMapper;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public ClientMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper) {
+    public ClientMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository) {
         this.passwordEncoder = passwordEncoder;
         this.appointmentMapper = appointmentMapper;
+        this.notificationRepository = notificationRepository;
     }
 
     public Client toEntity(ClientDtoCreate dto) {
@@ -49,11 +53,11 @@ public class ClientMapper {
         client.setEmergencyContact(dto.getEmergencyContact());
 
         client.setAppointments(new ArrayList<>());
-
+        createNotifications(client);
         return client;
     }
 
-    public static Client updateEntity(Client client, ClientDtoUpdate dto){
+    public Client updateEntity(Client client, ClientDtoUpdate dto){
         if (dto == null){
             throw new IllegalArgumentException("ClientDtoUpdate is null");
         }
@@ -70,11 +74,9 @@ public class ClientMapper {
         client.setMembershipLevel(dto.getMembershipLevel());
         client.setEmergencyContact(dto.getEmergencyContact());
 
-        /*
-        I SHOULD TEST LAST UPDATED AT IF IT'S WORKING
-         */
         client.setUpdatedAt(LocalDateTime.now());
 
+        createNotifications(client);
         return client;
     }
 
@@ -98,5 +100,17 @@ public class ClientMapper {
     public List<ClientDtoGet> toGetDtoList(List<Client> clients) {
         return clients.stream().map(this::toGetDto).toList();
     }
+
+    public void createNotifications(Client client) {
+        Notification notification = new Notification();
+        notification.setTitle("Welcome!");
+        notification.setMessage("Welcome to our platform!");
+        notification.setType("WELCOME");
+        notification.setSeen(false);
+        notification.setDate(LocalDateTime.now());
+        notification.setUser(client);
+        notificationRepository.save(notification);
+    }
+
 }
 

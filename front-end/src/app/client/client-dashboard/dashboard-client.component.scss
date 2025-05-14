@@ -2,6 +2,7 @@
 /* Import Google Fonts - Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+
 /* Reset & Base Styles */
 * {
   margin: 0;
@@ -142,6 +143,8 @@ body {
 }
 
 .user-profile {
+  position: relative;
+
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -306,8 +309,8 @@ body {
 }
 
 .status-cancelled {
-  background-color: #fee2e2; 
-  color: #991b1b;            
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 .status-paid {
@@ -568,7 +571,7 @@ body {
   overflow: hidden;
 }
 
-.v-all{
+.v-all {
   cursor: pointer;
 }
 
@@ -673,15 +676,33 @@ body {
 }
 
 /* Appointments Section */
-.appointments-section, .records-section, .billing-section, .telemedicine-section, 
-.monitoring-section, .support-section, .feedback-section, .documents-section {
+.appointments-section,
+.records-section,
+.billing-section,
+.telemedicine-section,
+.monitoring-section,
+.support-section,
+.feedback-section,
+.documents-section {
   margin-top: 20px;
 }
 
-.appointments-upcoming, .appointments-history, .prescriptions, .lab-results, 
-.invoices, .payment-summary, .video-consultation, .chat-consultation,
-.monitoring-overview, .device-integration, .contact-info, .faq-section,
-.feedback-form, .surveys, .document-categories, .recent-documents {
+.appointments-upcoming,
+.appointments-history,
+.prescriptions,
+.lab-results,
+.invoices,
+.payment-summary,
+.video-consultation,
+.chat-consultation,
+.monitoring-overview,
+.device-integration,
+.contact-info,
+.faq-section,
+.feedback-form,
+.surveys,
+.document-categories,
+.recent-documents {
   background-color: #ffffff;
   border-radius: 12px;
   padding: 20px;
@@ -689,9 +710,14 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.appointments-section h3, .records-section h3, .billing-section h3,
-.telemedicine-section h3, .monitoring-section h3, .support-section h3,
-.feedback-section h3, .documents-section h3 {
+.appointments-section h3,
+.records-section h3,
+.billing-section h3,
+.telemedicine-section h3,
+.monitoring-section h3,
+.support-section h3,
+.feedback-section h3,
+.documents-section h3 {
   font-size: 18px;
   font-weight: 600;
   color: #1e3a8a;
@@ -757,7 +783,9 @@ body {
   margin-bottom: 8px;
 }
 
-.form-group select, .form-group input, .form-group textarea {
+.form-group select,
+.form-group input,
+.form-group textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #e5e7eb;
@@ -766,7 +794,9 @@ body {
   color: #334155;
 }
 
-.form-group select:focus, .form-group input:focus, .form-group textarea:focus {
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: #93c5fd;
   box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.3);
@@ -1198,6 +1228,7 @@ body {
   cursor: pointer;
   font-size: 20px;
 }
+
 .btn-danger {
   background-color: #ef4444;
   color: white;
@@ -1217,4 +1248,29 @@ body {
 .delete-account {
   margin-top: 30px;
   text-align: right;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f0f0f0;
 }

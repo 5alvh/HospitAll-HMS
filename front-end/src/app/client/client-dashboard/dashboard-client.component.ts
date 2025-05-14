@@ -1,12 +1,11 @@
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
 import { Router, RouterLink } from '@angular/router';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
-import { Roles } from '../../models/roles';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -14,8 +13,26 @@ import { Roles } from '../../models/roles';
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
   providers: [DatePipe],
+    encapsulation: ViewEncapsulation.None // This allows styles to affect all components
+
 })
 export class DashboardClientComponent implements OnInit {
+  showOptions = false;
+
+  onShowOptions() {
+    this.showOptions = !this.showOptions;
+  }
+
+  goToProfile() {
+    this.setActiveSection('profile');
+    console.log('Navigating to profile...');
+  }
+
+  logout() {
+    this.localS.clearAuth();
+    this.router.navigate(['/']);
+    console.log('Logging out...');
+  }
 
   title = 'MediCare Hospital Dashboard';
   activeSection = 'dashboard';
@@ -28,16 +45,9 @@ export class DashboardClientComponent implements OnInit {
   constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService) { }
 
   ngOnInit(): void {
-    this.checkIfClient();
     this.getProfile();
   }
 
-  checkIfClient() {
-      if (this.localS.getUserData() !== Roles.ROLE_PATIENT) {
-        this.localS.clearAuth();
-        this.router.navigate(['/login']);
-      }
-    }
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     const formattedDate = new Intl.DateTimeFormat('en-GB', {
@@ -90,7 +100,7 @@ export class DashboardClientComponent implements OnInit {
       },
       error: (error) => {
         this.localS.clearAuth();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
         console.error('Error fetching profile:', error);
       }
     });
@@ -101,7 +111,7 @@ export class DashboardClientComponent implements OnInit {
       this.clientService.inactivateAccount().subscribe({
         next: () => {
           alert('Your account has been inactivated successfully.');
-          this.router.navigate(['/login']);
+          this.router.navigate(['/']);
         },
         error: (error) => {
           console.error('Error inactivating account:', error);
@@ -236,7 +246,7 @@ export class DashboardClientComponent implements OnInit {
     'Urology'
   ];
 
- 
+
   // Function to change active section
   setActiveSection(section: string) {
     this.activeSection = section;

@@ -19,5 +19,5 @@ public interface ClientService {
     void deleteClient(String email);
     List<AppointmentDtoGet> getAppointmentsByClientEmail(String email);
     void inactivateClient(String email);
-    List<Notification> getClientsNotifications(String email);
+    List<Notification> getNotificationsByClientEmail(String email);
 }

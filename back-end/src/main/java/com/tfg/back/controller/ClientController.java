@@ -1,12 +1,14 @@
 package com.tfg.back.controller;
 
 import com.tfg.back.model.Client;
+import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.service.ClientService;
 import jakarta.validation.Valid;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +80,12 @@ public class ClientController {
         String email = authentication.getName();
         clientService.inactivateClient(email);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/get-notifications")
+    public ResponseEntity<List<Notification>> getNotifications(Authentication authentication) {
+        String email = authentication.getName();
+        List<Notification> notifications = clientService.getClientsNotifications(email);
+        return ResponseEntity.ok(notifications);
     }
 }

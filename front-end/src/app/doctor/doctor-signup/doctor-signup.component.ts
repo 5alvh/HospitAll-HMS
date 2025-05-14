@@ -196,7 +196,7 @@ export class DoctorSignupComponent {
           this.signupSuccess = true;
 
           setTimeout(() => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/']);
           }, 3000);
         }, 1500);
       },

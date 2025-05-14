@@ -57,7 +57,6 @@ export class ClientAppointmentComponent {
   ) { }
 
   ngOnInit(): void {
-    this.checkIfClient();
     this.initForm();
     this.loadDepartments();
     this.generateAvailableDates();
@@ -83,11 +82,6 @@ export class ClientAppointmentComponent {
         this.appointmentForm.get('timeSlot')!.setValue(null);
       }
     });
-  }
-  checkIfClient() {
-    if (this.localStorageManager.getUserData() !== Roles.ROLE_PATIENT) {
-      this.router.navigate(['/login']);
-    }
   }
   
   initForm(): void {
