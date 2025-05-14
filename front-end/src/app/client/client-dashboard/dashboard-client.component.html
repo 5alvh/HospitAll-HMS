@@ -148,13 +148,13 @@
               <div *ngIf="notifications.length === 0" class="no-data">
                 No new notifications.
               </div>
-              <div *ngFor="let notification of notifications.slice(0, 3); let i = index"
-                [class.unread]="!notification.read" class="notification-item">
+              <div *ngFor="let notification of topUnseenNotifications; let i = index"
+                [class.unread]="!notification.seen" class="notification-item">
                 <div class="notification-icon">
                   <i class="fas" [class.fa-calendar-check]="notification.type === 'Appointment'"
                     [class.fa-flask]="notification.type === 'Lab Result'"
-                    [class.fa-pills]="notification.type === 'Medication'"
-                    [class.fa-bullhorn]="notification.type === 'Announcement'">
+                    [class.fa-pills]="notification.type === 'APPOINTMENT'"
+                    [class.fa-bullhorn]="notification.type === 'WELCOME'">
                   </i>
                 </div>
                 <div class="notification-details">
@@ -162,9 +162,10 @@
                   <p>{{notification.message}}</p>
                   <span class="notification-date">{{notification.date}}</span>
                 </div>
-                <button class="mark-read" *ngIf="!notification.read" (click)="markAsRead(i)">
+                <button class="mark-read" *ngIf="!notification.seen" (click)="markAsRead(notification.id)">
                   <i class="fas fa-check"></i>
                 </button>
+                
               </div>
             </div>
           </div>

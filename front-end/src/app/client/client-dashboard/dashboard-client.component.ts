@@ -6,6 +6,8 @@ import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
 import { Router, RouterLink } from '@angular/router';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
+import { NotificationDto } from '../../models/notification-dto';
+import { NotificationService } from '../../services/notifications-service/notification.service';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -27,12 +29,28 @@ export class DashboardClientComponent implements OnInit {
   clientService = inject(ClientService);
   pastAppointments: AppointmentDtoGet[] = [];
 
-  constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService) { }
+  constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService, private notificationsService: NotificationService) { }
 
   ngOnInit(): void {
     this.getProfile();
   }
 
+  markAsRead(index: number) {
+    console.log('Marking notification as read:', this.notifications[index]);
+    this.notifications[index].seen = true;
+    this.notificationsService.markAsRead(index).subscribe({
+      next: () => {
+        console.log('Notification marked as read successfully.');
+      },
+      error: (error) => {
+        console.error('Error marking notification as read:', error);
+      }
+    });
+  }
+
+  getUnreadCount() {
+    return this.notifications.filter(notification => !notification.seen).length;
+  }
 
   onShowOptions() {
     this.showOptions = !this.showOptions;
@@ -57,7 +75,7 @@ export class DashboardClientComponent implements OnInit {
         const now = new Date();
 
         this.patient = response;
-
+        this.notifications = this.patient.notifications;
         if (this.patient && this.patient.appointments) {
           this.patient.appointments.forEach(appointment => {
 
@@ -125,34 +143,12 @@ export class DashboardClientComponent implements OnInit {
 
     return `${formattedDate} ${formattedTime}`;
   }
-  
+
+  get topUnseenNotifications(): NotificationDto[] {
+    return this.notifications.filter(n => !n.seen).slice(0, 3);
+  }
   // Notifications
-  notifications = [
-    {
-      type: 'Appointment',
-      message: 'Reminder: Cardiology appointment tomorrow at 10:30 AM',
-      date: '14 May 2025',
-      read: false
-    },
-    {
-      type: 'Lab Result',
-      message: 'New lab results available for Lipid Profile',
-      date: '4 April 2025',
-      read: true
-    },
-    {
-      type: 'Medication',
-      message: 'Refill reminder: Lisinopril - 7 days remaining',
-      date: '10 May 2025',
-      read: false
-    },
-    {
-      type: 'Announcement',
-      message: 'Free diabetes screening camp on May 25th',
-      date: '8 May 2025',
-      read: false
-    }
-  ];
+  notifications!: NotificationDto[];
   // Medications
   medications = [
     {
@@ -229,7 +225,7 @@ export class DashboardClientComponent implements OnInit {
     }
   ];
 
-  
+
 
   // Departments for booking
   departments = [
@@ -255,14 +251,7 @@ export class DashboardClientComponent implements OnInit {
 
 
   // Function to mark notification as read
-  markAsRead(index: number) {
-    this.notifications[index].read = true;
-  }
 
-  // Function to get unread notification count
-  getUnreadCount() {
-    return this.notifications.filter(notification => !notification.read).length;
-  }
 
   // Function to pay invoice
   payInvoice(id: string) {

@@ -3,6 +3,7 @@ import { AppointmentDtoGet } from "./appointment-dto-get";
 import { EmergencyContact } from "./emergency-contact";
 import { BloodType } from "./enums/blood-type";
 import { MembershipLevel } from "./enums/membership-level";
+import { NotificationDto } from "./notification-dto";
 
 export class ClientDtoGet {
   id!: number;
@@ -16,7 +17,7 @@ export class ClientDtoGet {
   appointments!: AppointmentDtoGet[];
   address!: string;
   bloodType!: BloodType;
-  notifications!: boolean;
+  notifications!: NotificationDto[];
 
   constructor(init?: Partial<ClientDtoGet>) {
     Object.assign(this, init);
