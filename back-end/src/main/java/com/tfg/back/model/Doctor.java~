@@ -1,6 +1,5 @@
 package com.tfg.back.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tfg.back.enums.Specialization;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,9 +39,5 @@ public class Doctor extends User {
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<WorkingHours> workingHours = new HashSet<>();
-
-    @OneToMany(mappedBy = "prescribedBy", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<MedicalPrescription> prescriptionsGiven = new ArrayList<>();
 
 }

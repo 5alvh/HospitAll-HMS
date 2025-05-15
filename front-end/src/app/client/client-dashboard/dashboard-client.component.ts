@@ -15,7 +15,7 @@ import { NotificationService } from '../../services/notifications-service/notifi
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
   providers: [DatePipe],
-  encapsulation: ViewEncapsulation.None // This allows styles to affect all components
+  encapsulation: ViewEncapsulation.None
 
 })
 export class DashboardClientComponent implements OnInit {
@@ -28,17 +28,23 @@ export class DashboardClientComponent implements OnInit {
   upcomingAppointments: AppointmentDtoGet[] = [];
   clientService = inject(ClientService);
   pastAppointments: AppointmentDtoGet[] = [];
+  topUnseenNotifications: NotificationDto[]=[];
 
   constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService, private notificationsService: NotificationService) { }
 
   ngOnInit(): void {
+    console.log('HOLA');
     this.getProfile();
   }
 
-  markAsRead(index: number) {
-    console.log('Marking notification as read:', this.notifications[index]);
-    this.notifications[index].seen = true;
-    this.notificationsService.markAsRead(index).subscribe({
+  refreshTopUnseenNotifications() {
+    this.topUnseenNotifications = this.notifications.filter(n => !n.seen).slice(0, 3);
+  }
+  markAsRead(id: number) {
+    const notifInArray = this.notifications.find(n => n.id === id)!;
+    console.log('Marking notification as read:', notifInArray);
+    notifInArray.seen = true;
+    this.notificationsService.markAsRead(id).subscribe({
       next: () => {
         console.log('Notification marked as read successfully.');
       },
@@ -46,6 +52,7 @@ export class DashboardClientComponent implements OnInit {
         console.error('Error marking notification as read:', error);
       }
     });
+    this.refreshTopUnseenNotifications();
   }
 
   getUnreadCount() {
@@ -76,6 +83,9 @@ export class DashboardClientComponent implements OnInit {
 
         this.patient = response;
         this.notifications = this.patient.notifications;
+        this.refreshTopUnseenNotifications();
+        console.log('Top unseen notifications:', this.topUnseenNotifications);
+
         if (this.patient && this.patient.appointments) {
           this.patient.appointments.forEach(appointment => {
 
@@ -144,9 +154,8 @@ export class DashboardClientComponent implements OnInit {
     return `${formattedDate} ${formattedTime}`;
   }
 
-  get topUnseenNotifications(): NotificationDto[] {
-    return this.notifications.filter(n => !n.seen).slice(0, 3);
-  }
+  
+
   // Notifications
   notifications!: NotificationDto[];
   // Medications

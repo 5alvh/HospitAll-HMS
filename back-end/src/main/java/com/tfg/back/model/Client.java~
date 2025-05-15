@@ -38,10 +38,5 @@ public class Client extends User {
     private List<Appointment> appointments = new ArrayList<>();
 
     private BloodType bloodType;
-
-    @OneToMany(mappedBy = "prescribedTo", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<MedicalPrescription> prescriptionsReceived = new ArrayList<>();
-
 }
 

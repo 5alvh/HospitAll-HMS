@@ -25,7 +25,7 @@ public class WorkingHours {
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
     @ManyToOne
-    @JoinColumn(name = "doctor_id")  // Foreign key referencing the doctor
+    @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
     @OneToMany(mappedBy = "workingHours", cascade = CascadeType.ALL, orphanRemoval = true)
