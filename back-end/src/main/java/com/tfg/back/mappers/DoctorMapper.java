@@ -3,21 +3,30 @@ package com.tfg.back.mappers;
 import com.tfg.back.enums.UserStatus;
 import com.tfg.back.model.Department;
 import com.tfg.back.model.Doctor;
+import com.tfg.back.model.TimeInterval;
+import com.tfg.back.model.WorkingHours;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
+import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class DoctorMapper {
 
     private final PasswordEncoder passwordEncoder;
+    private final AppointmentMapper appointmentMapper;
+    private final MedicalPrescriptionMapper medicalPrescriptionMapper;
 
     @Autowired
-    public DoctorMapper(PasswordEncoder passwordEncoder) {
+    public DoctorMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper, MedicalPrescriptionMapper medicalPrescriptionMapper) {
         this.passwordEncoder = passwordEncoder;
+        this.appointmentMapper = appointmentMapper;
+        this.medicalPrescriptionMapper = medicalPrescriptionMapper;
     }
 
 
@@ -40,11 +49,45 @@ public class DoctorMapper {
         doctor.setDepartment(department);
         doctor.setSpecialization(dto.getSpecialization());
 
-        if (dto.getWorkingHours() != null) {
-            doctor.setWorkingHours(new HashSet<>(dto.getWorkingHours()));
+        Set<WorkingHours> workingHoursSet = new HashSet<>();
+        for (WorkingHours wh : dto.getWorkingHours()) {
+            wh.setDoctor(doctor);  // Set reverse reference
+
+            for (TimeInterval ti : wh.getTimeIntervals()) {
+                ti.setWorkingHours(wh);  // Set reverse reference
+            }
+
+            workingHoursSet.add(wh);
         }
 
+        doctor.setWorkingHours(workingHoursSet);
+
         return doctor;
+    }
+
+    public DoctorDtoGet toDtoGet(Doctor doctor) {
+        if (doctor == null) {
+            return null;
+        }
+        return DoctorDtoGet.builder()
+                .id(doctor.getId())
+                .fullName(doctor.getFullName())
+                .email(doctor.getEmail())
+                .phoneNumber(doctor.getPhoneNumber())
+                .dateOfBirth(doctor.getDateOfBirth())
+                .createdAt(doctor.getCreatedAt())
+                .medicalLicenseNumber(doctor.getMedicalLicenseNumber())
+                .department(doctor.getDepartment())
+                .specialization(doctor.getSpecialization())
+                .address(doctor.getAddress())
+                .appointments(appointmentMapper.toDtoGetList(doctor.getAppointments()))
+                .prescriptionsGiven(medicalPrescriptionMapper.toDtoGetList(doctor.getPrescriptionsGiven()))
+                .workingHours(doctor.getWorkingHours())
+                .build();
+    }
+
+    public List<DoctorDtoGet> toDtoGetList(List<Doctor> doctors) {
+        return doctors.stream().map(this::toDtoGet).toList();
     }
 }
 

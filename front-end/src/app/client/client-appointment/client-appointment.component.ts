@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { NgClass, NgIf, NgFor  } from '@angular/common';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NgClass, NgIf, NgFor } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
-import { Roles } from '../../models/roles';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { DepartmentService } from '../../services/shared-services/department.service';
+import { ClientService } from '../../services/client-services/client.service';
+import { ClientDtoGet } from '../../models/client-dto-get';
 interface Doctor {
   id: number;
   name: string;
@@ -31,12 +32,18 @@ interface TimeSlot {
 }
 @Component({
   selector: 'app-client-appointment',
-  imports: [ReactiveFormsModule, NgClass, NgIf, NgFor, DatePipe],
+  imports: [FormsModule, ReactiveFormsModule, NgClass, NgIf, NgFor, DatePipe, RouterLink],
   templateUrl: './client-appointment.component.html',
   styleUrl: './client-appointment.component.scss',
-  providers: [DatePipe]
+  providers: [DatePipe],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ClientAppointmentComponent {
+  dateStepEnabled: boolean = false;
+  departmentSelected = false;
+  doctorsSearched = false;
+  dateSearched = false;
+  patient!: ClientDtoGet;
   appointmentForm!: FormGroup;
   departments: Department[] = [];
   doctors: Doctor[] = [];
@@ -44,38 +51,74 @@ export class ClientAppointmentComponent {
   timeSlots: TimeSlot[] = [];
   availableDates: Date[] = [];
   minDate = new Date();
-  maxDate = new Date(this.minDate.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 days
+  maxDate = new Date(this.minDate.getTime() + 30 * 24 * 60 * 60 * 1000);
   submitting = false;
   submitted = false;
   appointmentSuccess = false;
-  
+  sameInfos: boolean = false;
+  onDepartmentChange() {
+    this.departmentSelected = !!this.appointmentForm.get('department')!.value;
+    this.doctorsSearched = false;
+    this.dateSearched = false;
+    this.filteredDoctors = [];
+
+    this.appointmentForm.get('doctor')!.reset();
+    this.appointmentForm.get('date')!.reset();
+    this.appointmentForm.get('timeSlot')!.reset();
+    this.appointmentForm.get('reasonForVisit')!.reset();
+  }
+  searchDoctors() {
+    console.log('Searching doctors...');
+    /* const deptId = this.appointmentForm.get('department')!.value;
+     // Call your API or service here to get doctors for selected department:
+     this.doctorService.getDoctorsByDepartment(deptId).subscribe(doctors => {
+       this.filteredDoctors = doctors;
+       this.doctorsSearched = true;
+       this.dateSearched = false;
+       this.appointmentForm.get('doctor')!.reset();
+       this.appointmentForm.get('date')!.reset();
+       this.appointmentForm.get('timeSlot')!.reset();
+       this.appointmentForm.get('reasonForVisit')!.reset();
+     });*/
+  }
+
+  searchDate() {
+    // You could implement logic to filter available time slots for the chosen doctor and date here
+    this.dateSearched = true;
+
+    // Reset time slot and reason fields
+    this.appointmentForm.get('timeSlot')!.reset();
+    this.appointmentForm.get('reasonForVisit')!.reset();
+
+    // Optionally fetch available time slots based on selected doctor and date here
+  }
+
+
   constructor(
     private fb: FormBuilder,
     private datePipe: DatePipe,
-    private localStorageManager: LocalStorageManagerService,
-    private router: Router,
+    private departmentsService: DepartmentService,
+    private clientService: ClientService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.initForm();
     this.loadDepartments();
     this.generateAvailableDates();
-    
-    // Watch for department changes to filter doctors
+    this.getProfile();
     this.appointmentForm.get('department')!.valueChanges.subscribe(departmentId => {
       this.filterDoctors(departmentId);
       this.appointmentForm.get('doctor')!.setValue(null);
       this.appointmentForm.get('date')!.setValue(null);
       this.appointmentForm.get('timeSlot')!.setValue(null);
     });
-    
-    // Watch for doctor changes to update available time slots
+
     this.appointmentForm.get('doctor')!.valueChanges.subscribe(() => {
       this.appointmentForm.get('date')!.setValue(null);
       this.appointmentForm.get('timeSlot')!.setValue(null);
     });
-    
-    // Watch for date changes to update time slots
+
     this.appointmentForm.get('date')!.valueChanges.subscribe(date => {
       if (date) {
         this.loadTimeSlots();
@@ -83,7 +126,25 @@ export class ClientAppointmentComponent {
       }
     });
   }
-  
+
+  copyInfos(): void {
+    this.sameInfos = !this.sameInfos;
+    console.log('Same Infos:', this.sameInfos);
+    if (this.sameInfos) {
+      this.appointmentForm.patchValue({
+        patientName: this.patient.fullName,
+        patientEmail: this.patient.email,
+        patientPhone: this.patient.phoneNumber
+      });
+    } else {
+      this.appointmentForm.patchValue({
+        patientName: '',
+        patientEmail: '',
+        patientPhone: ''
+      });
+    }
+  }
+
   initForm(): void {
     this.appointmentForm = this.fb.group({
       patientName: ['', [Validators.required, Validators.minLength(3)]],
@@ -97,31 +158,13 @@ export class ClientAppointmentComponent {
       isNewPatient: [false]
     });
   }
-  
+
   loadDepartments(): void {
-    /*this.departmentsService.getDepartments().subscribe((departments: any) => {
+    this.departmentsService.getDepartments().subscribe((departments: any) => {
       this.departments = departments;
-    })*/
-    this.departments = [
-      { id: 1, name: 'Cardiology' },
-      { id: 2, name: 'Neurology' },
-      { id: 3, name: 'Orthopedics' },
-      { id: 4, name: 'Pediatrics' },
-      { id: 5, name: 'Dermatology' }
-    ];
-    
-    // Mock doctors data
-    this.doctors = [
-      { id: 1, name: 'Dr. Sarah Johnson', specialization: 'Cardiology', available: true },
-      { id: 2, name: 'Dr. Michael Chen', specialization: 'Cardiology', available: true },
-      { id: 3, name: 'Dr. Robert Smith', specialization: 'Neurology', available: true },
-      { id: 4, name: 'Dr. Amanda Lee', specialization: 'Neurology', available: false },
-      { id: 5, name: 'Dr. James Wilson', specialization: 'Orthopedics', available: true },
-      { id: 6, name: 'Dr. Emily Brown', specialization: 'Pediatrics', available: true },
-      { id: 7, name: 'Dr. David Taylor', specialization: 'Dermatology', available: true }
-    ];
+    });
   }
-  
+
   filterDoctors(departmentId: number): void {
     const department = this.departments.find(d => d.id === departmentId);
     if (department) {
@@ -132,23 +175,7 @@ export class ClientAppointmentComponent {
       this.filteredDoctors = [];
     }
   }
-  
-  generateAvailableDates(): void {
-    // Generate dates for the next 30 days, excluding weekends
-    const dates: Date[] = [];
-    const today = new Date();
-    const endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
-    
-    for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
-      // Skip weekends (0 = Sunday, 6 = Saturday)
-      if (d.getDay() !== 0 && d.getDay() !== 6) {
-        dates.push(new Date(d));
-      }
-    }
-    
-    this.availableDates = dates;
-  }
-  
+
   loadTimeSlots(): void {
     // Simulate API call to get available time slots for selected doctor and date
     this.timeSlots = [
@@ -166,29 +193,28 @@ export class ClientAppointmentComponent {
       { id: 12, time: '03:30 PM', available: false }
     ];
   }
-  
+
   onSubmit(): void {
     this.submitted = true;
-    
+
     if (this.appointmentForm.invalid) {
       return;
     }
-    
+
     this.submitting = true;
-    
-    // Simulate API call to book appointment
+
     setTimeout(() => {
       this.submitting = false;
       this.appointmentSuccess = true;
       console.log('Appointment booked:', this.appointmentForm.value);
-      
+
       // Reset form after 3 seconds
       setTimeout(() => {
         this.resetForm();
       }, 3000);
     }, 1500);
   }
-  
+
   resetForm(): void {
     this.submitted = false;
     this.appointmentSuccess = false;
@@ -197,18 +223,44 @@ export class ClientAppointmentComponent {
       isNewPatient: false
     });
   }
-  
-  // Helper getters for form controls
-  get f() { return this.appointmentForm.controls; }
-  
-  formatDate(date: Date): string {
-    return this.datePipe.transform(date, 'EEEE, MMMM d, y')!;
+
+  getProfile() {
+    this.clientService.getProfile().subscribe({
+      next: (response) => {
+        console.log('User:', response);
+        this.patient = response;
+      },
+      error: (error) => {
+        this.router.navigate(['/login']);
+        console.error('Error fetching profile:', error);
+      }
+    });
   }
-  
+
+  generateAvailableDates(): void {
+    // Generate dates for the next 30 days, excluding weekends
+    const dates: Date[] = [];
+    const today = new Date();
+    const endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
+      // Skip weekends (0 = Sunday, 6 = Saturday)
+      if (d.getDay() !== 0 && d.getDay() !== 6) {
+        dates.push(new Date(d));
+      }
+    }
+
+    this.availableDates = dates;
+  }
+
   isDateAvailable(date: Date): boolean {
     // This would typically be determined by backend availability data
     // For demo purposes, all weekdays are available
     const day = date.getDay();
-    return day !== 0 && day !== 6; // Not Sunday (0) or Saturday (6)
+    return day !== 0 && day !== 6;
   }
+
+
+  get f() { return this.appointmentForm.controls; }
+
 }

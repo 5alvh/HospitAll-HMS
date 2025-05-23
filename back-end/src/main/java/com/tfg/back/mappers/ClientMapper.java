@@ -4,6 +4,7 @@ import com.tfg.back.enums.SearchType;
 import com.tfg.back.enums.UserStatus;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.MedicalPrescription;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
@@ -22,11 +23,15 @@ public class ClientMapper {
 
     private final PasswordEncoder passwordEncoder;
     private final AppointmentMapper appointmentMapper;
+    private final MedicalPrescriptionMapper medicalPrescriptionMapper;
+    private final LabResultMapper labResultMapper;
 
     @Autowired
-    public ClientMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper) {
+    public ClientMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper, MedicalPrescriptionMapper medicalPrescriptionMapper, LabResultMapper labResultMapper) {
         this.passwordEncoder = passwordEncoder;
         this.appointmentMapper = appointmentMapper;
+        this.medicalPrescriptionMapper = medicalPrescriptionMapper;
+        this.labResultMapper = labResultMapper;
     }
 
     public Client toEntity(ClientDtoCreate dto) {
@@ -61,7 +66,6 @@ public class ClientMapper {
 
         client.setFullName(dto.getFullName());
         client.setEmail(dto.getEmail());
-        client.setHashedPassword(dto.getPassword());
         client.setPhoneNumber(dto.getPhoneNumber());
         client.setDateOfBirth(dto.getDateOfBirth());
         client.setAddress(dto.getAddress());
@@ -90,6 +94,8 @@ public class ClientMapper {
                 .emergencyContact(client.getEmergencyContact())
                 .createdAt(client.getCreatedAt())
                 .appointments(appointmentMapper.toDtoGetList(client.getAppointments()))
+                .prescriptions(medicalPrescriptionMapper.toDtoGetList(client.getPrescriptionsReceived()))
+                .labResults(labResultMapper.toDtoGetList(client.getLabResultsReceived()))
                 .notifications(client.getNotifications())
                 .build();
     }
@@ -97,8 +103,6 @@ public class ClientMapper {
     public List<ClientDtoGet> toGetDtoList(List<Client> clients) {
         return clients.stream().map(this::toGetDto).toList();
     }
-
-
 
 }
 

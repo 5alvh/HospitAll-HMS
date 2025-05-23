@@ -1,21 +1,34 @@
 package com.tfg.back.service.serviceImpl;
 
+import com.tfg.back.enums.SearchType;
 import com.tfg.back.exceptions.department.DepartmentNotFoundException;
 import com.tfg.back.exceptions.user.UserAlreadyExistsException;
+import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.DoctorMapper;
-import com.tfg.back.model.Department;
-import com.tfg.back.model.Doctor;
+import com.tfg.back.model.*;
+import com.tfg.back.model.dtos.doctor.AvailableDoctorGet;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
+import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
+import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.DepartmentRepository;
 import com.tfg.back.repository.DoctorRepository;
 import com.tfg.back.service.DepartmentService;
 import com.tfg.back.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -23,16 +36,18 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final DepartmentRepository departmentRepository;
     private final DoctorMapper doctorMapper;
+    private final AppointmentRepository appointmentRepository;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper, AppointmentRepository appointmentRepository) {
         this.doctorRepository = doctorRepository;
         this.departmentRepository = departmentRepository;
         this.doctorMapper = doctorMapper;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
-    public Doctor createDoctor(DoctorDtoCreate doctor) {
+    public DoctorDtoGet createDoctor(DoctorDtoCreate doctor) {
         String email = doctor.getEmail();
         Long id = doctor.getDepartmentId();
         boolean exists = doctorRepository.existsByEmail(email);
@@ -45,31 +60,99 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() ->  new DepartmentNotFoundException("department with ID: "+id+" is not found"));
 
         Doctor newDoctor = doctorMapper.toEntity(doctor, department);
-        return doctorRepository.save(newDoctor);
+
+        Doctor savedDoctor = doctorRepository.save(newDoctor);
+        return doctorMapper.toDtoGet(savedDoctor);
     }
 
     @Override
-    public Doctor getDoctor(Long id) {
-        Optional<Doctor> doctor = doctorRepository.findById(id);
-        return doctor.orElse(null);
+    public DoctorDtoGet getDoctor(Long id) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
+        return doctorMapper.toDtoGet(doctor);
     }
 
     @Override
-    public Doctor getDoctorByEmail(String email) {
-        return doctorRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Doctor not found with email: " + email));
+    public DoctorDtoGet getDoctorByEmail(String email) {
+        Doctor doctor = findDoctorByEmail(email);
+        return doctorMapper.toDtoGet(doctor);
     }
 
     @Override
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
+    public List<DoctorDtoGet> getAllDoctors() {
+        return doctorMapper.toDtoGetList(doctorRepository.findAll());
     }
 
     @Override
     public void deleteDoctor(Long id) {
-        boolean exists = doctorRepository.existsById(id);
-        if (exists){
-            doctorRepository.deleteById(id);
-        }
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
+        doctorRepository.delete(doctor);
     }
+
+    @Override
+    public Doctor findDoctorByEmail(String email) {
+        return doctorRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+    }
+
+    @Override
+    public List<AvailableDoctorGet> getAvailableDoctors(String departmentName, LocalDate date) {
+        DayOfWeek day = date.getDayOfWeek();
+        Department dept = departmentRepository.findByName(departmentName)
+                .orElseThrow(()-> new DepartmentNotFoundException("department with name: "+departmentName+" is not found"));
+        List<Doctor> doctors = doctorRepository.findByDepartmentAndWorkingHoursDay(dept, day);
+        return doctors.stream().map(
+                doctor -> new AvailableDoctorGet(doctor.getFullName(), doctor.getId()))
+        .toList();
+    }
+
+    @Override
+    public List<TimeInterval> getAvailableSlots(Long doctorId, LocalDate date) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        DayOfWeek day = date.getDayOfWeek();
+
+        Optional<WorkingHours> workingHoursForDay = doctor.getWorkingHours().stream()
+                .filter(wh -> wh.getDayOfWeek().equals(day))
+                .findFirst();
+
+        if (workingHoursForDay.isEmpty()) {
+            return List.of();
+        }
+
+        List<TimeInterval> workingIntervals = workingHoursForDay.get().getTimeIntervals();
+
+        // Generate 20-minute slots for the working intervals
+        List<TimeInterval> allSlots = new ArrayList<>();
+        for (TimeInterval interval : workingIntervals) {
+            LocalTime slotStart = interval.getStartTime();
+            LocalTime intervalEnd = interval.getEndTime();
+
+            while (!slotStart.plusMinutes(20).isAfter(intervalEnd)) {
+                TimeInterval slot = new TimeInterval();
+                slot.setStartTime(slotStart);
+                slot.setEndTime(slotStart.plusMinutes(20));
+                allSlots.add(slot);
+
+                slotStart = slotStart.plusMinutes(20);
+            }
+        }
+
+        // Get booked appointment times for that doctor on the selected date
+        List<Appointment> bookedAppointments = appointmentRepository
+                .findByDoctorIdAndAppointmentDate(doctorId, date);
+
+        Set<LocalTime> bookedTimes = bookedAppointments.stream()
+                .map(appt -> appt.getAppointmentDateTime().toLocalTime())
+                .collect(Collectors.toSet());
+
+        // Return slots that aren't already booked
+        return allSlots.stream()
+                .filter(slot -> !bookedTimes.contains(slot.getStartTime()))
+                .collect(Collectors.toList());
+    }
+
+
 }

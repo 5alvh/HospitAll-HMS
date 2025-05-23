@@ -82,7 +82,7 @@ export class ClientSignupComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmation: ['', [Validators.required]],
       phoneNumber: ['', [Validators.pattern('^\\+?[0-9\\-\\s()]*$')]],
-      dateOfBirth: [null],
+      dateOfBirth: [null, [Validators.required]],
       address: ['', [Validators.maxLength(200)]], // NEW
       bloodType: [null, Validators.required], 
       membershipLevel: [MembershipLevel.BASIC],
@@ -137,7 +137,6 @@ export class ClientSignupComponent implements OnInit {
     
     this.processing = true;
     
-    // Preparar el cliente
     const formValue = this.signupForm.value;
     const clientData: ClientDtoCreate = {
       fullName: formValue.fullName,

@@ -4,10 +4,9 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { Specialization } from '../../models/enums/specialization';
-import { Department } from '../../models/department';
+import { DepartmentDto } from '../../models/department';
 import { AuthService } from '../../services/auth/auth.service';
-import { DepartmentsService } from '../../services/shared-services/departments.service';
-import { WorkingHours } from '../../models/working-hours';
+import { DepartmentService } from '../../services/shared-services/department.service';
 import { DoctorDtoCreate } from '../../models/doctor-dto-create';
 
 
@@ -21,7 +20,7 @@ import { DoctorDtoCreate } from '../../models/doctor-dto-create';
 export class DoctorSignupComponent {
   signupForm!: FormGroup;
   specializations = Object.values(Specialization);
-  departments: Department[] = [];
+  departments: DepartmentDto[] = [];
   maxDate = new Date(); // Today's date as max date
   submitted = false;
   processing = false;
@@ -31,7 +30,7 @@ export class DoctorSignupComponent {
 
   constructor(
     private authService: AuthService,
-    private departmentService: DepartmentsService,
+    private departmentService: DepartmentService,
     private fb: FormBuilder,
     private router: Router
   ) { }
@@ -40,7 +39,6 @@ export class DoctorSignupComponent {
     this.initForm();
     this.loadDepartments();
 
-    // Watch for available status in working hours
     this.workingHoursArray.controls.forEach((control: AbstractControl) => {
       control.get('available')?.valueChanges.subscribe(available => {
         if (available) {
@@ -57,7 +55,7 @@ export class DoctorSignupComponent {
   }
 
   loadDepartments(): void {
-    this.departmentService.getAllDepartments().subscribe({
+    this.departmentService.getDepartments().subscribe({
       next: (departments) => {
         this.departments = departments;
       },
@@ -206,8 +204,6 @@ export class DoctorSignupComponent {
       }
     });
   }
-
-  // Helper getters for form controls
   get f() { return this.signupForm.controls; }
   get workingHoursArray(): FormArray {
     return this.signupForm.get('workingHours') as FormArray;

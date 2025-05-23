@@ -4,6 +4,8 @@ import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +38,10 @@ public class MyUserDetailsService implements UserDetailsService {
         return new User(
                 user.getEmail(),
                 user.getHashedPassword(),
+                true,
+                true,
+                true,
+                true,
                 Collections.singletonList(new SimpleGrantedAuthority(role))
         );
     }

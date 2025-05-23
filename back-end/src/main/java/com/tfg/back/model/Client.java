@@ -43,5 +43,9 @@ public class Client extends User {
     @JsonIgnore
     private List<MedicalPrescription> prescriptionsReceived = new ArrayList<>();
 
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<LabResult> labResultsReceived = new ArrayList<>();
+
 }
 

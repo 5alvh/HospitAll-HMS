@@ -1,12 +1,12 @@
 package com.tfg.back.service;
 
-import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.utils.ChangePasswordRequest;
 
 import java.util.List;
 
@@ -20,4 +20,11 @@ public interface ClientService {
     List<AppointmentDtoGet> getAppointmentsByClientEmail(String email);
     void inactivateClient(String email);
     List<Notification> getClientsNotifications(String email);
+    Client findClientByEmail(String email);
+
+    void changePassword(String email, ChangePasswordRequest newPassword);
+
+    void activateClient(String email);
+
+    void suspendClient(String email);
 }

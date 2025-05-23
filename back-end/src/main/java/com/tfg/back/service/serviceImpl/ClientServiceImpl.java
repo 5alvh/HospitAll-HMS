@@ -16,12 +16,13 @@ import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientService;
+import com.tfg.back.utils.ChangePasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -30,13 +31,15 @@ public class ClientServiceImpl implements ClientService {
     private final ClientMapper clientMapper;
     private final AppointmentMapper appointmentMapper;
     private final NotificationRepository notificationRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder) {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
         this.appointmentMapper = appointmentMapper;
         this.notificationRepository = notificationRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -81,7 +84,7 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientMapper.updateEntity(clientToUpdate, dto);
         Client updatedClient = clientRepository.save(client);
         Client savedUpdatedClient = clientRepository.save(updatedClient);
-        createNotifications(savedUpdatedClient);
+        updateNotifications(savedUpdatedClient,"Your profile has been updated successfully!");
         return clientMapper.toGetDto(savedUpdatedClient);
     }
 
@@ -110,13 +113,38 @@ public class ClientServiceImpl implements ClientService {
         return client.getNotifications();
     }
 
-
-    private Client findClientByEmail(String email) {
+    @Override
+    public Client findClientByEmail(String email) {
         if (email == null || email.isBlank()){
             throw new IllegalArgumentException("Client email mustn't be null");
         }
         return clientRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+    }
+
+    @Override
+    public void changePassword(String email, ChangePasswordRequest newPassword) {
+        Client client = findClientByEmail(email);
+        if (passwordEncoder.matches(newPassword.getCurrentPassword(), client.getHashedPassword())){
+            client.setHashedPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+            updateNotifications(client, "Your password has been changed successfully!");
+        }else {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+    }
+
+    @Override
+    public void activateClient(String email) {
+        Client client = findClientByEmail(email);
+        client.setStatus(UserStatus.ACTIVE);
+        clientRepository.save(client);
+    }
+
+    @Override
+    public void suspendClient(String email) {
+        Client client = findClientByEmail(email);
+        client.setStatus(UserStatus.SUSPENDED);
+        clientRepository.save(client);
     }
 
     private Client findClientById(Long id) {
@@ -131,6 +159,17 @@ public class ClientServiceImpl implements ClientService {
         notification.setTitle("Welcome!");
         notification.setMessage("Welcome to our platform!");
         notification.setType("WELCOME");
+        notification.setSeen(false);
+        notification.setDate(LocalDateTime.now());
+        notification.setUser(client);
+        notificationRepository.save(notification);
+    }
+
+    public void updateNotifications(Client client, String message) {
+        Notification notification = new Notification();
+        notification.setTitle("Updated!");
+        notification.setMessage(message);
+        notification.setType("UPDATE");
         notification.setSeen(false);
         notification.setDate(LocalDateTime.now());
         notification.setUser(client);

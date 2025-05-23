@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -47,7 +48,7 @@ public class DoctorDtoCreate {
     private Specialization specialization;
 
     @ListSize(value = 7, message = "Working hours must be provided for all 7 days of the week")
-    private List<WorkingHours> workingHours;
+    private Set<WorkingHours> workingHours;
 
     private String address;
 }

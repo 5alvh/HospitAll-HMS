@@ -8,7 +8,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   
   const excludedUrls = [
     'http://localhost:8080/clients/register',
-    'http://localhost:8080/auth/login'
+    'http://localhost:8080/auth/login',
+    'http://localhost:8080/doctors/register',
+    'http://localhost:8080/departments/all',
   ];
 
   if (excludedUrls.some(url => req.url.includes(url))) {

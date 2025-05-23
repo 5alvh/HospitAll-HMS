@@ -4,7 +4,9 @@ import com.tfg.back.enums.BloodType;
 import com.tfg.back.enums.MembershipLevel;
 import com.tfg.back.model.EmergencyContact;
 import com.tfg.back.model.Notification;
+import com.tfg.back.model.dtos.LabResults.LabResultDtoGet;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
+import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,4 +34,6 @@ public class ClientDtoGet {
     private String address;
     private BloodType bloodType;
     private List<Notification> notifications;
+    private List<MedicalPrescriptionDtoGet> prescriptions;
+    private List<LabResultDtoGet> labResults;
 }

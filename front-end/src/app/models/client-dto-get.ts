@@ -3,6 +3,8 @@ import { AppointmentDtoGet } from "./appointment-dto-get";
 import { EmergencyContact } from "./emergency-contact";
 import { BloodType } from "./enums/blood-type";
 import { MembershipLevel } from "./enums/membership-level";
+import { LabResultDtoGet } from "./lab-result-dto-get";
+import { MedicalPrescriptionDtoGet } from "./medical-prescription-dto-get";
 import { NotificationDto } from "./notification-dto";
 
 export class ClientDtoGet {
@@ -18,6 +20,8 @@ export class ClientDtoGet {
   address!: string;
   bloodType!: BloodType;
   notifications!: NotificationDto[];
+  prescriptions!: MedicalPrescriptionDtoGet[];
+  labResults!: LabResultDtoGet[];
 
   constructor(init?: Partial<ClientDtoGet>) {
     Object.assign(this, init);

@@ -7,6 +7,7 @@ import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.service.ClientService;
+import com.tfg.back.utils.ChangePasswordRequest;
 import jakarta.validation.Valid;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,12 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
+    @PutMapping("/change-password")
+    public ResponseEntity<Void> changePassword(Authentication authentication, @RequestBody ChangePasswordRequest newPassword) {
+        String email = authentication.getName();
+        clientService.changePassword(email, newPassword);
+        return ResponseEntity.noContent().build();
+    }
     @GetMapping("/all")
     public ResponseEntity<List<ClientDtoGet>> getAllClients() {
         List<ClientDtoGet> clients = clientService.getAllClients();
@@ -87,5 +94,19 @@ public class ClientController {
         String email = authentication.getName();
         List<Notification> notifications = clientService.getClientsNotifications(email);
         return ResponseEntity.ok(notifications);
+    }
+
+    @PutMapping("/activate-account")
+    public ResponseEntity<Void> activateAccount(Authentication authentication) {
+        String email = authentication.getName();
+        clientService.activateClient(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("suspend-account")
+    public ResponseEntity<Void> suspendAccount(Authentication authentication) {
+        String email = authentication.getName();
+        clientService.suspendClient(email);
+        return ResponseEntity.noContent().build();
     }
 }

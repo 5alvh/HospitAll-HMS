@@ -1,28 +1,26 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Department } from '../../models/department';
-import { catchError, Observable, tap, throwError } from 'rxjs';
-
+import { catchError, Observable, throwError } from 'rxjs';
+import { DepartmentDto } from '../../models/department';
 export interface ErrorResponse {
   status: string;
   message: string;
   details: string;
 }
-
 @Injectable({
   providedIn: 'root'
 })
-export class DepartmentsService {
+export class DepartmentService {
 
-  private baseUrl = 'http://localhost:8080/departments';
+  baseUrl: string = 'http://localhost:8080/departments';
 
   constructor(private httpClient: HttpClient) { }
 
-  getAllDepartments() :Observable<Department[]> {
-    return this.httpClient.get<Department[]>(`${this.baseUrl}/all`).pipe(
-          tap(response => console.log('Departments:', response)),
-          catchError(this.handleError)
-        );;
+  getDepartments():Observable<DepartmentDto[]> {
+    return this.httpClient.get<DepartmentDto[]>(`${this.baseUrl}/all`).pipe(
+      // tap(response => console.log('Departments:', response)),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

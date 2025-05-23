@@ -8,15 +8,12 @@ import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.repository.ClientRepository;
+import com.tfg.back.repository.DoctorRepository;
 import com.tfg.back.repository.NotificationRepository;
-import com.tfg.back.service.ClientService;
-import com.tfg.back.service.DoctorService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -24,12 +21,12 @@ import java.util.List;
 public class AppointmentMapper {
 
     private final ClientRepository clientRepository;
-    private final DoctorService doctorService;
+    private final DoctorRepository doctorService;
     private final NotificationRepository notificationRepository;
 
     public Appointment toEntity(AppointmentCreateDto dto, String email) {
         Client client = findClientByEmail(email);
-        Doctor doctor = doctorService.getDoctorByEmail(dto.getDoctorEmail());
+        Doctor doctor = doctorService.findByEmail(dto.getDoctorEmail()).get();
         Department department = doctor.getDepartment();
         createAppointmentNotification(client, dto.getAppointmentDateTime());
         return Appointment.builder()

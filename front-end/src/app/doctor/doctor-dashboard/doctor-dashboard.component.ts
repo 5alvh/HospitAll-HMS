@@ -1,197 +1,253 @@
-import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DoctorService } from '../../services/doctor-services/doctor.service';
+import { DoctorDtoGet } from '../../models/doctor-dto-get';
+import { AppointmentDtoGet } from '../../models/appointment-dto-get';
+import { AppointmentStatus } from '../../models/enums/appointment-status';
+import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
 
+interface Appointment {
+  id: number;
+  clientFullName: string;
+  date: Date;
+  time: string;
+  status: AppointmentStatus;
+  reason?: string;
+}
+
+interface Prescription {
+  id: number;
+  clientEmail: string;
+  prescribedTo: string;
+  medicationName: string;
+  dosage: string;
+  frequency: string;
+  endDate: string;
+  notes: string;
+  createdAt: string;
+  isPublished: boolean;
+}
+
+interface Feedback {
+  id: number;
+  patientName: string;
+  rating: number;
+  comment: string;
+  date: Date;
+}
 
 @Component({
   selector: 'app-doctor-dashboard',
-  imports: [FormsModule, NgIf, NgFor, NgClass, TitleCasePipe],
+  imports: [FormsModule, NgIf, NgFor, NgClass, DatePipe, CommonModule],
   templateUrl: './doctor-dashboard.component.html',
   styleUrl: './doctor-dashboard.component.scss',
   providers: [DatePipe],
 })
 export class DoctorDashboardComponent {
-    doctor = {
-    name: 'Dr. Sarah Johnson',
-    id: 'MD12345',
-    specialization: 'Cardiology',
-    department: 'Cardiac Care Unit',
-    isOnline: true,
-    workingHours: '8:00 AM - 5:00 PM',
-    teleconsultation: true
-  };
 
-  appointmentsToday = [
-    { 
-      time: '09:00 AM', 
-      patient: 'James Wilson', 
-      patientId: 'P12001', 
-      status: 'confirmed', 
-      reason: 'Follow-up after surgery',
-      isNew: false
+
+  activeSection: string = 'dashboard';
+
+  // Doctor information
+  doctor!: DoctorDtoGet;
+
+  // Appointments data
+  appointments: Appointment[] = [];
+
+  // Prescriptions data
+  prescriptions: MedicalPrescriptionDtoGet[] = [];
+
+  // Feedback data
+  feedback: Feedback[] = [
+    {
+      id: 1,
+      patientName: 'Alice Johnson',
+      rating: 5,
+      comment: 'Dr. Smith was very thorough and took time to explain everything clearly.',
+      date: new Date('2025-05-18')
     },
-    { 
-      time: '10:30 AM', 
-      patient: 'Emma Thompson', 
-      patientId: 'P12034', 
-      status: 'confirmed', 
-      reason: 'Chest pain evaluation',
-      isNew: true
-    },
-    { 
-      time: '11:45 AM', 
-      patient: 'Robert Chen', 
-      patientId: 'P11087', 
-      status: 'no-show', 
-      reason: 'Annual check-up',
-      isNew: false
-    },
-    { 
-      time: '02:15 PM', 
-      patient: 'Maria Garcia', 
-      patientId: 'P12567', 
-      status: 'confirmed', 
-      reason: 'ECG interpretation',
-      isNew: false
-    },
-    { 
-      time: '03:30 PM', 
-      patient: 'John Smith', 
-      patientId: 'P10045', 
-      status: 'canceled', 
-      reason: 'Medication review',
-      isNew: false
-    },
-    { 
-      time: '04:45 PM', 
-      patient: 'Fatima Ahmed', 
-      patientId: 'P13099', 
-      status: 'confirmed', 
-      reason: 'Teleconsultation - Blood pressure monitoring',
-      isNew: false
+    {
+      id: 2,
+      patientName: 'Dave Brown',
+      rating: 4,
+      comment: 'Good experience overall, though had to wait a bit longer than expected.',
+      date: new Date('2025-05-15')
     }
   ];
 
-  upcomingAppointments = [
-    { 
-      date: 'Tomorrow',
-      count: 8,
-      firstAppointment: '08:15 AM',
-      lastAppointment: '04:30 PM'
-    },
-    { 
-      date: 'May 15, 2025',
-      count: 6,
-      firstAppointment: '09:00 AM',
-      lastAppointment: '03:45 PM'
-    },
-    { 
-      date: 'May 16, 2025',
-      count: 5,
-      firstAppointment: '10:30 AM',
-      lastAppointment: '05:00 PM'
-    }
-  ];
-  
-  selectedPatient!: any;
-  activeTab = 'appointments';
-  searchTerm = '';
-  notifications = [
-    { type: 'lab', message: 'New lab results for Robert Chen', time: '1 hour ago', read: false },
-    { type: 'appointment', message: 'New appointment request from Lisa Wong', time: '3 hours ago', read: false },
-    { type: 'message', message: 'Message from Nurse Rodriguez re: patient Maria Garcia', time: '5 hours ago', read: true }
-  ];
-  patientSearchResults!: any[];
-  
-  // Mock data for charts
-  monthlyAppointments = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-    data: [65, 59, 80, 81, 56]
+  // Form models
+  newAppointment: any = {
+    patientName: '',
+    date: null,
+    time: '',
+    notes: ''
   };
-  
-  patientOutcomes = {
-    labels: ['Improved', 'Stable', 'Referred', 'Follow-up Required'],
-    data: [45, 25, 15, 15]
+
+  newPrescription: any = {
+    patientId: '',
+    patientName: '',
+    medications: [{ name: '', dosage: '', frequency: '', duration: '' }],
+    instructions: ''
   };
-showNotifications: any;
-  
-  constructor() { }
+
+  // Dashboard stats
+  dashboardStats = {
+    todayAppointments: 0,
+    pendingPrescriptions: 0,
+    totalPatients: 0,
+    averageRating: 0
+  };
+  isLoading: boolean = true;
+
+  constructor(private docService: DoctorService) { }
 
   ngOnInit(): void {
-    // Initialize dashboard data
+    this.docService.getProfile().subscribe({
+      next: (response) => {
+        this.doctor = response;
+        this.isLoading = false;
+        this.doctor.appointments.forEach((appointment: AppointmentDtoGet) => {
+          const date = new Date(appointment.appointmentDateTime);
+          this.appointments.push({
+            id: appointment.id,
+            clientFullName: appointment.clientFullName,
+            date: date,
+            time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            status: appointment.status,
+            reason: appointment.reason
+          });
+        });
+        this.prescriptions = this.doctor.prescriptionsGiven;
+        this.calculateDashboardStats()
+      },
+      error: (error) => {
+        console.error('Error fetching doctor profile:', error);
+      }
+    });
   }
-  
-  toggleOnlineStatus(): void {
-    this.doctor.teleconsultation = !this.doctor.teleconsultation;
+
+  // Change active section
+  changeSection(section: string): void {
+    this.activeSection = section;
   }
-  
-  changeTab(tab: string): void {
-    this.activeTab = tab;
+
+  // Calculate dashboard statistics
+  calculateDashboardStats(): void {
+    const today = new Date();
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
+    this.dashboardStats.todayAppointments = this.appointments.filter(appointment => {
+      const appointmentDate = appointment.date;
+      return (
+        appointmentDate.getFullYear() === todayYear &&
+        appointmentDate.getMonth() === todayMonth &&
+        appointmentDate.getDate() === todayDate
+      );
+    }).length;
+
+    this.dashboardStats.pendingPrescriptions = this.prescriptions.filter(
+      prescription => !prescription.isPublished
+    ).length;
+
+    this.dashboardStats.totalPatients = 150;
+
+    const totalRating = this.feedback.reduce((sum, item) => sum + item.rating, 0);
+    this.dashboardStats.averageRating = totalRating / this.feedback.length;
   }
-  
-  viewPatientDetails(patient: any): void {
-    this.selectedPatient = {
-      name: patient.patient,
-      id: patient.patientId,
-      age: 58,
-      gender: 'Male',
-      bloodType: 'O+',
-      allergies: ['Penicillin', 'Aspirin'],
-      diagnoses: [
-        { date: '2024-12-10', condition: 'Hypertension', notes: 'Prescribed ACE inhibitors' },
-        { date: '2025-01-25', condition: 'Mild Coronary Artery Disease', notes: 'Lifestyle modifications recommended' }
-      ],
-      medications: [
-        { name: 'Lisinopril', dosage: '10mg', frequency: 'Once daily', startDate: '2024-12-10' },
-        { name: 'Aspirin', dosage: '81mg', frequency: 'Once daily', startDate: '2025-01-25' },
-        { name: 'Atorvastatin', dosage: '20mg', frequency: 'Once daily at bedtime', startDate: '2025-01-25' }
-      ],
-      labResults: [
-        { date: '2025-04-15', test: 'Complete Blood Count', result: 'Normal', notes: '' },
-        { date: '2025-04-15', test: 'Lipid Panel', result: 'LDL: 140 mg/dL (High)', notes: 'Consider increasing statin dosage' },
-        { date: '2025-03-01', test: 'ECG', result: 'Sinus rhythm with occasional PVCs', notes: 'Monitor and repeat in 3 months' }
-      ],
-      visits: [
-        { date: '2025-01-25', reason: 'Chest pain', diagnosis: 'Mild Coronary Artery Disease', treatment: 'Medication and lifestyle changes' },
-        { date: '2024-12-10', reason: 'Annual check-up', diagnosis: 'Hypertension', treatment: 'Started on Lisinopril' }
-      ]
+
+  // Book a new appointment
+  bookAppointment(): void {
+    const id = this.appointments.length + 1;
+    const newAppointment: Appointment = {
+      id,
+      clientFullName: this.newAppointment.patientName,
+      date: this.newAppointment.date,
+      time: this.newAppointment.time,
+      status: AppointmentStatus.SCHEDULED,
+      reason: this.newAppointment.notes
     };
+
+    this.appointments.push(newAppointment);
+
+    // Reset form
+    this.newAppointment = {
+      patientName: '',
+      date: null,
+      time: '',
+      notes: ''
+    };
+
+    // Recalculate dashboard stats
+    this.calculateDashboardStats();
+
+    // In a real app, you would submit this to your backend API
+    console.log('Appointment booked:', newAppointment);
   }
-  
-  closePatientDetails(): void {
-    this.selectedPatient = null;
+
+  // Create a new prescription
+  createPrescription(): void {
+    const id = this.prescriptions.length + 1;
+    const newPrescription: Prescription = {
+      id,
+      clientEmail: 'parseInt(this.newPrescription.patientId)',
+      prescribedTo: this.newPrescription.patientName,
+      medicationName: this.newPrescription.medications[0].name,
+      dosage: this.newPrescription.medications[0].dosage,
+      frequency: this.newPrescription.medications[0].frequency,
+      endDate: this.newPrescription.medications[0].duration,
+      notes: this.newPrescription.instructions,
+      createdAt: 'new Date()',
+      isPublished: false
+    };
+
+
+    // Reset form
+    this.newPrescription = {
+      patientId: '',
+      patientName: '',
+      medications: [{ name: '', dosage: '', frequency: '', duration: '' }],
+      instructions: ''
+    };
+
+    // Recalculate dashboard stats
+    this.calculateDashboardStats();
+
+    // In a real app, you would submit this to your backend API
+    console.log('Prescription created:', newPrescription);
   }
-  get unreadNotificationsLength(): number {
-  return this.notifications.filter(n => !n.read).length;
-}
-  searchPatients(): void {
-    // Mock patient search
-    if (this.searchTerm.length > 2) {
-      this.patientSearchResults = [
-        { name: 'James Wilson', id: 'P12001', lastVisit: '2025-05-01' },
-        { name: 'Jane Wilson', id: 'P12002', lastVisit: '2025-04-15' },
-        { name: 'Jack Wilson', id: 'P12003', lastVisit: '2025-03-22' }
-      ];
-    } else {
-      this.patientSearchResults = [];
+
+  // Add medication field to prescription form
+  addMedication(): void {
+    this.newPrescription.medications.push({
+      name: '',
+      dosage: '',
+      frequency: '',
+      duration: ''
+    });
+  }
+
+  // Remove medication field from prescription form
+  removeMedication(index: number): void {
+    if (this.newPrescription.medications.length > 1) {
+      this.newPrescription.medications.splice(index, 1);
     }
   }
-  
-  markAllNotificationsAsRead(): void {
-    this.notifications.forEach(notification => notification.read = true);
-  }
-  
-  // Mock functions for e-prescriptions and orders
-  createNewPrescription(): void {
-    console.log('Creating new prescription');
-  }
-  
-  orderLabTest(): void {
-    console.log('Ordering lab test');
-  }
-  
-  orderImaging(): void {
-    console.log('Ordering imaging');
+
+  // Publish a prescription
+  publishPrescription(id: number): void {
+    const index = this.prescriptions.findIndex(p => p.id === id);
+    if (index !== -1) {
+      this.prescriptions[index].isPublished = true;
+
+      // Recalculate dashboard stats
+      this.calculateDashboardStats();
+
+      // In a real app, you would submit this to your backend API
+      console.log('Prescription published:', this.prescriptions[index]);
+    }
   }
 }

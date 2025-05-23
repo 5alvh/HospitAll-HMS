@@ -1,5 +1,6 @@
 package com.tfg.back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,8 +25,10 @@ public class WorkingHours {
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
+
     @ManyToOne
     @JoinColumn(name = "doctor_id")
+    @JsonIgnore
     private Doctor doctor;
 
     @OneToMany(mappedBy = "workingHours", cascade = CascadeType.ALL, orphanRemoval = true)

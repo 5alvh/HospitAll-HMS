@@ -1,8 +1,10 @@
 package com.tfg.back.service.serviceImpl;
 
 import com.tfg.back.enums.AppointmentStatus;
+import com.tfg.back.enums.AppointmentType;
 import com.tfg.back.enums.SearchType;
 import com.tfg.back.exceptions.appointment.AppointmentNotFoundException;
+import com.tfg.back.exceptions.appointment.SlotAlreadyBooked;
 import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
@@ -10,6 +12,7 @@ import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.repository.AppointmentRepository;
+import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.AppointmentService;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,13 +35,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final DoctorRepository doctorRepository;
     private final NotificationRepository notificationRepository;
+    private final ClientRepository clientRepository;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, DoctorRepository doctorRepository, NotificationRepository notificationRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, DoctorRepository doctorRepository, NotificationRepository notificationRepository, ClientRepository clientRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.doctorRepository = doctorRepository;
         this.notificationRepository = notificationRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
@@ -94,6 +100,68 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public AppointmentDtoGet bookAppointment(Long doctorId, LocalDate date, LocalTime startTime, Long clientId, AppointmentType type, String reason) {
+        LocalDateTime appointmentDateTime = LocalDateTime.of(date, startTime);
+
+        // Check if slot is already taken
+        boolean exists = appointmentRepository.existsByDoctorIdAndAppointmentDateTime(
+                doctorId, appointmentDateTime);
+
+        if (exists) {
+            throw new SlotAlreadyBooked("The selected slot is already booked.");
+        }
+
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new UserNotFoundException(doctorId, SearchType.ID));
+
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new UserNotFoundException(clientId, SearchType.ID));
+
+        Appointment appointment = Appointment.builder()
+                .doctor(doctor)
+                .client(client)
+                .department(doctor.getDepartment())
+                .appointmentDateTime(appointmentDateTime)
+                .type(type)
+                .reason(reason)
+                .status(AppointmentStatus.SCHEDULED)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return appointmentMapper.toDtoGet(appointmentRepository.save(appointment));
+    }
+
+
+
+
+    private Appointment getAppointment(Long id) {
+        return appointmentRepository.findById(id)
+                .orElseThrow(()-> new AppointmentNotFoundException(id));
+    }
+
+    private Doctor getDoctor(Long id) {
+        return doctorRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
+    }
+
+    private Doctor getDoctor(String email) {
+        return doctorRepository.findByEmail(email)
+                .orElseThrow(()-> new UserNotFoundException(email, SearchType.EMAIL));
+    }
+
+    private void createAppointmentNotification(User user) {
+        Notification notification = new Notification();
+        notification.setTitle("Appointment Cancelled");
+        notification.setMessage("Appointment cancelled by: " + user.getFullName() + " at: " + new Date());
+        notification.setSeen(false);
+        notification.setType("APPOINTMENT");
+        notification.setDate(LocalDateTime.now());
+        notification.setUser(user);
+        notificationRepository.save(notification);
+    }
+
+    /*
+    @Override
     public List<LocalDateTime> getAvailableSlots(Long doctorId, LocalDate date) {
         // Get doctor's working hours for that day
         Doctor doctor = getDoctor(doctorId);
@@ -136,30 +204,5 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return availableSlots;
     }
-
-    private Appointment getAppointment(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow(()-> new AppointmentNotFoundException(id));
-    }
-
-    private Doctor getDoctor(Long id) {
-        return doctorRepository.findById(id)
-                .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
-    }
-
-    private Doctor getDoctor(String email) {
-        return doctorRepository.findByEmail(email)
-                .orElseThrow(()-> new UserNotFoundException(email, SearchType.EMAIL));
-    }
-
-    private void createAppointmentNotification(User user) {
-        Notification notification = new Notification();
-        notification.setTitle("Appointment Cancelled");
-        notification.setMessage("Appointment cancelled by: " + user.getFullName() + " at: " + new Date());
-        notification.setSeen(false);
-        notification.setType("APPOINTMENT");
-        notification.setDate(LocalDateTime.now());
-        notification.setUser(user);
-        notificationRepository.save(notification);
-    }
+     */
 }

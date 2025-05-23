@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { Router } from '@angular/router';
 import { LocalStorageManagerService } from '../auth/local-storage-manager.service';
+import { ClientDtoUpdate } from '../../models/client-dto-update';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,15 @@ export class ClientService {
 
   constructor(private httpClient: HttpClient, private router: Router, private localStorageManager: LocalStorageManagerService) { }
 
+  updateProfile(client: ClientDtoUpdate, id: number): Observable<ClientDtoGet> {
+    return this.httpClient.put<ClientDtoGet>(`${this.baseUrl}/${id}`, client).pipe(
+      tap((response) => this.setPatient(response)),
+      catchError((error) => {
+        console.error('Error updating profile:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
   getProfile(): Observable<ClientDtoGet> {
     return this.httpClient.get<ClientDtoGet>(`${this.baseUrl}/profile`).pipe(
@@ -48,5 +58,14 @@ export class ClientService {
 
   getPatient(): ClientDtoGet {
     return this.patientSource.getValue();
+  }
+
+  changePassword(passwords: { currentPassword: string, newPassword: string }): Observable<any> {
+    return this.httpClient.put(`${this.baseUrl}/change-password`, passwords).pipe(
+      catchError((error) => {
+        console.error('Error changing password:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }

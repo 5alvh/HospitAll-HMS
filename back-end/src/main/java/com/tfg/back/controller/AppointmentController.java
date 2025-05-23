@@ -1,9 +1,12 @@
 package com.tfg.back.controller;
 
+import com.tfg.back.model.Appointment;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.service.AppointmentService;
+import com.tfg.back.utils.BookAppointmentRequest;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -54,17 +57,7 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/available")
-    public ResponseEntity<List<LocalDateTime>> getAvailableSlots(
-            @RequestParam Long doctorId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ) {
-        List<LocalDateTime> slots = appointmentService.getAvailableSlots(doctorId, date);
-        if (slots.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(slots);
-    }
+
 
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long id, Authentication authentication) {
@@ -79,4 +72,23 @@ public class AppointmentController {
         appointmentService.confirmAppointment(id, clientEmail);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/book-appointment")
+    public ResponseEntity<AppointmentDtoGet> bookAppointment(@RequestBody BookAppointmentRequest request){
+        return ResponseEntity.ok(appointmentService.bookAppointment(request.doctorId(), request.date(), request.startTime(), request.clientId(), request.type(),request.reason()));
+    }
+
+    /*
+    @GetMapping("/available")
+    public ResponseEntity<List<LocalDateTime>> getAvailableSlots(
+            @RequestParam Long doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        List<LocalDateTime> slots = appointmentService.getAvailableSlots(doctorId, date);
+        if (slots.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(slots);
+    }
+     */
 }

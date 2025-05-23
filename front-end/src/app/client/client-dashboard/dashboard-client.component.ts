@@ -1,4 +1,4 @@
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientDtoGet } from '../../models/client-dto-get';
@@ -8,32 +8,74 @@ import { Router, RouterLink } from '@angular/router';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import { NotificationDto } from '../../models/notification-dto';
 import { NotificationService } from '../../services/notifications-service/notification.service';
+import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
+import { LabResultDtoGet } from '../../models/lab-result-dto-get';
+import { AppointmentService } from '../../services/client-services/appointment.service';
+import Swal from 'sweetalert2';
+import { AppointmentStatus } from '../../models/enums/appointment-status';
 
 @Component({
   selector: 'app-dashboard-client',
-  imports: [NgIf, NgFor, FormsModule, RouterLink],
+  imports: [NgIf, NgFor, FormsModule, RouterLink, TitleCasePipe, DatePipe],
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
-  providers: [DatePipe],
+  providers: [DatePipe, TitleCasePipe],
   encapsulation: ViewEncapsulation.None
 
 })
 export class DashboardClientComponent implements OnInit {
 
+  hideCancelled = true;
   showOptions = false;
   title = 'MediCare Hospital Dashboard';
   activeSection = 'dashboard';
   patient!: ClientDtoGet;
   isLoading: boolean = true;
+  notifications!: NotificationDto[];
+  medications: MedicalPrescriptionDtoGet[] = [];
   upcomingAppointments: AppointmentDtoGet[] = [];
   clientService = inject(ClientService);
   pastAppointments: AppointmentDtoGet[] = [];
-  topUnseenNotifications: NotificationDto[]=[];
+  topUnseenNotifications: NotificationDto[] = [];
+  labResults: LabResultDtoGet[] = [];
+  selectedAppointment: AppointmentDtoGet | null = null;
+  showDetails(appointment: AppointmentDtoGet) {
+    this.selectedAppointment = appointment;
+  }
+get filteredUpcomingAppointments() {
+  return this.hideCancelled
+    ? this.upcomingAppointments.filter(a => a.status !== 'CANCELLED')
+    : this.upcomingAppointments;
+}
+  closeDetails() {
+    this.selectedAppointment = null;
+  }
 
-  constructor(private datePipe: DatePipe, private router: Router, private localS: LocalStorageManagerService, private notificationsService: NotificationService) { }
+  downloadAppointment(appointment: AppointmentDtoGet) {
+    const summary = `
+    Appointment Summary
+    -------------------
+    Client: ${appointment.clientFullName}
+    Doctor: ${appointment.doctorFullName}
+    Department: ${appointment.departmentName}
+    Date & Time: ${appointment.appointmentDateTime}
+    Reason: ${appointment.reason}
+    Status: ${appointment.status}
+    Type: ${appointment.type}
+  `;
+
+    const blob = new Blob([summary], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `appointment_${appointment.id}.txt`;
+    link.click();
+  }
+
+  constructor(private datePipe: DatePipe,
+    private router: Router,
+    private localS: LocalStorageManagerService, private notificationsService: NotificationService, private appointmentService: AppointmentService) { }
 
   ngOnInit(): void {
-    console.log('HOLA');
     this.getProfile();
   }
 
@@ -83,9 +125,10 @@ export class DashboardClientComponent implements OnInit {
 
         this.patient = response;
         this.notifications = this.patient.notifications;
+        this.labResults = this.patient.labResults;
         this.refreshTopUnseenNotifications();
-        console.log('Top unseen notifications:', this.topUnseenNotifications);
 
+        this.medications = this.patient.prescriptions;
         if (this.patient && this.patient.appointments) {
           this.patient.appointments.forEach(appointment => {
 
@@ -104,6 +147,8 @@ export class DashboardClientComponent implements OnInit {
             }
           });
         }
+        console.log('Top unseen notifications:', this.topUnseenNotifications);
+        console.log('All prescriptions:', this.patient.prescriptions);
         console.log('Upcoming Appointments:', this.upcomingAppointments);
         console.log('Past Appointments:', this.pastAppointments);
         console.log('Patient:', this.patient.notifications);
@@ -154,54 +199,41 @@ export class DashboardClientComponent implements OnInit {
     return `${formattedDate} ${formattedTime}`;
   }
 
-  
 
-  // Notifications
-  notifications!: NotificationDto[];
-  // Medications
-  medications = [
-    {
-      name: 'Lisinopril',
-      dosage: '10mg',
-      frequency: 'Once daily',
-      startDate: '3 April 2025',
-      endDate: '3 July 2025',
-      prescribedBy: 'Dr. Sarah Johnson'
-    },
-    {
-      name: 'Atorvastatin',
-      dosage: '20mg',
-      frequency: 'Once daily at bedtime',
-      startDate: '3 April 2025',
-      endDate: 'Ongoing',
-      prescribedBy: 'Dr. Sarah Johnson'
-    }
-  ];
+  cancelAppointment(appId: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Know that if you cancel your appointment, you can't undo it and must request a new one.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.appointmentService.cancelAppointment(appId).subscribe({
+          next: () => {
+            const index = this.upcomingAppointments.findIndex(appointment => appointment.id === appId);
+            this.upcomingAppointments[index].status = AppointmentStatus.CANCELLED;
+            Swal.fire(
+              'Cancelled!',
+              'Your appointment has been cancelled.',
+              'success'
+            );
+          },
+          error: () => {
+            Swal.fire(
+              'Error!',
+              'There was an issue cancelling your appointment.',
+              'error'
+            );
+          }
+        });
+      }
+    });
+  }
 
-  // Lab results
-  labResults = [
-    {
-      id: 'LAB-2025-456',
-      test: 'Comprehensive Metabolic Panel',
-      date: '3 April 2025',
-      status: 'Completed',
-      resultUrl: 'assets/results/lab-2025-456.pdf'
-    },
-    {
-      id: 'LAB-2025-457',
-      test: 'Lipid Profile',
-      date: '3 April 2025',
-      status: 'Completed',
-      resultUrl: 'assets/results/lab-2025-457.pdf'
-    },
-    {
-      id: 'LAB-2025-490',
-      test: 'HbA1c',
-      date: '10 May 2025',
-      status: 'Pending',
-      resultUrl: ''
-    }
-  ];
 
   // Invoices
   invoices = [

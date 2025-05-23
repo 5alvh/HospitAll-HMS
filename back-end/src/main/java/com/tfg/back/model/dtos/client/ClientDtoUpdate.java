@@ -23,13 +23,6 @@ public class ClientDtoUpdate {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String password;
-
-    @NotNull(message = "Password confirmation is required")
-    private String passwordConfirmation;
-
 
     @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
     private String phoneNumber;
@@ -42,6 +35,5 @@ public class ClientDtoUpdate {
 
     private String address;
 
-    //TODO: UPDATE PASSWORD
     private BloodType bloodType;
 }

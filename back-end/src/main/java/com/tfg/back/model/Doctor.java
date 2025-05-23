@@ -45,4 +45,8 @@ public class Doctor extends User {
     @JsonIgnore
     private List<MedicalPrescription> prescriptionsGiven = new ArrayList<>();
 
+    @OneToMany(mappedBy = "orderedBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<LabResult> labResultsGiven = new ArrayList<>();
+
 }

@@ -106,7 +106,7 @@ export class LoginComponent implements OnInit {
           console.error('Login error:', error);
           this.processing = false;
           this.loginError = true;
-          this.errorMessage = error?.error?.message || 'Invalid email or password. Please try again.';
+          this.errorMessage = error?.error?.error || 'Invalid email or password. Please try again.';
         }, 1500);
       }
     });
