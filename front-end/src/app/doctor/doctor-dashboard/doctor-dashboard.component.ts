@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DoctorService } from '../../services/doctor-services/doctor.service';
@@ -7,6 +7,7 @@ import { DoctorDtoGet } from '../../models/doctor-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { AppointmentStatus } from '../../models/enums/appointment-status';
 import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 
 interface Appointment {
   id: number;
@@ -30,12 +31,12 @@ interface Prescription {
   isPublished: boolean;
 }
 
-interface Feedback {
+export interface Feedback {
   id: number;
   patientName: string;
   rating: number;
   comment: string;
-  date: Date;
+  createdAt: Date;
 }
 
 @Component({
@@ -44,37 +45,22 @@ interface Feedback {
   templateUrl: './doctor-dashboard.component.html',
   styleUrl: './doctor-dashboard.component.scss',
   providers: [DatePipe],
+  encapsulation: ViewEncapsulation.None
 })
 export class DoctorDashboardComponent {
 
 
+  currentDate: Date = new Date();
+  appointments: any[] = [];
   activeSection: string = 'dashboard';
 
-  // Doctor information
+  showUserMenu: boolean = false;
   doctor!: DoctorDtoGet;
-
-  // Appointments data
-  appointments: Appointment[] = [];
-
-  // Prescriptions data
   prescriptions: MedicalPrescriptionDtoGet[] = [];
 
   // Feedback data
   feedback: Feedback[] = [
-    {
-      id: 1,
-      patientName: 'Alice Johnson',
-      rating: 5,
-      comment: 'Dr. Smith was very thorough and took time to explain everything clearly.',
-      date: new Date('2025-05-18')
-    },
-    {
-      id: 2,
-      patientName: 'Dave Brown',
-      rating: 4,
-      comment: 'Good experience overall, though had to wait a bit longer than expected.',
-      date: new Date('2025-05-15')
-    }
+    
   ];
 
   // Form models
@@ -101,7 +87,7 @@ export class DoctorDashboardComponent {
   };
   isLoading: boolean = true;
 
-  constructor(private docService: DoctorService) { }
+  constructor(private docService: DoctorService, private localStorageService: LocalStorageManagerService, private router: Router) { }
 
   ngOnInit(): void {
     this.docService.getProfile().subscribe({
@@ -113,6 +99,7 @@ export class DoctorDashboardComponent {
           this.appointments.push({
             id: appointment.id,
             clientFullName: appointment.clientFullName,
+            appointmentDateTime: appointment.appointmentDateTime, // Keep the original datetime string
             date: date,
             time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: appointment.status,
@@ -120,6 +107,7 @@ export class DoctorDashboardComponent {
           });
         });
         this.prescriptions = this.doctor.prescriptionsGiven;
+        this.feedback = this.doctor.feedbacksReceived || [];
         this.calculateDashboardStats()
       },
       error: (error) => {
@@ -153,8 +141,14 @@ export class DoctorDashboardComponent {
       prescription => !prescription.isPublished
     ).length;
 
-    this.dashboardStats.totalPatients = 150;
-
+    this.docService.getNumberOfPatientsByDoctorId(this.doctor.id).subscribe({
+      next: (response) => {
+        this.dashboardStats.totalPatients = response;
+      },
+      error: (error) => {
+        console.error('Error fetching number of patients:', error);
+      }
+    });
     const totalRating = this.feedback.reduce((sum, item) => sum + item.rating, 0);
     this.dashboardStats.averageRating = totalRating / this.feedback.length;
   }
@@ -249,5 +243,154 @@ export class DoctorDashboardComponent {
       // In a real app, you would submit this to your backend API
       console.log('Prescription published:', this.prescriptions[index]);
     }
+  }
+
+
+  
+
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  getPageTitle(): string {
+    const titles: { [key: string]: string } = {
+      'dashboard': 'Dashboard Overview',
+      'calendar': 'Appointment Calendar',
+      'appointments': 'Appointments Management',
+      'book-appointment': 'Book New Appointment',
+      'prescriptions': 'Medical Prescriptions',
+      'create-prescription': 'Create Prescription',
+      'profile': 'My Profile',
+      'feedback': 'Patient Feedback',
+      'support': 'Support & Help'
+    };
+    return titles[this.activeSection] || 'Dashboard';
+  }
+
+  getAppointmentTrend(): string {
+    return this.dashboardStats.todayAppointments > 5 ? 'Busy day' : 'Manageable schedule';
+  }
+
+  getTodaysAppointments(): any[] {
+    const today = new Date();
+    return this.appointments.filter(appointment => {
+      const appointmentDate = appointment.date;
+      return (
+        appointmentDate.getFullYear() === today.getFullYear() &&
+        appointmentDate.getMonth() === today.getMonth() &&
+        appointmentDate.getDate() === today.getDate()
+      );
+    });
+  }
+
+  getCurrentMonth(): string {
+    return this.currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  }
+
+  getCalendarDays(): any[] {
+    const days = [];
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth();
+
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    const startDayOfWeek = firstDayOfMonth.getDay();
+    const endDay = lastDayOfMonth.getDate();
+
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
+    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+      const date = new Date(year, month - 1, prevMonthLastDay - i);
+      days.push(this.buildDay(date, false));
+    }
+
+    for (let i = 1; i <= endDay; i++) {
+      const date = new Date(year, month, i);
+      days.push(this.buildDay(date, true));
+    }
+
+    const remaining = 42 - days.length;
+    for (let i = 1; i <= remaining; i++) {
+      const date = new Date(year, month + 1, i);
+      days.push(this.buildDay(date, false));
+    }
+
+    console.log('Calendar days:', days);
+    return days;
+  }
+
+  buildDay(date: Date, isCurrentMonth: boolean): any {
+    const dayAppointments = this.appointments.filter(app => {
+      const appDate = new Date(app.appointmentDateTime);
+      
+      return appDate.getFullYear() === date.getFullYear() &&
+        appDate.getMonth() === date.getMonth() &&
+        appDate.getDate() === date.getDate();
+    });
+
+    const today = new Date();
+    const isToday =
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+
+    return {
+      date,
+      number: date.getDate(),
+      isCurrentMonth,
+      isToday,
+      hasAppointments: dayAppointments.length > 0,
+      appointments: dayAppointments.map(app => ({
+        time: new Date(app.appointmentDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        clientFullName: app.clientFullName,
+        status: app.status,
+      }))
+    };
+  }
+
+  previousMonth() {
+    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
+  }
+
+  nextMonth() {
+    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+  }
+  hasPrescription(appointmentId: number): boolean {
+    return this.prescriptions.some(p => p.id === appointmentId);
+  }
+
+  createPrescriptionForAppointment(appointment: any) {
+    this.newPrescription.patientName = appointment.clientFullName;
+    this.newPrescription.appointmentId = appointment.id;
+    this.changeSection('create-prescription');
+  }
+
+  getConnectedAppointment(prescriptionId: number): any {
+    const prescription = this.prescriptions.find(p => p.id === prescriptionId);
+    return prescription ? this.appointments.find(a => a.id === prescription.id) : null;
+  }
+
+  getPublishedPrescriptions(): any[] {
+    return this.prescriptions.filter(p => p.isPublished);
+  }
+
+  getDraftPrescriptions(): any[] {
+    return this.prescriptions.filter(p => !p.isPublished);
+  }
+
+  getRatingPercentage(rating: number): number {
+    const count = this.feedback.filter(f => f.rating === rating).length;
+    return this.feedback.length > 0 ? (count / this.feedback.length) * 100 : 0;
+  }
+
+  getRatingCount(rating: number): number {
+    return this.feedback.filter(f => f.rating === rating).length;
+  }
+
+  logout() {
+    this.localStorageService.clearAuth();
+    this.router.navigate(['/']);
+    console.log('Logging out...');
+
   }
 }

@@ -1,8 +1,10 @@
+import { AppointmentType } from "./enums/appointment-type";
 
 export class AppointmentCreateDto {
-    clientEmail!: string;
-    doctorEmail!: string;
-    appointmentDateTime!: Date;
+    doctorId!: number;
+    date!: Date;
+    startTime!: string;
+    type!: AppointmentType;
     reason?: string;
   
     constructor(init?: Partial<AppointmentCreateDto>) {

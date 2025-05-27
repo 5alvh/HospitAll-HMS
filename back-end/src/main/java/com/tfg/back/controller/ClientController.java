@@ -1,15 +1,13 @@
 package com.tfg.back.controller;
 
-import com.tfg.back.model.Client;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.service.ClientService;
-import com.tfg.back.utils.ChangePasswordRequest;
+import com.tfg.back.model.dtos.ChangePasswordRequest;
 import jakarta.validation.Valid;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,10 +101,12 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("suspend-account")
+    @PutMapping("/suspend-account")
     public ResponseEntity<Void> suspendAccount(Authentication authentication) {
         String email = authentication.getName();
         clientService.suspendClient(email);
         return ResponseEntity.noContent().build();
     }
+
+
 }

@@ -13,23 +13,22 @@ export class AppointmentService {
 
   constructor(private httpClient: HttpClient) { }
 
-  createAppointment(data: AppointmentCreateDto) {
-    return this.httpClient.post(this.baseUrl, data);
+  bookAppointment(appointment: AppointmentCreateDto): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/book-appointment`, appointment);
   }
 
-  getAvailableAppointments(doctorId: number, date: Date) {
-    return this.httpClient.get('http://localhost:8080/appointment');
+  getAvailableDoctors(departmentId: number, date: number): Observable<{ doctorFullName: string, doctorId: number }[]> {
+    return this.httpClient.post<{ doctorFullName: string, doctorId: number }[]>(
+      `${this.doctorBaseUrl}/available-doctors`,
+      { departmentId, date }
+    );
+  }
+
+  getAvailableSlots(doctorId: number, date: Date): Observable<{id: number, startTime: string, endTime: string}[]> {
+    return this.httpClient.post<any>(`${this.doctorBaseUrl}/available-slots`, { doctorId, date } );
   }
 
   cancelAppointment(appointmentId: number) {
     return this.httpClient.put(`${this.baseUrl}/${appointmentId}/cancel`, null);
-  }
-
-  getAvailableDoctors() :Observable<{doctorFullName: string, doctorId: number}[]> {
-    return this.httpClient.get<{doctorFullName: string, doctorId: number}[]>(`${this.doctorBaseUrl}/available-doctors`);
-  }
-
-  getAvailableSlots(doctorId: number, date: string): Observable<any> {
-    return this.httpClient.get(`${this.baseUrl}/available-slots`,{params: {doctorId, date}});
   }
 }

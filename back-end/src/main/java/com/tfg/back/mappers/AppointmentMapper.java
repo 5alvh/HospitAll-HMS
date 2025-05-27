@@ -22,13 +22,12 @@ public class AppointmentMapper {
 
     private final ClientRepository clientRepository;
     private final DoctorRepository doctorService;
-    private final NotificationRepository notificationRepository;
 
     public Appointment toEntity(AppointmentCreateDto dto, String email) {
         Client client = findClientByEmail(email);
-        Doctor doctor = doctorService.findByEmail(dto.getDoctorEmail()).get();
+        Doctor doctor = doctorService.findByEmail(dto.getDoctorEmail())
+                .orElseThrow(() -> new UserNotFoundException(dto.getDoctorEmail(), SearchType.EMAIL));
         Department department = doctor.getDepartment();
-        createAppointmentNotification(client, dto.getAppointmentDateTime());
         return Appointment.builder()
                 .client(client)
                 .doctor(doctor)
@@ -38,6 +37,7 @@ public class AppointmentMapper {
                 .status(AppointmentStatus.SCHEDULED)
                 .type(AppointmentType.IN_PERSON)
                 .createdAt(LocalDateTime.now())
+                .diagnosis("UNAVAILABLE")
                 .build();
     }
 
@@ -51,6 +51,7 @@ public class AppointmentMapper {
                 .status(appointment.getStatus())
                 .type(appointment.getType())
                 .departmentName(appointment.getDepartment().getName())
+                .diagnosis(appointment.getDiagnosis())
                 .build();
     }
 
@@ -64,16 +65,5 @@ public class AppointmentMapper {
         }
         return clientRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
-    }
-
-    private void createAppointmentNotification(User client, LocalDateTime date) {
-        Notification notification = new Notification();
-        notification.setTitle("New Appointment");
-        notification.setMessage("You have a new appointment:" + date);
-        notification.setType("APPOINTMENT");
-        notification.setSeen(false);
-        notification.setDate(LocalDateTime.now());
-        notification.setUser(client);
-        notificationRepository.save(notification);
     }
 }

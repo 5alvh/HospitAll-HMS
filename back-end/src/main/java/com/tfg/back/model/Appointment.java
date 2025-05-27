@@ -58,6 +58,9 @@ public class Appointment {
 
     private String reason;
 
+    @Column(length = 500)
+    private String diagnosis;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

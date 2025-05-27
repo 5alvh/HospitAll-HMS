@@ -1,21 +1,16 @@
 package com.tfg.back.controller;
 
-import com.tfg.back.model.Doctor;
 import com.tfg.back.model.TimeInterval;
 import com.tfg.back.model.dtos.EmailRequest;
-import com.tfg.back.model.dtos.doctor.AvailableDoctorGet;
-import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
-import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
+import com.tfg.back.model.dtos.client.ClientDtoGet;
+import com.tfg.back.model.dtos.doctor.*;
 import com.tfg.back.service.DoctorService;
-import com.tfg.back.utils.AvailableDoctorsRequest;
-import com.tfg.back.utils.AvailableSlotsRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -62,13 +57,20 @@ public class DoctorController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/available-doctors")
+    @PostMapping("/available-doctors")
     public ResponseEntity<List<AvailableDoctorGet>> getAvailableDoctors(@RequestBody AvailableDoctorsRequest request) {
-        return ResponseEntity.ok(doctorService.getAvailableDoctors(request.departmentName(), request.date()));
+        return ResponseEntity.ok(doctorService.getAvailableDoctors(request.departmentId(), request.date()));
     }
 
-    @GetMapping("/available-slots")
+    @PostMapping("/available-slots")
     public ResponseEntity<List<TimeInterval>> getAvailableSlotsByDoctorIdAndDate(@RequestBody AvailableSlotsRequest request){
         return ResponseEntity.ok(doctorService.getAvailableSlots(request.doctorId(), request.date()));
     }
+
+    @GetMapping("/get-doctors/{id}")
+    public ResponseEntity<List<VisitedDoctorGet>> getDoctors(@PathVariable Long id) {
+        return ResponseEntity.ok(doctorService.getDoctorsClientVisited(id));
+    }
+
+
 }

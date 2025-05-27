@@ -29,7 +29,6 @@ public class Client extends User {
     @Column(nullable = false, length = 20)
     private MembershipLevel membershipLevel;
 
-
     @Embedded
     private EmergencyContact emergencyContact;
 
@@ -47,5 +46,7 @@ public class Client extends User {
     @JsonIgnore
     private List<LabResult> labResultsReceived = new ArrayList<>();
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedBack> feedbacksWritten = new ArrayList<>();
 }
 

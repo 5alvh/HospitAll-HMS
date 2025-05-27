@@ -4,6 +4,7 @@ import com.tfg.back.exceptions.appointment.AppointmentNotFoundException;
 import com.tfg.back.exceptions.appointment.SlotAlreadyBooked;
 import com.tfg.back.exceptions.department.DepartmentAlreadyExistsException;
 import com.tfg.back.exceptions.department.DepartmentNotFoundException;
+import com.tfg.back.exceptions.feedback.FeedbackNotFoundException;
 import com.tfg.back.exceptions.labResult.LabResultNotFoundException;
 import com.tfg.back.exceptions.medicalPrescription.PrescriptionNotFoundException;
 import com.tfg.back.exceptions.notification.NotificationNotFoundException;
@@ -211,5 +212,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(FeedbackNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleFeedbackNotFoundException(FeedbackNotFoundException ex, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

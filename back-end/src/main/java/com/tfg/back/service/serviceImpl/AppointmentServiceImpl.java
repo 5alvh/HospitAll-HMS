@@ -16,17 +16,15 @@ import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.AppointmentService;
+import com.tfg.back.model.dtos.appointment.DiagnosisRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -48,11 +46,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDtoGet createAppointment(AppointmentCreateDto appointment, String email) {
-        //Check if doctor exists
         Doctor doctor = getDoctor(appointment.getDoctorEmail());
         Appointment newAppointment = appointmentMapper.toEntity(appointment, email);
         Appointment savedAppointment = appointmentRepository.save(newAppointment);
-
+        createAppointmentNotification(savedAppointment.getClient(), "New Appointment!!", "You have a new appointment:" + savedAppointment.getAppointmentDateTime());
         return appointmentMapper.toDtoGet(savedAppointment);
     }
 
@@ -84,7 +81,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         }else {
             throw new UnauthorizedToPerformThisAction("You are not authorized to cancel this appointment");
         }
-
     }
 
     @Override
@@ -93,14 +89,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointment.getDoctor().getEmail().equals(email) && appointment.isScheduled()){
             appointment.setStatus(AppointmentStatus.CONFIRMED);
             appointmentRepository.save(appointment);
-            createAppointmentNotification(appointment.getClient());
+            createAppointmentNotification(appointment.getClient(),
+                    "Appointment Cancelled", "Appointment cancelled by: " +
+                    appointment.getClient().getFullName() + " at: " + new Date());
         }else {
             throw new UnauthorizedToPerformThisAction("You are not authorized to confirm this appointment");
         }
     }
 
     @Override
-    public AppointmentDtoGet bookAppointment(Long doctorId, LocalDate date, LocalTime startTime, Long clientId, AppointmentType type, String reason) {
+    public AppointmentDtoGet bookAppointment(Long doctorId, LocalDate date, LocalTime startTime, String email, AppointmentType type, String reason) {
         LocalDateTime appointmentDateTime = LocalDateTime.of(date, startTime);
 
         // Check if slot is already taken
@@ -114,8 +112,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new UserNotFoundException(doctorId, SearchType.ID));
 
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new UserNotFoundException(clientId, SearchType.ID));
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+
 
         Appointment appointment = Appointment.builder()
                 .doctor(doctor)
@@ -126,12 +125,26 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .reason(reason)
                 .status(AppointmentStatus.SCHEDULED)
                 .createdAt(LocalDateTime.now())
+                .diagnosis("UNAVAILABLE")
                 .build();
 
+        createAppointmentNotification(appointment.getClient(), "New Appointment!!", "You have a new appointment:" + appointment.getAppointmentDateTime());
         return appointmentMapper.toDtoGet(appointmentRepository.save(appointment));
     }
 
+    @Override
+    public AppointmentDtoGet addDiagnosis(DiagnosisRequest request) {
+        Appointment appointment = getAppointment(request.appointmentId());
+        appointment.setDiagnosis(request.diagnosis());
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+        createAppointmentNotification(appointment.getClient(), "Diagnosis added!", "Diagnosis added by " + appointment.getClient().getFullName()+", Check your appointments");
+        return appointmentMapper.toDtoGet(updatedAppointment);
+    }
 
+    @Override
+    public Long getTotalPatients(Long id) {
+        return appointmentRepository.countDistinctClientsByDoctorId(id);
+    }
 
 
     private Appointment getAppointment(Long id) {
@@ -149,10 +162,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(()-> new UserNotFoundException(email, SearchType.EMAIL));
     }
 
-    private void createAppointmentNotification(User user) {
+    private void createAppointmentNotification(User user, String message, String title) {
         Notification notification = new Notification();
-        notification.setTitle("Appointment Cancelled");
-        notification.setMessage("Appointment cancelled by: " + user.getFullName() + " at: " + new Date());
+        notification.setTitle(title);
+        notification.setMessage(message);
         notification.setSeen(false);
         notification.setType("APPOINTMENT");
         notification.setDate(LocalDateTime.now());

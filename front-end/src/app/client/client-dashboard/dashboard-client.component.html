@@ -25,8 +25,9 @@
 </div>
 
 
-<div *ngIf="isLoading">
-  <p>Loading...</p>
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner"></div>
+  <p>Loading your dashboard...</p>
 </div>
 
 <!-- app.component.html -->
@@ -35,7 +36,7 @@
   <div class="sidebar">
     <div class="logo">
       <img src="./logo.png" alt="MediCare Logo">
-      <h2>MediCare</h2>
+      <h2>HospitAll</h2>
     </div>
     <div class="menu">
       <div class="menu-item" [class.active]="activeSection === 'dashboard'" (click)="setActiveSection('dashboard')">
@@ -58,15 +59,6 @@
       <div class="menu-item" [class.active]="activeSection === 'billing'" (click)="setActiveSection('billing')">
         <i class="fas fa-file-invoice-dollar"></i>
         <span>Billing</span>
-      </div>
-      <div class="menu-item" [class.active]="activeSection === 'telemedicine'"
-        (click)="setActiveSection('telemedicine')">
-        <i class="fas fa-video"></i>
-        <span>Telemedicine</span>
-      </div>
-      <div class="menu-item" [class.active]="activeSection === 'monitoring'" (click)="setActiveSection('monitoring')">
-        <i class="fas fa-heartbeat"></i>
-        <span>Health Monitoring</span>
       </div>
       <div class="menu-item" [class.active]="activeSection === 'documents'" (click)="setActiveSection('documents')">
         <i class="fas fa-file-download"></i>
@@ -223,12 +215,7 @@
             <p>Make payments for your outstanding invoices</p>
             <button class="btn-primary" (click)="setActiveSection('billing')">Pay Now</button>
           </div>
-          <div class="action-card">
-            <i class="fas fa-video"></i>
-            <h3>Start Teleconsult</h3>
-            <p>Connect with doctors via video call</p>
-            <button class="btn-primary" (click)="setActiveSection('telemedicine')">Start Call</button>
-          </div>
+
         </div>
       </div>
 
@@ -344,6 +331,9 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <div *ngIf="filteredUpcomingAppointments.length === 0" class="no-data">
+                    No upcoming appointments.
+                  </div>
                   <tr *ngFor="let appointment of filteredUpcomingAppointments">
                     <td>{{appointment.appointmentDateTime}} - {{ appointment.appointmentDateTime!.split('
                       ').slice(3).join(' ') }}</td>
@@ -384,11 +374,14 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <div *ngIf="pastAppointments.length === 0" class="no-data">
+                    No past appointments found.
+                  </div>
                   <tr *ngFor="let appointment of pastAppointments">
                     <td>{{appointment.appointmentDateTime}}</td>
                     <td>{{appointment.doctorFullName}}</td>
                     <td>{{appointment.departmentName}}</td>
-                    <td>{{appointment.type}}</td>
+                    <td>{{appointment.diagnosis}}</td>
                     <td>
                       <button class="btn-icon" title="View Details" (click)="showDetails(appointment)"><i
                           class="fas fa-eye"></i></button>
@@ -438,6 +431,9 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <div *ngIf="pastAppointments.length === 0" class="no-data">
+                    No past appointments found.
+                  </div>
                   <tr *ngFor="let medication of medications">
                     <td>{{medication.medicationName}}</td>
                     <td>{{medication.dosage}}</td>
@@ -468,6 +464,9 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <div *ngIf="pastAppointments.length === 0" class="no-data">
+                    No past appointments found.
+                  </div>
                   <tr *ngFor="let result of labResults">
                     <td>{{result.testName}}</td>
                     <td>{{result.createdAt | date: 'mediumDate'}}</td>
@@ -572,194 +571,6 @@
         </div>
       </div>
 
-      <!-- Telemedicine Section -->
-      <div *ngIf="activeSection === 'telemedicine'">
-        <div class="section-header">
-          <h2>Telemedicine</h2>
-        </div>
-
-        <div class="telemedicine-section">
-          <div class="video-consultation">
-            <div class="consultation-info">
-              <h3>Video Consultation</h3>
-              <p>Connect with doctors through secure video calls from the comfort of your home.</p>
-
-              <div class="upcoming-teleconsult">
-                <h4>Upcoming Teleconsultations</h4>
-                <div *ngIf="upcomingAppointments.length === 0" class="no-data">
-                  No upcoming teleconsultations scheduled.
-                </div>
-                <div *ngFor="let appointment of upcomingAppointments.slice(0, 1)" class="teleconsult-item">
-                  <div class="teleconsult-details">
-                    <h5>{{appointment.doctorFullName}}</h5>
-                    <p>{{appointment.departmentName}}</p>
-                    <p>{{appointment.appointmentDateTime}} at {{ appointment.appointmentDateTime!.split('
-                      ').slice(3).join(' ') }}</p>
-                  </div>
-                  <div class="teleconsult-actions">
-                    <button class="btn-primary" [disabled]="true">Join Call</button>
-                    <p class="time-remaining">Starts in 5 days</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="book-teleconsult">
-              <h4>Book New Teleconsultation</h4>
-              <button class="btn-primary">Schedule Video Call</button>
-            </div>
-          </div>
-
-          <div class="chat-consultation">
-            <h3>Chat with Healthcare Providers</h3>
-            <div class="chat-options">
-              <div class="chat-option-card">
-                <div class="chat-icon">
-                  <i class="fas fa-user-md"></i>
-                </div>
-                <div class="chat-details">
-                  <h4>Chat with Your Doctor</h4>
-                  <p>Message your doctor directly for non-emergency queries.</p>
-                  <button class="btn-primary">Start Chat</button>
-                </div>
-              </div>
-
-              <div class="chat-option-card">
-                <div class="chat-icon">
-                  <i class="fas fa-user-nurse"></i>
-                </div>
-                <div class="chat-details">
-                  <h4>Nursing Support</h4>
-                  <p>Get assistance from our nursing staff for medical advice.</p>
-                  <button class="btn-primary">Start Chat</button>
-                </div>
-              </div>
-
-              <div class="chat-option-card">
-                <div class="chat-icon">
-                  <i class="fas fa-headset"></i>
-                </div>
-                <div class="chat-details">
-                  <h4>Technical Support</h4>
-                  <p>Need help using the portal? Our tech team is here to help.</p>
-                  <button class="btn-primary">Start Chat</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Health Monitoring Section -->
-      <div *ngIf="activeSection === 'monitoring'">
-        <div class="section-header">
-          <h2>Health Monitoring</h2>
-        </div>
-
-        <div class="monitoring-section">
-          <div class="monitoring-overview">
-            <h3>Health Metrics Overview</h3>
-            <div class="metrics-grid">
-              <div class="metric-card">
-                <div class="metric-icon">
-                  <i class="fas fa-heartbeat"></i>
-                </div>
-                <div class="metric-details">
-                  <h4>Heart Rate</h4>
-                  <div class="metric-value">72 <span class="metric-unit">bpm</span></div>
-                  <div class="metric-status normal">Normal</div>
-                </div>
-              </div>
-
-              <div class="metric-card">
-                <div class="metric-icon">
-                  <i class="fas fa-weight"></i>
-                </div>
-                <div class="metric-details">
-                  <h4>Weight</h4>
-                  <div class="metric-value">78 <span class="metric-unit">kg</span></div>
-                  <div class="metric-status normal">Normal</div>
-                </div>
-              </div>
-
-              <div class="metric-card">
-                <div class="metric-icon">
-                  <i class="fas fa-tint"></i>
-                </div>
-                <div class="metric-details">
-                  <h4>Blood Pressure</h4>
-                  <div class="metric-value">128/85 <span class="metric-unit">mmHg</span></div>
-                  <div class="metric-status caution">Slightly Elevated</div>
-                </div>
-              </div>
-
-              <div class="metric-card">
-                <div class="metric-icon">
-                  <i class="fas fa-tachometer-alt"></i>
-                </div>
-                <div class="metric-details">
-                  <h4>Glucose Level</h4>
-                  <div class="metric-value">95 <span class="metric-unit">mg/dL</span></div>
-                  <div class="metric-status normal">Normal</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="device-integration">
-            <div class="section-header-small">
-              <h3>Connected Devices</h3>
-              <button class="btn-outline btn-sm"><i class="fas fa-plus"></i> Connect New Device</button>
-            </div>
-
-            <div class="device-list">
-              <div class="device-card connected">
-                <div class="device-icon">
-                  <i class="fas fa-heart"></i>
-                </div>
-                <div class="device-details">
-                  <h4>Cardiac Monitor</h4>
-                  <p>Last synced: Today, 08:30 AM</p>
-                  <div class="device-status">Connected</div>
-                </div>
-                <div class="device-actions">
-                  <button class="btn-icon"><i class="fas fa-sync-alt"></i></button>
-                  <button class="btn-icon"><i class="fas fa-cog"></i></button>
-                </div>
-              </div>
-
-              <div class="device-card connected">
-                <div class="device-icon">
-                  <i class="fas fa-weight"></i>
-                </div>
-                <div class="device-details">
-                  <h4>Smart Scale</h4>
-                  <p>Last synced: Yesterday, 07:15 PM</p>
-                  <div class="device-status">Connected</div>
-                </div>
-                <div class="device-actions">
-                  <button class="btn-icon"><i class="fas fa-sync-alt"></i></button>
-                  <button class="btn-icon"><i class="fas fa-cog"></i></button>
-                </div>
-              </div>
-
-              <div class="device-card not-connected">
-                <div class="device-icon">
-                  <i class="fas fa-stethoscope"></i>
-                </div>
-                <div class="device-details">
-                  <h4>Blood Pressure Monitor</h4>
-                  <p>Not connected</p>
-                  <div class="device-status">Disconnected</div>
-                </div>
-                <div class="device-actions">
-                  <button class="btn-primary btn-sm">Connect</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- Support Section -->
       <div *ngIf="activeSection === 'support'">
@@ -810,49 +621,19 @@
           <div class="faq-section">
             <h3>Frequently Asked Questions</h3>
             <div class="faq-list">
-              <div class="faq-item">
+
+
+              <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.active]="activeIndex === i"
+                (click)="toggleAnswer(i)">
                 <div class="faq-question">
-                  <h4>How do I schedule an appointment?</h4>
+                  <h4>{{ faq.question }}</h4>
                   <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                  <p>You can schedule an appointment through the "Appointments" section. Select "Book New", choose your
-                    department, doctor, and preferred date, then check available slots and book your appointment.</p>
+                  <p>{{ faq.answer }}</p>
                 </div>
               </div>
 
-              <div class="faq-item">
-                <div class="faq-question">
-                  <h4>How can I access my medical records?</h4>
-                  <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                  <p>Your medical records can be accessed in the "Medical Records" section. You can view your
-                    prescriptions, lab results, medical history, and vaccination records.</p>
-                </div>
-              </div>
-
-              <div class="faq-item">
-                <div class="faq-question">
-                  <h4>How do I pay my bills online?</h4>
-                  <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                  <p>You can pay your bills through the "Billing" section. Select the invoice you wish to pay and click
-                    "Pay Now" to be directed to our secure payment gateway.</p>
-                </div>
-              </div>
-
-              <div class="faq-item">
-                <div class="faq-question">
-                  <h4>How do I start a telemedicine consultation?</h4>
-                  <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                  <p>Navigate to the "Telemedicine" section, where you can schedule a video consultation or start a chat
-                    with healthcare providers.</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -861,7 +642,7 @@
       <!-- Feedback Section -->
       <div *ngIf="activeSection === 'feedback'">
         <div class="section-header">
-          <h2>Feedback & Surveys</h2>
+          <h2>Feedback</h2>
         </div>
 
         <div class="feedback-section">
@@ -869,82 +650,45 @@
             <h3>Share Your Experience</h3>
             <div class="form-group">
               <label for="feedback-type">Feedback Type</label>
-              <select id="feedback-type">
-                <option value="">Select Type</option>
+              <select id="feedback-type" (change)="onFeedbackTypeChange()" [(ngModel)]="selectedFeedbackType">
+                <option value="">Select Type - General in default</option>
                 <option value="general">General Feedback</option>
-                <option value="suggestion">Suggestion</option>
-                <option value="complaint">Complaint</option>
-                <option value="appreciation">Appreciation</option>
+                <option value="doctor">FeedBack To Doctor</option>
               </select>
             </div>
 
-            <div class="form-group">
-              <label for="department-feedback">Department</label>
-              <select id="department-feedback">
-                <option value="">Select Department</option>
-                <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+            <div class="form-group" *ngIf="!isGeneralFeedback">
+              <label for="department-feedback">Doctor</label>
+              <select id="department-feedback" [(ngModel)]="doctorFeedbackId">
+                <option value="">Select Doctor</option>
+                <option *ngFor="let dept of feedbackDoctors" [value]="dept.id">{{dept.fullName}}</option>
               </select>
             </div>
 
             <div class="form-group">
               <label for="feedback-message">Your Feedback</label>
-              <textarea id="feedback-message" rows="5" placeholder="Please share your thoughts with us..."></textarea>
+              <textarea id="feedback-message" rows="5" placeholder="Please share your thoughts with us..."
+                [(ngModel)]="feedbackMessage"></textarea>
             </div>
 
             <div class="form-group">
               <label>Rate Your Experience</label>
               <div class="rating">
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
+                <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fas': (hoveredRating >= star) || (hoveredRating === 0 && selectedRating >= star),
+            'far': (hoveredRating < star && selectedRating < star)}" (click)="setRating(star)"
+                  (mouseenter)="setHover(star)" (mouseleave)="clearHover()" style="cursor: pointer;"></i>
               </div>
+
             </div>
 
             <div class="form-actions">
-              <button class="btn-primary">Submit Feedback</button>
+              <button class="btn-primary" (click)="submitFeedback()">Submit Feedback</button>
             </div>
           </div>
 
           <div class="surveys">
-            <h3>Active Surveys</h3>
-            <div class="survey-list">
-              <div class="survey-card">
-                <div class="survey-icon">
-                  <i class="fas fa-clipboard-list"></i>
-                </div>
-                <div class="survey-details">
-                  <h4>Patient Satisfaction Survey</h4>
-                  <p>Help us improve our services by participating in our monthly satisfaction survey.</p>
-                  <div class="survey-meta">
-                    <span>Time to complete: ~5 minutes</span>
-                    <span>Expires in 15 days</span>
-                  </div>
-                </div>
-                <div class="survey-actions">
-                  <button class="btn-primary">Take Survey</button>
-                </div>
-              </div>
-
-              <div class="survey-card">
-                <div class="survey-icon">
-                  <i class="fas fa-clipboard-list"></i>
-                </div>
-                <div class="survey-details">
-                  <h4>Hospital Food Service Feedback</h4>
-                  <p>We are evaluating our food service quality. Please share your thoughts if you had a meal during
-                    your stay.</p>
-                  <div class="survey-meta">
-                    <span>Time to complete: ~3 minutes</span>
-                    <span>Expires in 7 days</span>
-                  </div>
-                </div>
-                <div class="survey-actions">
-                  <button class="btn-primary">Take Survey</button>
-                </div>
-              </div>
-            </div>
+            <h3>Past Surveys</h3>
+            <!-- TO DO: RATING HISTORY -->
           </div>
         </div>
       </div>

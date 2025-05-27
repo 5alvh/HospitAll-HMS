@@ -19,4 +19,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     @Query("SELECT d FROM Doctor d JOIN d.workingHours wh WHERE d.department = :dept AND wh.dayOfWeek = :day")
     List<Doctor> findByDepartmentAndWorkingHoursDay(@Param("dept") Department dept, @Param("day") DayOfWeek day);
 
+    @Query("SELECT DISTINCT a.doctor FROM Appointment a WHERE a.client.id = :clientId")
+    List<Doctor> findDistinctDoctorsByClientId(@Param("clientId") Long clientId);
+
 }

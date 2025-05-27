@@ -6,7 +6,8 @@ import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
-import com.tfg.back.utils.ChangePasswordRequest;
+import com.tfg.back.model.dtos.ChangePasswordRequest;
+import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
 
 import java.util.List;
 

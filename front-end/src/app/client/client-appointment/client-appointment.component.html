@@ -57,7 +57,7 @@
 
           <div class="form-group checkbox-container">
             <label class="checkbox-label">
-              <input type="checkbox" formControlName="isNewPatient" (click)="copyInfos()">
+              <input type="checkbox" (click)="copyInfos()">
               <span>Same account information</span>
             </label>
           </div>
@@ -67,7 +67,7 @@
       <div class="form-section">
         <h3>Appointment Details</h3>
 
-        <!-- Department Selection -->
+        <!-- Department Selection and Date -->
         <div class="form-row">
           <div class="form-group">
             <label for="department">Department/Specialty *</label>
@@ -80,55 +80,59 @@
               <div *ngIf="f['department'].errors['required']">Department is required</div>
             </div>
           </div>
+          <div class="form-group">
+            <label for="date">Preferred Date *</label>
+            <input type="date" id="date" formControlName="date" [min]="minDate | date:'yyyy-MM-dd'"
+              [max]="maxDate | date:'yyyy-MM-dd'" [ngClass]="{'is-invalid': submitted && f['date'].errors}"
+              (change)="onDateChange()">
+            <div *ngIf="submitted && f['date'].errors" class="invalid-feedback">
+              <div *ngIf="f['date'].errors['required']">Date is required</div>
+            </div>
+          </div>
         </div>
 
         <!-- Search Doctors Button (shown after department selection) -->
-        <div class="form-row" *ngIf="departmentSelected && !doctorsSearched">
-          <button type="button" (click)="searchDoctors()" class="btn btn-primary search-doctors-btn">
+        <div class="form-row" *ngIf="departmentSelected && !doctorsSearched && prefferedDateChosen">
+          <button type="button" (click)="searchDoctors()" class="btn-action">
             <i class="fas fa-search"></i>
-            Search Doctors
+            Search For Available Doctors
           </button>
         </div>
 
         <!-- Doctor and Date Section (shown after searching doctors if doctors available) -->
-        <div *ngIf="doctorsSearched && filteredDoctors.length > 0">
+        <div *ngIf="doctorsSearched && doctors.length > 0">
           <div class="form-row">
             <div class="form-group">
               <label for="doctor">Doctor *</label>
-              <select id="doctor" formControlName="doctor" [ngClass]="{'is-invalid': submitted && f['doctor'].errors}">
+              <select id="doctor" formControlName="doctor" [ngClass]="{'is-invalid': submitted && f['doctor'].errors}"
+                (change)="onDoctorChange()">
                 <option [ngValue]="null" disabled>Select Doctor</option>
-                <option *ngFor="let doctor of filteredDoctors" [ngValue]="doctor.id">{{doctor.name}}</option>
+                <option *ngFor="let doctor of doctors" [ngValue]="doctor.doctorId">{{doctor.doctorFullName}}</option>
               </select>
               <div *ngIf="submitted && f['doctor'].errors" class="invalid-feedback">
                 <div *ngIf="f['doctor'].errors['required']">Doctor is required</div>
               </div>
             </div>
-
-            <div class="form-group">
-              <label for="date">Preferred Date *</label>
-              <input type="date" id="date" formControlName="date" [min]="minDate | date:'yyyy-MM-dd'"
-                [max]="maxDate | date:'yyyy-MM-dd'" [ngClass]="{'is-invalid': submitted && f['date'].errors}">
-              <div *ngIf="submitted && f['date'].errors" class="invalid-feedback">
-                <div *ngIf="f['date'].errors['required']">Date is required</div>
-              </div>
+            
             </div>
-
             <div class="form-group align-self-end">
-              <button type="button" (click)="searchDate()" class="btn btn-secondary">Search Date</button>
-            </div>
+              <button type="button" (click)="searchSlots()" class="btn-action">
+                <i class="fas fa-search"></i>
+                Search Available Slots
+              </button>
           </div>
         </div>
 
         <!-- Preferred Time and Reason for Visit (shown after date searched) -->
-        <div *ngIf="dateSearched">
+        <div *ngIf="slotsSearched">
           <div class="form-row">
             <div class="form-group">
               <label for="timeSlot">Preferred Time *</label>
               <select id="timeSlot" formControlName="timeSlot"
                 [ngClass]="{'is-invalid': submitted && f['timeSlot'].errors}">
                 <option [ngValue]="null" disabled>Select Time</option>
-                <option *ngFor="let slot of timeSlots" [ngValue]="slot.id" [disabled]="!slot.available">
-                  {{slot.time}} {{!slot.available ? '(Not Available)' : ''}}
+                <option *ngFor="let slot of timeSlots">
+                  {{slot.time}}
                 </option>
               </select>
               <div *ngIf="submitted && f['timeSlot'].errors" class="invalid-feedback">

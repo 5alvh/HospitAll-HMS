@@ -11,4 +11,5 @@ export interface AppointmentDtoGet {
   status: AppointmentStatus;
   type: AppointmentType;
   departmentName: string;
+  diagnosis: string;
 }

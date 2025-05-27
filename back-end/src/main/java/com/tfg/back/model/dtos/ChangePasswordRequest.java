@@ -1,4 +1,4 @@
-package com.tfg.back.utils;
+package com.tfg.back.model.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

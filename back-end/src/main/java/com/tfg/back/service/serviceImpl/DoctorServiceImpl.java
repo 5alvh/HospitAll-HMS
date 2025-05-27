@@ -9,6 +9,7 @@ import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.doctor.AvailableDoctorGet;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
+import com.tfg.back.model.dtos.doctor.VisitedDoctorGet;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.DepartmentRepository;
 import com.tfg.back.repository.DoctorRepository;
@@ -97,10 +98,10 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<AvailableDoctorGet> getAvailableDoctors(String departmentName, LocalDate date) {
+    public List<AvailableDoctorGet> getAvailableDoctors(Long departmentId, LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
-        Department dept = departmentRepository.findByName(departmentName)
-                .orElseThrow(()-> new DepartmentNotFoundException("department with name: "+departmentName+" is not found"));
+        Department dept = departmentRepository.findById(departmentId)
+                .orElseThrow(()-> new DepartmentNotFoundException("department with name: "+departmentId+" is not found"));
         List<Doctor> doctors = doctorRepository.findByDepartmentAndWorkingHoursDay(dept, day);
         return doctors.stream().map(
                 doctor -> new AvailableDoctorGet(doctor.getFullName(), doctor.getId()))
@@ -154,5 +155,22 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<VisitedDoctorGet> getDoctorsClientVisited(Long id) {
+        return toVisitedDoctorGetList(doctorRepository.findDistinctDoctorsByClientId(id));
+    }
+
+    private VisitedDoctorGet toVisitedDoctorGet(Doctor doctor) {
+        VisitedDoctorGet visitedDoctorGet = new VisitedDoctorGet();
+        visitedDoctorGet.setId(doctor.getId());
+        visitedDoctorGet.setFullName(doctor.getFullName());
+        return visitedDoctorGet;
+    }
+
+    private List<VisitedDoctorGet> toVisitedDoctorGetList(List<Doctor> doctors) {
+        return doctors.stream()
+                .map(this::toVisitedDoctorGet)
+                .collect(Collectors.toList());
+    }
 
 }

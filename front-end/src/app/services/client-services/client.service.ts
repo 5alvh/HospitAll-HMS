@@ -68,4 +68,14 @@ export class ClientService {
       })
     );
   }
+
+  //TODO: implement this method
+  getPatientDoctors(): Observable<ClientDtoGet[]> {
+    return this.httpClient.get<ClientDtoGet[]>(`${this.baseUrl}/doctors`).pipe(
+      catchError((error) => {
+        console.error('Error fetching patient doctors:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

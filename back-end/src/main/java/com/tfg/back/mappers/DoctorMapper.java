@@ -1,12 +1,10 @@
 package com.tfg.back.mappers;
 
 import com.tfg.back.enums.UserStatus;
-import com.tfg.back.model.Department;
-import com.tfg.back.model.Doctor;
-import com.tfg.back.model.TimeInterval;
-import com.tfg.back.model.WorkingHours;
+import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
+import com.tfg.back.model.dtos.feedBack.FeedBackDtoGetDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -83,11 +81,26 @@ public class DoctorMapper {
                 .appointments(appointmentMapper.toDtoGetList(doctor.getAppointments()))
                 .prescriptionsGiven(medicalPrescriptionMapper.toDtoGetList(doctor.getPrescriptionsGiven()))
                 .workingHours(doctor.getWorkingHours())
+                .feedbacksReceived(toFeedBackDtoGetDoc(doctor.getFeedbacksReceived()))
                 .build();
     }
 
     public List<DoctorDtoGet> toDtoGetList(List<Doctor> doctors) {
         return doctors.stream().map(this::toDtoGet).toList();
+    }
+
+    private FeedBackDtoGetDoc toFeedBackDtoGetDoc(FeedBack feedBack) {
+        return FeedBackDtoGetDoc.builder()
+                .id(feedBack.getId())
+                .comment(feedBack.getComment())
+                .rating(feedBack.getRating())
+                .createdAt(feedBack.getCreatedAt())
+                .patientName(feedBack.getAuthor().getFullName())
+                .build();
+    }
+
+    private List<FeedBackDtoGetDoc> toFeedBackDtoGetDoc(List<FeedBack> feedBacks) {
+        return feedBacks.stream().map(this::toFeedBackDtoGetDoc).toList();
     }
 }
 

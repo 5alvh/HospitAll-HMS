@@ -1,471 +1,907 @@
-<!-- doctor-dashboard.component.html -->
-<div *ngIf="isLoading">
-  <p>Loading...</p>
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner"></div>
+  <p>Loading your dashboard...</p>
 </div>
 
-
-<div class="doctor-dashboard" *ngIf="!isLoading && doctor" >
-  <!-- Sidebar Navigation -->
+<div class="app-container" *ngIf="!isLoading && doctor">
+  <!-- Sidebar -->
   <div class="sidebar">
-    <div class="doctor-info">
-      <div class="profile-image">
-        <img src="./user-profile.jpg" alt="Doctor Profile">
-      </div>
+    <div class="logo">
+      <img src="./logo.png" alt="MediCare Logo">
+      <h2>HospitAll</h2>
+    </div>
+
+    <div class="doctor-profile-sidebar">
       <h3>{{ doctor.fullName }}</h3>
       <p>{{ doctor.specialization }}</p>
+      <div class="doctor-stats">
+        <div class="stat-item">
+          <span class="stat-number">{{ dashboardStats.totalPatients }}</span>
+          <span class="stat-label">Patients</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
+          <span class="stat-label">Rating</span>
+        </div>
+      </div>
     </div>
 
-    <nav class="nav-menu">
-      <ul>
-        <li [class.active]="activeSection === 'dashboard'">
-          <a (click)="changeSection('dashboard')">
-            <i class="fas fa-chart-line"></i> Dashboard
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'profile'">
-          <a (click)="changeSection('profile')">
-            <i class="fas fa-user-md"></i> My Profile
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'appointments'">
-          <a (click)="changeSection('appointments')">
-            <i class="fas fa-calendar-check"></i> Appointments
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'book-appointment'">
-          <a (click)="changeSection('book-appointment')">
-            <i class="fas fa-calendar-plus"></i> Book Appointment
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'prescriptions'">
-          <a (click)="changeSection('prescriptions')">
-            <i class="fas fa-prescription"></i> Prescriptions
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'create-prescription'">
-          <a (click)="changeSection('create-prescription')">
-            <i class="fas fa-file-medical"></i> Create Prescription
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'feedback'">
-          <a (click)="changeSection('feedback')">
-            <i class="fas fa-star"></i> Feedback
-          </a>
-        </li>
-        <li [class.active]="activeSection === 'support'">
-          <a (click)="changeSection('support')">
-            <i class="fas fa-headset"></i> Support
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <div class="menu">
+      <div class="menu-item" [class.active]="activeSection === 'dashboard'" (click)="changeSection('dashboard')">
+        <i class="fas fa-chart-line"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'profile'" (click)="changeSection('profile')">
+        <i class="fas fa-user-md"></i>
+        <span>My Profile</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'calendar'" (click)="changeSection('calendar')">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Calendar</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'appointments'" (click)="changeSection('appointments')">
+        <i class="fas fa-calendar-check"></i>
+        <span>Appointments</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'book-appointment'"
+        (click)="changeSection('book-appointment')">
+        <i class="fas fa-calendar-plus"></i>
+        <span>Book Appointment</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'prescriptions'"
+        (click)="changeSection('prescriptions')">
+        <i class="fas fa-prescription"></i>
+        <span>Prescriptions</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'create-prescription'"
+        (click)="changeSection('create-prescription')">
+        <i class="fas fa-file-medical"></i>
+        <span>Create Prescription</span>
+      </div>
+
+      <div class="menu-item" [class.active]="activeSection === 'feedback'" (click)="changeSection('feedback')">
+        <i class="fas fa-star"></i>
+        <span>Patient Feedback</span>
+      </div>
+      <div class="menu-item" [class.active]="activeSection === 'support'" (click)="changeSection('support')">
+        <i class="fas fa-headset"></i>
+        <span>Support</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Main Content Area -->
+  <!-- Main Content -->
   <div class="main-content">
-    <!-- Dashboard Section -->
-    <div *ngIf="activeSection === 'dashboard'" class="dashboard-section">
-      <h2>Dashboard</h2>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-calendar-day"></i>
-          </div>
-          <div class="stat-details">
-            <h3>{{ dashboardStats.todayAppointments }}</h3>
-            <p>Today's Appointments</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-prescription"></i>
-          </div>
-          <div class="stat-details">
-            <h3>{{ dashboardStats.pendingPrescriptions }}</h3>
-            <p>Pending Prescriptions</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-users"></i>
-          </div>
-          <div class="stat-details">
-            <h3>{{ dashboardStats.totalPatients }}</h3>
-            <p>Total Patients</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-star"></i>
-          </div>
-          <div class="stat-details">
-            <h3>{{ dashboardStats.averageRating | number:'1.1-1' }}</h3>
-            <p>Average Rating</p>
-          </div>
-        </div>
+    <!-- Header -->
+    <div class="header">
+      <div class="page-title">
+        <h1>{{ getPageTitle() }}</h1>
       </div>
-
-      <div class="recent-activity">
-        <h3>Today's Appointments</h3>
-        <table class="activity-table">
-          <thead>
-            <tr>
-              <th>Patient</th>
-              <th>Time</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let appointment of appointments | slice:0:3">
-              <td>{{ appointment.clientFullName }}</td>
-              <td>{{ appointment.time }}</td>
-              <td>
-                <span class="status-badge" [ngClass]="appointment.status">
-                  {{ appointment.status }}
-                </span>
-              </td>
-            </tr>
-            <tr *ngIf="!appointments || appointments.length === 0">
-              <td colspan="3" class="no-data">No appointments for today</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Profile Section -->
-    <div *ngIf="activeSection === 'profile'" class="profile-section">
-      <h2>My Profile</h2>
-      <div class="profile-details">
-        <div class="profile-image-large">
+      <div class="header-actions">
+        <div class="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="badge" *ngIf="dashboardStats.pendingPrescriptions > 0">{{ dashboardStats.pendingPrescriptions
+            }}</span>
+        </div>
+        <div class="user-profile" (click)="toggleUserMenu()">
           <img src="./user-profile.jpg" alt="Doctor Profile">
-        </div>
-        <div class="profile-info">
-          <div class="info-group">
-            <label>Name:</label>
-            <p>{{ doctor.fullName }}</p>
-          </div>
-          <div class="info-group">
-            <label>Specialty:</label>
-            <p>{{ doctor.specialization }}</p>
-          </div>
-          <div class="info-group">
-            <label>Email:</label>
-            <p>{{ doctor.email }}</p>
-          </div>
-          <div class="info-group">
-            <label>Phone:</label>
-            <p>{{ doctor.phoneNumber }}</p>
-          </div>
-          <div class="info-group">
-            <label>Address:</label>
-            <p>{{ doctor.address }}</p>
-          </div>
-          <div class="info-group">
-            <label>Bio:</label>
-            <p>{{ doctor.medicalLicenseNumber }}</p>
+          <span>{{ doctor.fullName }}</span>
+          <i class="fas fa-chevron-down"></i>
+
+          <div class="dropdown-menu" *ngIf="showUserMenu">
+            <button (click)="changeSection('profile')">
+              <i class="fas fa-user"></i> My Profile
+            </button>
+            <button (click)="changeSection('support')">
+              <i class="fas fa-cog"></i> Settings
+            </button>
+            <button (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
           </div>
         </div>
       </div>
-      <div class="edit-profile-btn">
-        <button class="btn btn-primary">Edit Profile</button>
-      </div>
     </div>
 
-    <!-- Appointments Section -->
-    <div *ngIf="activeSection === 'appointments'" class="appointments-section">
-      <h2>Appointments</h2>
-      <table class="appointments-table">
-        <thead>
-          <tr>
-            <th>Patient Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Notes</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let appointment of appointments">
-            <td>{{ appointment.clientFullName }}</td>
-            <td>{{ appointment.date | date:'MMM d, y' }}</td>
-            <td>{{ appointment.time }}</td>
-            <td>
-              <span class="status-badge" [ngClass]="appointment.status">
-                {{ appointment.status }}
-              </span>
-            </td>
-            <td>{{ appointment.reason || 'N/A' }}</td>
-            <td class="actions">
-              <button class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-danger">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="!appointments || appointments.length === 0">
-            <td colspan="6" class="no-data">No appointments found</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Book Appointment Section -->
-    <div *ngIf="activeSection === 'book-appointment'" class="book-appointment-section">
-      <h2>Book Appointment</h2>
-      <form (ngSubmit)="bookAppointment()" #appointmentForm="ngForm">
-        <div class="form-group">
-          <label for="patientName">Patient Name</label>
-          <input type="text" id="patientName" name="patientName" class="form-control"
-            [(ngModel)]="newAppointment.patientName" required>
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Dashboard Section -->
+      <div *ngIf="activeSection === 'dashboard'">
+        <div class="dashboard-welcome">
+          <h2>Welcome back, Dr. {{ doctor.fullName.split(' ')[1] || doctor.fullName }}!</h2>
+          <p>Here's your practice overview at a glance.</p>
         </div>
 
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="appointmentDate">Date</label>
-            <input type="date" id="appointmentDate" name="appointmentDate" class="form-control"
-              [(ngModel)]="newAppointment.date" required>
+        <!-- Enhanced Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card appointments-today">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="stat-details">
+              <h3>{{ dashboardStats.todayAppointments }}</h3>
+              <p>Today's Appointments</p>
+              <span class="stat-trend">{{ getAppointmentTrend() }}</span>
+            </div>
           </div>
 
-          <div class="form-group col-md-6">
-            <label for="appointmentTime">Time</label>
-            <input type="time" id="appointmentTime" name="appointmentTime" class="form-control"
-              [(ngModel)]="newAppointment.time" required>
+          <div class="stat-card prescriptions-pending">
+            <div class="stat-icon">
+              <i class="fas fa-prescription"></i>
+            </div>
+            <div class="stat-details">
+              <h3>{{ dashboardStats.pendingPrescriptions }}</h3>
+              <p>Pending Prescriptions</p>
+              <span class="stat-trend">Requires attention</span>
+            </div>
+          </div>
+
+          <div class="stat-card total-patients">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-details">
+              <h3>{{ dashboardStats.totalPatients }}</h3>
+              <p>Total Patients</p>
+              <span class="stat-trend">Active cases</span>
+            </div>
+          </div>
+
+          <div class="stat-card rating">
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-details">
+              <h3>{{ dashboardStats.averageRating | number:'1.1-1' }}</h3>
+              <p>Patient Rating</p>
+              <div class="rating-stars">
+                <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star"
+                  [class.filled]="star <= dashboardStats.averageRating"></i>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="appointmentNotes">Notes (Optional)</label>
-          <textarea id="appointmentNotes" name="appointmentNotes" class="form-control" rows="3"
-            [(ngModel)]="newAppointment.notes"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary" [disabled]="!appointmentForm.form.valid">
-          Book Appointment
-        </button>
-      </form>
-    </div>
-
-    <!-- Prescriptions Section -->
-    <div *ngIf="activeSection === 'prescriptions'" class="prescriptions-section">
-      <h2>Prescriptions</h2>
-      <table class="prescriptions-table">
-        <thead>
-          <tr>
-            <th>Patient</th>
-            <th>Medications</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let prescription of prescriptions">
-            <td>{{ prescription.prescribedTo }}</td>
-            <td>
-              <ul class="medications-list">
-                <li >
-                  {{ prescription.medicationName }} {{ prescription.dosage }}
-                </li>
-              </ul>
-            </td>
-            <td>{{ prescription.createdAt | date:'MMM d, y' }}</td>
-            <td>
-              <span class="status-badge" [ngClass]="prescription.isPublished ? 'published' : 'draft'">
-                {{ prescription.isPublished ? 'Published' : 'Draft' }}
-              </span>
-            </td>
-            <td class="actions">
-              <button *ngIf="!prescription.isPublished" class="btn btn-sm btn-success"
-                (click)="publishPrescription(prescription.id)">
-                Publish
-              </button>
-              <button class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-info">
-                <i class="fas fa-eye"></i>
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="!prescriptions || prescriptions.length === 0">
-            <td colspan="5" class="no-data">No prescriptions found</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Create Prescription Section -->
-    <div *ngIf="activeSection === 'create-prescription'" class="create-prescription-section">
-      <h2>Create Medical Prescription</h2>
-      <form (ngSubmit)="createPrescription()" #prescriptionForm="ngForm">
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="patientId">Patient ID</label>
-            <input type="text" id="patientId" name="patientId" class="form-control"
-              [(ngModel)]="newPrescription.patientId" required>
-          </div>
-
-          <div class="form-group col-md-6">
-            <label for="prescriptionPatientName">Patient Name</label>
-            <input type="text" id="prescriptionPatientName" name="prescriptionPatientName" class="form-control"
-              [(ngModel)]="newPrescription.patientName" required>
-          </div>
-        </div>
-
-        <div class="medications-container">
-          <h4>Medications</h4>
-          <div *ngFor="let medication of newPrescription.medications; let i = index" class="medication-item">
-            <div class="form-row">
-              <div class="form-group col-md-3">
-                <label [for]="'medicationName' + i">Name</label>
-                <input type="text" [id]="'medicationName' + i" [name]="'medicationName' + i" class="form-control"
-                  [(ngModel)]="medication.name" required>
+        <!-- Today's Schedule -->
+        <div class="dashboard-summary">
+          <div class="summary-card schedule-card">
+            <div class="card-header">
+              <h3>Today's Schedule</h3>
+              <button class="btn-outline btn-sm" (click)="changeSection('calendar')">View Calendar</button>
+            </div>
+            <div class="card-body">
+              <div *ngIf="getTodaysAppointments().length === 0" class="no-data">
+                No appointments scheduled for today.
               </div>
-
-              <div class="form-group col-md-3">
-                <label [for]="'medicationDosage' + i">Dosage</label>
-                <input type="text" [id]="'medicationDosage' + i" [name]="'medicationDosage' + i" class="form-control"
-                  [(ngModel)]="medication.dosage" required>
-              </div>
-
-              <div class="form-group col-md-3">
-                <label [for]="'medicationFrequency' + i">Frequency</label>
-                <input type="text" [id]="'medicationFrequency' + i" [name]="'medicationFrequency' + i"
-                  class="form-control" [(ngModel)]="medication.frequency" required>
-              </div>
-
-              <div class="form-group col-md-2">
-                <label [for]="'medicationDuration' + i">Duration</label>
-                <input type="text" [id]="'medicationDuration' + i" [name]="'medicationDuration' + i"
-                  class="form-control" [(ngModel)]="medication.duration" required>
-              </div>
-
-              <div class="form-group col-md-1 remove-btn-container">
-                <button type="button" class="btn btn-sm btn-danger remove-medication-btn" (click)="removeMedication(i)">
-                  <i class="fas fa-times"></i>
-                </button>
+              <div *ngFor="let appointment of getTodaysAppointments().slice(0, 3)" class="appointment-item">
+                <div class="appointment-time">
+                  <span class="time">{{ appointment.time }}</span>
+                </div>
+                <div class="appointment-details">
+                  <h4>{{ appointment.clientFullName }}</h4>
+                  <p>{{ appointment.reason || 'General consultation' }}</p>
+                  <span class="status-badge" [ngClass]="appointment.status.toLowerCase()">
+                    {{ appointment.status }}
+                  </span>
+                </div>
+                <div class="appointment-actions">
+                  <button class="btn-icon" title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          <button type="button" class="btn btn-sm btn-outline-primary add-medication-btn" (click)="addMedication()">
-            <i class="fas fa-plus"></i> Add Medication
-          </button>
-        </div>
-
-        <div class="form-group">
-          <label for="prescriptionInstructions">Instructions</label>
-          <textarea id="prescriptionInstructions" name="prescriptionInstructions" class="form-control" rows="3"
-            [(ngModel)]="newPrescription.instructions" required></textarea>
-        </div>
-
-        <div class="prescription-buttons">
-          <button type="submit" class="btn btn-primary" [disabled]="!prescriptionForm.form.valid">
-            Save as Draft
-          </button>
-          <button type="button" class="btn btn-success" [disabled]="!prescriptionForm.form.valid">
-            Save & Publish
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Feedback Section -->
-    <div *ngIf="activeSection === 'feedback'" class="feedback-section">
-      <h2>Patient Feedback</h2>
-      <div class="feedback-summary">
-        <div class="average-rating">
-          <h3>Average Rating</h3>
-          <div class="rating-display">
-            <span class="rating-number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
-            <span class="rating-stars">
-              <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star"
-                [ngClass]="{'filled': star <= dashboardStats.averageRating}"></i>
-            </span>
-          </div>
-          <p>Based on {{ feedback.length }} reviews</p>
-        </div>
-      </div>
-
-      <div class="feedback-list">
-        <div *ngFor="let item of feedback" class="feedback-card">
-          <div class="feedback-header">
-            <h4>{{ item.patientName }}</h4>
-            <span class="feedback-date">{{ item.date | date:'MMM d, y' }}</span>
-          </div>
-          <div class="feedback-rating">
-            <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star" [ngClass]="{'filled': star <= item.rating}"></i>
-          </div>
-          <div class="feedback-comment">
-            <p>{{ item.comment }}</p>
+          <div class="summary-card recent-activity">
+            <div class="card-header">
+              <h3>Recent Activity</h3>
+              <button class="btn-outline btn-sm" (click)="changeSection('prescriptions')">View All</button>
+            </div>
+            <div class="card-body">
+              <div class="activity-list">
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-prescription"></i>
+                  </div>
+                  <div class="activity-details">
+                    <h4>New prescription created</h4>
+                    <p>For John Smith - Medication management</p>
+                    <span class="activity-time">2 hours ago</span>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-calendar-check"></i>
+                  </div>
+                  <div class="activity-details">
+                    <h4>Appointment completed</h4>
+                    <p>Sarah Johnson - Follow-up consultation</p>
+                    <span class="activity-time">4 hours ago</span>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <div class="activity-details">
+                    <h4>New patient review</h4>
+                    <p>5-star rating received</p>
+                    <span class="activity-time">1 day ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div *ngIf="!feedback || feedback.length === 0" class="no-feedback">
-          <p>No feedback received yet</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Support Section -->
-    <div *ngIf="activeSection === 'support'" class="support-section">
-      <h2>Support</h2>
-      <div class="support-options">
-        <div class="support-card">
-          <div class="support-icon">
-            <i class="fas fa-question-circle"></i>
+        <!-- Quick Actions -->
+        <div class="dashboard-actions">
+          <div class="action-card">
+            <i class="fas fa-calendar-plus"></i>
+            <h3>Book Appointment</h3>
+            <p>Schedule a new appointment for your patients</p>
+            <button class="btn-primary" (click)="changeSection('book-appointment')">Book Now</button>
           </div>
-          <h3>Help Center</h3>
-          <p>Browse through our knowledge base for answers to common questions</p>
-          <button class="btn btn-outline-primary">Visit Help Center</button>
-        </div>
-
-        <div class="support-card">
-          <div class="support-icon">
-            <i class="fas fa-headset"></i>
+          <div class="action-card">
+            <i class="fas fa-file-medical"></i>
+            <h3>Create Prescription</h3>
+            <p>Write and manage medical prescriptions</p>
+            <button class="btn-primary" (click)="changeSection('create-prescription')">Create Now</button>
           </div>
-          <h3>Technical Support</h3>
-          <p>Contact our technical team for system-related issues</p>
-          <button class="btn btn-outline-primary">Open Ticket</button>
-        </div>
-
-        <div class="support-card">
-          <div class="support-icon">
-            <i class="fas fa-comments"></i>
+          <div class="action-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>View Reports</h3>
+            <p>Access patient reports and analytics</p>
+            <button class="btn-primary" (click)="changeSection('reports')">View Reports</button>
           </div>
-          <h3>Live Chat</h3>
-          <p>Chat with our support representatives in real-time</p>
-          <button class="btn btn-outline-primary">Start Chat</button>
         </div>
       </div>
 
-      <div class="contact-support">
-        <h3>Contact Support</h3>
-        <form>
-          <div class="form-group">
-            <label for="supportSubject">Subject</label>
-            <input type="text" id="supportSubject" class="form-control" required>
+      <!-- Calendar Section -->
+      <div *ngIf="activeSection === 'calendar'" class="calendar-section">
+        <div class="section-header">
+          <h2>Appointment Calendar</h2>
+          <div class="calendar-controls">
+            <button class="btn-outline btn-sm" (click)="previousMonth()">
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="current-month">{{ getCurrentMonth() }}</span>
+            <button class="btn-outline btn-sm" (click)="nextMonth()">
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <div class="calendar-day-header">Sun</div>
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+          </div>
+          <div class="calendar-grid">
+            <div *ngFor="let day of getCalendarDays()" class="calendar-day" [class.other-month]="!day.isCurrentMonth"
+              [class.today]="day.isToday" [class.has-appointments]="day.hasAppointments">
+              <span class="day-number">{{ day.number }}</span>
+              <div class="day-appointments">
+                <div *ngFor="let appointment of day.appointments.slice(0, 3)" class="calendar-appointment"
+                  [class.scheduled]="appointment.status === 'SCHEDULED'"
+                  [class.confirmed]="appointment.status === 'CONFIRMED'">
+                  <span class="appointment-time">{{ appointment.time }}</span>
+                  <span class="appointment-patient">{{ appointment.clientFullName.split(' ')[0] }}</span>
+                </div>
+                <div *ngIf="day.appointments.length > 3" class="more-appointments">
+                  +{{ day.appointments.length - 3 }} more
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="calendar-legend">
+          <div class="legend-item">
+            <div class="legend-color scheduled"></div>
+            <span>Scheduled</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color confirmed"></div>
+            <span>Confirmed</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color completed"></div>
+            <span>Completed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointments Section -->
+      <div *ngIf="activeSection === 'appointments'" class="appointments-section">
+        <div class="section-header">
+          <h2>Appointments Management</h2>
+          <div class="section-tabs">
+            <div class="tab active">All Appointments</div>
+            <div class="tab">Today</div>
+            <div class="tab">This Week</div>
+          </div>
+        </div>
+
+        <div class="appointments-container">
+          <div class="appointments-filters">
+            <div class="filter-group">
+              <label>Status:</label>
+              <select class="form-control">
+                <option value="">All Status</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Date Range:</label>
+              <input type="date" class="form-control">
+              <span>to</span>
+              <input type="date" class="form-control">
+            </div>
+          </div>
+
+          <div class="data-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th>Reason</th>
+                  <th>Prescription</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let appointment of appointments">
+                  <td>
+                    <div class="patient-info">
+                      <strong>{{ appointment.clientFullName }}</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="appointment-datetime">
+                      <div>{{ appointment.date | date:'MMM d, y' }}</div>
+                      <div class="time">{{ appointment.time }}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge" [ngClass]="appointment.status.toLowerCase()">
+                      {{ appointment.status }}
+                    </span>
+                  </td>
+                  <td>{{ appointment.reason || 'General consultation' }}</td>
+                  <td>
+                    <div class="prescription-status">
+                      <span *ngIf="!hasPrescription(appointment.id)" class="no-prescription">
+                        <i class="fas fa-minus-circle"></i> No prescription
+                      </span>
+                      <span *ngIf="hasPrescription(appointment.id)" class="has-prescription">
+                        <i class="fas fa-check-circle"></i> Prescribed
+                      </span>
+                    </div>
+                  </td>
+                  <td class="actions">
+                    <button class="btn-icon" title="View Details">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon" title="Create Prescription" *ngIf="!hasPrescription(appointment.id)"
+                      (click)="createPrescriptionForAppointment(appointment)">
+                      <i class="fas fa-prescription"></i>
+                    </button>
+                    <button class="btn-icon" title="View Prescription" *ngIf="hasPrescription(appointment.id)">
+                      <i class="fas fa-file-medical"></i>
+                    </button>
+                    <button class="btn-icon" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="!appointments || appointments.length === 0">
+                  <td colspan="6" class="no-data">No appointments found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Appointment Section -->
+      <div *ngIf="activeSection === 'book-appointment'" class="book-appointment-section">
+        <div class="section-header">
+          <h2>Book New Appointment</h2>
+        </div>
+
+        <form (ngSubmit)="bookAppointment()" #appointmentForm="ngForm" class="appointment-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="patientName">Patient Name *</label>
+              <input type="text" id="patientName" name="patientName" class="form-control"
+                [(ngModel)]="newAppointment.patientName" required placeholder="Enter patient full name">
+            </div>
+
+            <div class="form-group">
+              <label for="patientContact">Patient Contact</label>
+              <input type="tel" id="patientContact" name="patientContact" class="form-control"
+                placeholder="Phone number">
+            </div>
+
+            <div class="form-group">
+              <label for="appointmentDate">Date *</label>
+              <input type="date" id="appointmentDate" name="appointmentDate" class="form-control"
+                [(ngModel)]="newAppointment.date" required>
+            </div>
+
+            <div class="form-group">
+              <label for="appointmentTime">Time *</label>
+              <input type="time" id="appointmentTime" name="appointmentTime" class="form-control"
+                [(ngModel)]="newAppointment.time" required>
+            </div>
+
+            <div class="form-group">
+              <label for="appointmentType">Appointment Type</label>
+              <select id="appointmentType" name="appointmentType" class="form-control">
+                <option value="consultation">Consultation</option>
+                <option value="follow-up">Follow-up</option>
+                <option value="emergency">Emergency</option>
+                <option value="routine">Routine Check-up</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="priority">Priority</label>
+              <select id="priority" name="priority" class="form-control">
+                <option value="normal">Normal</option>
+                <option value="urgent">Urgent</option>
+                <option value="emergency">Emergency</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-group">
-            <label for="supportMessage">Message</label>
-            <textarea id="supportMessage" class="form-control" rows="5" required></textarea>
+            <label for="appointmentNotes">Notes / Reason for Visit</label>
+            <textarea id="appointmentNotes" name="appointmentNotes" class="form-control" rows="4"
+              [(ngModel)]="newAppointment.notes"
+              placeholder="Describe the reason for the appointment or any special notes..."></textarea>
           </div>
 
-          <div class="form-group">
-            <label for="supportAttachment">Attachments (Optional)</label>
-            <input type="file" id="supportAttachment" class="form-control-file">
+          <div class="form-actions">
+            <button type="button" class="btn-outline">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="!appointmentForm.form.valid">
+              <i class="fas fa-calendar-plus"></i> Book Appointment
+            </button>
           </div>
-
-          <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+      </div>
+
+      <!-- Prescriptions Section -->
+      <div *ngIf="activeSection === 'prescriptions'" class="prescriptions-section">
+        <div class="section-header">
+          <h2>Medical Prescriptions</h2>
+          <div class="section-tabs">
+            <div class="tab active">All Prescriptions</div>
+            <div class="tab">Published</div>
+            <div class="tab">Drafts</div>
+          </div>
+        </div>
+
+        <div class="prescriptions-container">
+          <div class="prescriptions-stats">
+            <div class="stat-item">
+              <span class="number">{{ prescriptions.length }}</span>
+              <span class="label">Total Prescriptions</span>
+            </div>
+            <div class="stat-item">
+              <span class="number">{{ getPublishedPrescriptions().length }}</span>
+              <span class="label">Published</span>
+            </div>
+            <div class="stat-item">
+              <span class="number">{{ getDraftPrescriptions().length }}</span>
+              <span class="label">Drafts</span>
+            </div>
+          </div>
+
+          <div class="data-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Medication</th>
+                  <th>Dosage</th>
+                  <th>Date Created</th>
+                  <th>Status</th>
+                  <th>Connected Appointment</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let prescription of prescriptions">
+                  <td>
+                    <div class="patient-info">
+                      <strong>{{ prescription.prescribedTo }}</strong>
+                      <div class="patient-email">{{ prescription.clientEmail }}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="medication-info">
+                      <strong>{{ prescription.medicationName }}</strong>
+                      <div class="frequency">{{ prescription.frequency }}</div>
+                    </div>
+                  </td>
+                  <td>{{ prescription.dosage }}</td>
+                  <td>{{ prescription.createdAt | date:'MMM d, y' }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="prescription.isPublished ? 'published' : 'draft'">
+                      {{ prescription.isPublished ? 'Published' : 'Draft' }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="appointment-link">
+                      <span *ngIf="getConnectedAppointment(prescription.id)">
+                        <i class="fas fa-link"></i>
+                        {{ getConnectedAppointment(prescription.id)?.clientFullName }}
+                      </span>
+                      <span *ngIf="!getConnectedAppointment(prescription.id)" class="no-link">
+                        <i class="fas fa-unlink"></i> Not connected
+                      </span>
+                    </div>
+                  </td>
+                  <td class="actions">
+                    <button *ngIf="!prescription.isPublished" class="btn-success btn-sm"
+                      (click)="publishPrescription(prescription.id)">
+                      <i class="fas fa-paper-plane"></i> Publish
+                    </button>
+                    <button class="btn-outline btn-sm">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-outline btn-sm">
+                      <i class="fas fa-print"></i> Print
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="!prescriptions || prescriptions.length === 0">
+                  <td colspan="7" class="no-data">No prescriptions found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Prescription Section -->
+      <div *ngIf="activeSection === 'create-prescription'" class="create-prescription-section">
+        <div class="section-header">
+          <h2>Create Medical Prescription</h2>
+        </div>
+
+        <form (ngSubmit)="createPrescription()" #prescriptionForm="ngForm" class="prescription-form">
+          <!-- Patient Information -->
+          <div class="form-section">
+            <h3>Patient Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="patientId">Patient ID *</label>
+                <input type="text" id="patientId" name="patientId" class="form-control"
+                  [(ngModel)]="newPrescription.patientId" required placeholder="Enter patient ID">
+              </div>
+
+              <div class="form-group">
+                <label for="prescriptionPatientName">Patient Name *</label>
+                <input type="text" id="prescriptionPatientName" name="prescriptionPatientName" class="form-control"
+                  [(ngModel)]="newPrescription.patientName" required placeholder="Enter patient full name">
+              </div>
+
+              <div class="form-group">
+                <label for="connectedAppointment">Connect to Appointment (Optional)</label>
+                <select id="connectedAppointment" name="connectedAppointment" class="form-control">
+                  <option value="">Select an appointment</option>
+                  <option *ngFor="let appointment of appointments" [value]="appointment.id">
+                    {{ appointment.clientFullName }} - {{ appointment.date | date:'MMM d, y' }} {{ appointment.time }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Medications -->
+          <div class="form-section">
+            <div class="section-header-small">
+              <h3>Medications</h3>
+              <button type="button" class="btn-outline btn-sm" (click)="addMedication()">
+                <i class="fas fa-plus"></i> Add Medication
+              </button>
+            </div>
+
+            <div class="medications-container">
+              <div *ngFor="let medication of newPrescription.medications; let i = index" class="medication-item">
+                <div class="medication-header">
+                  <h4>Medication {{ i + 1 }}</h4>
+                  <button type="button" class="btn-danger btn-sm" (click)="removeMedication(i)"
+                    *ngIf="newPrescription.medications.length > 1">
+                    <i class="fas fa-trash"></i> Remove
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label [for]="'medicationName' + i">Medication Name *</label>
+                    <input type="text" [id]="'medicationName' + i" [name]="'medicationName' + i" class="form-control"
+                      [(ngModel)]="medication.name" required placeholder="e.g., Paracetamol">
+                  </div>
+
+                  <div class="form-group">
+                    <label [for]="'medicationDosage' + i">Dosage *</label>
+                    <input type="text" [id]="'medicationDosage' + i" [name]="'medicationDosage' + i"
+                      class="form-control" [(ngModel)]="medication.dosage" required placeholder="e.g., 500mg">
+                  </div>
+
+                  <div class="form-group">
+                    <label [for]="'medicationFrequency' + i">Frequency *</label>
+                    <select [id]="'medicationFrequency' + i" [name]="'medicationFrequency' + i" class="form-control"
+                      [(ngModel)]="medication.frequency" required>
+                      <option value="">Select frequency</option>
+                      <option value="Once daily">Once daily</option>
+                      <option value="Twice daily">Twice daily</option>
+                      <option value="Three times daily">Three times daily</option>
+                      <option value="Four times daily">Four times daily</option>
+                      <option value="Every 4 hours">Every 4 hours</option>
+                      <option value="Every 6 hours">Every 6 hours</option>
+                      <option value="Every 8 hours">Every 8 hours</option>
+                      <option value="As needed">As needed</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label [for]="'medicationDuration' + i">Duration *</label>
+                    <input type="text" [id]="'medicationDuration' + i" [name]="'medicationDuration' + i"
+                      class="form-control" [(ngModel)]="medication.duration" required
+                      placeholder="e.g., 7 days, 2 weeks">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label [for]="'medicationInstructions' + i">Special Instructions</label>
+                  <textarea [id]="'medicationInstructions' + i" class="form-control" rows="2"
+                    placeholder="e.g., Take with food, Avoid alcohol"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- General Instructions -->
+          <div class="form-section">
+            <h3>General Instructions</h3>
+            <div class="form-group">
+              <label for="prescriptionInstructions">Additional Instructions</label>
+              <textarea id="prescriptionInstructions" name="prescriptionInstructions" class="form-control" rows="4"
+                [(ngModel)]="newPrescription.instructions"
+                placeholder="Enter any additional instructions for the patient..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-outline">Cancel</button>
+            <button type="button" class="btn-outline" [disabled]="!prescriptionForm.form.valid">
+              <i class="fas fa-save"></i> Save as Draft
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="!prescriptionForm.form.valid">
+              <i class="fas fa-paper-plane"></i> Save & Publish
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Profile Section -->
+      <div *ngIf="activeSection === 'profile'" class="profile-section">
+        <div class="section-header">
+          <h2>Doctor Profile</h2>
+          <button class="btn-outline">
+            <i class="fas fa-edit"></i> Edit Profile
+          </button>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <img src="./user-profile.jpg" alt="Doctor Profile">
+            </div>
+            <div class="profile-info">
+              <h3>{{ doctor.fullName }}</h3>
+              <p>{{ doctor.specialization }}</p>
+              <p>Medical License: {{ doctor.medicalLicenseNumber }}</p>
+              <div class="profile-stats">
+                <div class="stat">
+                  <span class="number">{{ dashboardStats.totalPatients }}</span>
+                  <span class="label">Patients</span>
+                </div>
+                <div class="stat">
+                  <span class="number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
+                  <span class="label">Rating</span>
+                </div>
+                <div class="stat">
+                  <span class="number">{{ feedback.length }}</span>
+                  <span class="label">Reviews</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-body">
+            <div class="info-group">
+              <h4>Contact Information</h4>
+              <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ doctor.email }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Phone:</span>
+                <span class="info-value">{{ doctor.phoneNumber }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Address:</span>
+                <span class="info-value">{{ doctor.address }}</span>
+              </div>
+            </div>
+
+            <div class="info-group">
+              <h4>Professional Information</h4>
+              <div class="info-row">
+                <span class="info-label">Specialization:</span>
+                <span class="info-value">{{ doctor.specialization }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">License Number:</span>
+                <span class="info-value">{{ doctor.medicalLicenseNumber }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Experience:</span>
+                <span class="info-value">8+ years</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Section -->
+      <div *ngIf="activeSection === 'feedback'" class="feedback-section">
+        <div class="section-header">
+          <h2>Patient Feedback & Reviews</h2>
+        </div>
+
+        <div class="feedback-summary">
+          <div class="rating-overview">
+            <div class="average-rating">
+              <h3>Overall Rating</h3>
+              <div class="rating-display">
+                <span class="rating-number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
+                <div class="rating-stars">
+                  <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star"
+                    [class.filled]="star <= dashboardStats.averageRating"></i>
+                </div>
+              </div>
+              <p>Based on {{ feedback.length }} reviews</p>
+            </div>
+
+            <div class="rating-breakdown">
+              <div class="rating-bar" *ngFor="let rating of [5, 4, 3, 2, 1]">
+                <span class="rating-label">{{ rating }} stars</span>
+                <div class="bar-container">
+                  <div class="bar-fill" [style.width.%]="getRatingPercentage(rating)"></div>
+                </div>
+                <span class="rating-count">{{ getRatingCount(rating) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback-list">
+          <div *ngFor="let item of feedback" class="feedback-card">
+            <div class="feedback-header">
+              <div class="patient-info">
+                <h4>{{ item.patientName }}</h4>
+                <div class="feedback-rating">
+                  <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star" [class.filled]="star <= item.rating"></i>
+                </div>
+              </div>
+              <span class="feedback-date">{{ item.createdAt| date:'MMM d, y' }}</span>
+            </div>
+            <div class="feedback-comment">
+              <p>{{ item.comment }}</p>
+            </div>
+          </div>
+
+          <div *ngIf="!feedback || feedback.length === 0" class="no-feedback">
+            <i class="fas fa-comment-slash"></i>
+            <h3>No feedback received yet</h3>
+            <p>Patient reviews will appear here once they submit feedback.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Section -->
+      <div *ngIf="activeSection === 'support'" class="support-section">
+        <div class="section-header">
+          <h2>Support & Help Center</h2>
+        </div>
+
+        <div class="support-options">
+          <div class="support-card">
+            <div class="support-icon">
+              <i class="fas fa-question-circle"></i>
+            </div>
+            <h3>Help Center</h3>
+            <p>Browse through our knowledge base for answers to common questions</p>
+            <button class="btn-primary">Visit Help Center</button>
+          </div>
+
+          <div class="support-card">
+            <div class="support-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>Technical Support</h3>
+            <p>Contact our technical team for system-related issues</p>
+            <button class="btn-primary">Open Ticket</button>
+          </div>
+
+          <div class="support-card">
+            <div class="support-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3>Live Chat</h3>
+            <p>Chat with our support representatives in real-time</p>
+            <button class="btn-primary">Start Chat</button>
+          </div>
+        </div>
+
+        <div class="contact-support">
+          <h3>Contact Support</h3>
+          <form class="support-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="supportSubject">Subject *</label>
+                <input type="text" id="supportSubject" class="form-control" required
+                  placeholder="Brief description of your issue">
+              </div>
+
+              <div class="form-group">
+                <label for="supportPriority">Priority</label>
+                <select id="supportPriority" class="form-control">
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="supportMessage">Message *</label>
+              <textarea id="supportMessage" class="form-control" rows="5" required
+                placeholder="Describe your issue in detail..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="supportAttachment">Attachments (Optional)</label>
+              <input type="file" id="supportAttachment" class="form-control-file" multiple>
+              <small class="form-text">You can attach screenshots or relevant files</small>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-paper-plane"></i> Submit Support Request
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

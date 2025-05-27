@@ -2,7 +2,7 @@ package com.tfg.back.controller;
 
 import com.tfg.back.model.dtos.auth.AuthRequest;
 import com.tfg.back.model.dtos.auth.AuthResponse;
-import com.tfg.back.service.MyUserDetailsService;
+import com.tfg.back.service.serviceImpl.MyUserDetailsService;
 import com.tfg.back.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

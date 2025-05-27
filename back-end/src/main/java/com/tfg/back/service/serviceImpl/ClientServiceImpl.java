@@ -6,17 +6,17 @@ import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
 import com.tfg.back.mappers.ClientMapper;
-import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientService;
-import com.tfg.back.utils.ChangePasswordRequest;
+import com.tfg.back.model.dtos.ChangePasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -146,6 +146,8 @@ public class ClientServiceImpl implements ClientService {
         client.setStatus(UserStatus.SUSPENDED);
         clientRepository.save(client);
     }
+
+
 
     private Client findClientById(Long id) {
         if (id == null || id <= 0) {

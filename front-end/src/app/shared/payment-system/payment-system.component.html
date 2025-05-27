@@ -1,0 +1,261 @@
+<div class="payment-container">
+  <!-- Header -->
+  <div class="payment-header">
+    <div class="hospital-logo">
+      <div class="logo-icon">🏥</div>
+      <h1>MediCare Hospital</h1>
+    </div>
+    <div class="secure-badge">
+      <i class="lock-icon">🔒</i>
+      <span>Secure Payment</span>
+    </div>
+  </div>
+
+  <!-- Payment Summary -->
+  <div class="payment-summary" *ngIf="!paymentSuccess">
+    <h2>Payment Summary</h2>
+    <div class="summary-row">
+      <span>Patient ID:</span>
+      <span>{{ paymentInfo.patientId }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Patient Name:</span>
+      <span>{{ paymentInfo.patientName }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Service:</span>
+      <span>{{ paymentInfo.serviceType }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Invoice #:</span>
+      <span>{{ paymentInfo.invoiceNumber }}</span>
+    </div>
+    <div class="summary-total">
+      <span>Total Amount:</span>
+      <span class="amount">${{ paymentInfo.amount | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-container" *ngIf="paymentSuccess">
+    <div class="success-icon">✅</div>
+    <h2>Payment Successful!</h2>
+    <p>Your payment has been processed successfully.</p>
+    <div class="transaction-details">
+      <div class="detail-row">
+        <span>Transaction ID:</span>
+        <span class="transaction-id">{{ transactionId }}</span>
+      </div>
+      <div class="detail-row">
+        <span>Amount Paid:</span>
+        <span class="amount">${{ paymentInfo.amount | number:'1.2-2' }}</span>
+      </div>
+      <div class="detail-row">
+        <span>Date:</span>
+        <span>DATE</span>
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="startNewPayment()">
+      Make Another Payment
+    </button>
+  </div>
+
+  <!-- Payment Form -->
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" *ngIf="!paymentSuccess" class="payment-form">
+    
+    <!-- Card Information -->
+    <div class="form-section">
+      <h3>Card Information</h3>
+      
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <div class="card-input-wrapper">
+          <input 
+            id="cardNumber"
+            formControlName="cardNumber"
+            type="text"
+            placeholder="1234 5678 9012 3456"
+            maxlength="19"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('cardNumber')"
+          >
+          <div class="card-type" [ngClass]="getCardType(paymentForm.get('cardNumber')?.value || '')">
+            <span *ngIf="getCardType(paymentForm.get('cardNumber')?.value || '') === 'visa'">💳</span>
+            <span *ngIf="getCardType(paymentForm.get('cardNumber')?.value || '') === 'mastercard'">💳</span>
+            <span *ngIf="getCardType(paymentForm.get('cardNumber')?.value || '') === 'amex'">💳</span>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('cardNumber')">
+          {{ getFieldError('cardNumber') }}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="expiryDate">Expiry Date</label>
+          <input 
+            id="expiryDate"
+            formControlName="expiryDate"
+            type="text"
+            placeholder="MM/YY"
+            maxlength="5"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('expiryDate')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('expiryDate')">
+            {{ getFieldError('expiryDate') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cvv">CVV</label>
+          <input 
+            id="cvv"
+            formControlName="cvv"
+            type="password"
+            placeholder="123"
+            maxlength="4"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('cvv')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('cvv')">
+            {{ getFieldError('cvv') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cardholderName">Cardholder Name</label>
+        <input 
+          id="cardholderName"
+          formControlName="cardholderName"
+          type="text"
+          placeholder="John Doe"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('cardholderName')"
+        >
+        <div class="error-message" *ngIf="isFieldInvalid('cardholderName')">
+          {{ getFieldError('cardholderName') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing Address -->
+    <div class="form-section">
+      <h3>Billing Address</h3>
+      
+      <div class="form-group">
+        <label for="street">Street Address</label>
+        <input 
+          id="street"
+          formControlName="street"
+          type="text"
+          placeholder="123 Main Street"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('street')"
+        >
+        <div class="error-message" *ngIf="isFieldInvalid('street')">
+          {{ getFieldError('street') }}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input 
+            id="city"
+            formControlName="city"
+            type="text"
+            placeholder="New York"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('city')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('city')">
+            {{ getFieldError('city') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="state">State</label>
+          <input 
+            id="state"
+            formControlName="state"
+            type="text"
+            placeholder="NY"
+            maxlength="2"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('state')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('state')">
+            {{ getFieldError('state') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="zipCode">ZIP Code</label>
+          <input 
+            id="zipCode"
+            formControlName="zipCode"
+            type="text"
+            placeholder="12345"
+            maxlength="10"
+            class="form-control"
+            [class.invalid]="isFieldInvalid('zipCode')"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('zipCode')">
+            {{ getFieldError('zipCode') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms and Conditions -->
+    <div class="form-group checkbox-group">
+      <label class="checkbox-label">
+        <input 
+          type="checkbox" 
+          formControlName="acceptTerms"
+          class="checkbox-input"
+        >
+        <span class="checkbox-custom"></span>
+        <span class="checkbox-text">
+          I agree to the <a href="#" class="link">Terms and Conditions</a> and 
+          <a href="#" class="link">Privacy Policy</a>
+        </span>
+      </label>
+      <div class="error-message" *ngIf="isFieldInvalid('acceptTerms')">
+        You must accept the terms and conditions
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-alert" *ngIf="paymentError">
+      <div class="error-icon">❌</div>
+      <div class="error-content">
+        <h4>Payment Failed</h4>
+        <p>{{ errorMessage }}</p>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+      type="submit" 
+      class="btn btn-primary btn-pay"
+      [disabled]="isProcessing || !paymentForm.valid"
+    >
+      <span *ngIf="!isProcessing">
+        Pay ${{ paymentInfo.amount | number:'1.2-2' }}
+      </span>
+      <span *ngIf="isProcessing" class="processing">
+        <div class="spinner"></div>
+        Processing Payment...
+      </span>
+    </button>
+
+    <!-- Security Notice -->
+    <div class="security-notice">
+      <div class="security-icon">🛡️</div>
+      <p>Your payment information is encrypted and secure. We do not store your card details.</p>
+    </div>
+  </form>
+</div>

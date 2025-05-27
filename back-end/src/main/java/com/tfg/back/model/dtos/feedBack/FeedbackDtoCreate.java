@@ -1,0 +1,17 @@
+package com.tfg.back.model.dtos.feedBack;
+
+import com.tfg.back.enums.FeedBackType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class FeedbackDtoCreate {
+
+    private String comment;
+    private int rating;
+    private Long writtenToId;
+    private FeedBackType type;
+}

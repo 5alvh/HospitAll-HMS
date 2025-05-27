@@ -9,6 +9,11 @@ export const routes: Routes = [
       import('./shared/login/login.component').then((c) => c.LoginComponent)
   },
   {
+    path: 'payment-system',
+    loadComponent: () =>
+      import('./shared/payment-system/payment-system.component').then((c) => c.PaymentSystemComponent)
+  },
+  {
     path: 'signup-client',
     loadComponent: () =>
       import('./client/client-signup/client-signup.component').then((c) => c.ClientSignupComponent)

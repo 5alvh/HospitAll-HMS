@@ -31,8 +31,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 
-
-        // Verify password
         if (!passwordEncoder.matches(password, user.getHashedPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
@@ -41,7 +39,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             case SUSPENDED -> throw new LockedException("Account is suspended");
         }
 
-        // Determine role
         String role = switch (user) {
             case Doctor d -> "ROLE_DOCTOR";
             case Client c -> "ROLE_CLIENT";

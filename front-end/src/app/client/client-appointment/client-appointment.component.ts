@@ -6,6 +6,8 @@ import { Router, RouterLink } from '@angular/router';
 import { DepartmentService } from '../../services/shared-services/department.service';
 import { ClientService } from '../../services/client-services/client.service';
 import { ClientDtoGet } from '../../models/client-dto-get';
+import { AppointmentService } from '../../services/client-services/appointment.service';
+import { AppointmentType } from '../../models/enums/appointment-type';
 interface Doctor {
   id: number;
   name: string;
@@ -16,13 +18,6 @@ interface Doctor {
 interface Department {
   id: number;
   name: string;
-  /*description: string;
-  headDoctor: string;
-  contactNumber: string;
-  location: string;
-  version: number;
-  updatedAt: Date;
-  createdAt: Date;*/
 }
 
 interface TimeSlot {
@@ -39,15 +34,15 @@ interface TimeSlot {
   encapsulation: ViewEncapsulation.None,
 })
 export class ClientAppointmentComponent {
-  dateStepEnabled: boolean = false;
+
+  prefferedDateChosen: boolean = false;
   departmentSelected = false;
   doctorsSearched = false;
-  dateSearched = false;
+  slotsSearched = false;
   patient!: ClientDtoGet;
   appointmentForm!: FormGroup;
   departments: Department[] = [];
-  doctors: Doctor[] = [];
-  filteredDoctors: Doctor[] = [];
+  doctors: { doctorFullName: string, doctorId: number }[] = [];
   timeSlots: TimeSlot[] = [];
   availableDates: Date[] = [];
   minDate = new Date();
@@ -56,87 +51,84 @@ export class ClientAppointmentComponent {
   submitted = false;
   appointmentSuccess = false;
   sameInfos: boolean = false;
-  onDepartmentChange() {
-    this.departmentSelected = !!this.appointmentForm.get('department')!.value;
-    this.doctorsSearched = false;
-    this.dateSearched = false;
-    this.filteredDoctors = [];
-
-    this.appointmentForm.get('doctor')!.reset();
-    this.appointmentForm.get('date')!.reset();
-    this.appointmentForm.get('timeSlot')!.reset();
-    this.appointmentForm.get('reasonForVisit')!.reset();
-  }
-  searchDoctors() {
-    console.log('Searching doctors...');
-    /* const deptId = this.appointmentForm.get('department')!.value;
-     // Call your API or service here to get doctors for selected department:
-     this.doctorService.getDoctorsByDepartment(deptId).subscribe(doctors => {
-       this.filteredDoctors = doctors;
-       this.doctorsSearched = true;
-       this.dateSearched = false;
-       this.appointmentForm.get('doctor')!.reset();
-       this.appointmentForm.get('date')!.reset();
-       this.appointmentForm.get('timeSlot')!.reset();
-       this.appointmentForm.get('reasonForVisit')!.reset();
-     });*/
-  }
-
-  searchDate() {
-    // You could implement logic to filter available time slots for the chosen doctor and date here
-    this.dateSearched = true;
-
-    // Reset time slot and reason fields
-    this.appointmentForm.get('timeSlot')!.reset();
-    this.appointmentForm.get('reasonForVisit')!.reset();
-
-    // Optionally fetch available time slots based on selected doctor and date here
-  }
-
+  date!: Date;
 
   constructor(
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private departmentsService: DepartmentService,
     private clientService: ClientService,
+    private appointmentService: AppointmentService,
     private router: Router
   ) { }
+
+  onDepartmentChange() {
+    this.departmentSelected = !!this.appointmentForm.get('department')!.value;
+    this.prefferedDateChosen = false;
+    this.doctorsSearched = false;
+    this.slotsSearched = false;
+  }
+
+  searchDoctors() {
+    const departmentId = this.appointmentForm.get('department')!.value;
+    const date = this.appointmentForm.get('date')!.value;
+    this.appointmentService.getAvailableDoctors(departmentId, date)
+      .subscribe((doctors: any) => {
+        this.doctors = doctors;
+        this.doctorsSearched = true;
+      },
+      );
+  }
+
+  onDateChange(): void {
+    if (this.appointmentForm.get('date')!.value) {
+      this.prefferedDateChosen = true;
+      this.date = this.appointmentForm.get('date')!.value;
+    } else {
+      this.prefferedDateChosen = false;
+    }
+    this.doctorsSearched = false;
+    this.slotsSearched = false;
+  }
+
+  onDoctorChange() {
+    this.slotsSearched = false;
+  }
+  searchSlots() {
+
+    const doctorId = this.appointmentForm.get('doctor')!.value;
+
+    this.appointmentService.getAvailableSlots(doctorId, this.date).subscribe((slots: any) => {
+      this.timeSlots = slots.map((slot: any) => ({
+        id: slot.id,
+        time: this.datePipe.transform(new Date('1970-01-01T' + slot.startTime + 'Z'), 'HH:mm'),
+        available: true
+      }));
+      this.slotsSearched = true;
+    });
+  }
 
   ngOnInit(): void {
     this.initForm();
     this.loadDepartments();
-    this.generateAvailableDates();
     this.getProfile();
-    this.appointmentForm.get('department')!.valueChanges.subscribe(departmentId => {
-      this.filterDoctors(departmentId);
-      this.appointmentForm.get('doctor')!.setValue(null);
-      this.appointmentForm.get('date')!.setValue(null);
-      this.appointmentForm.get('timeSlot')!.setValue(null);
-    });
-
-    this.appointmentForm.get('doctor')!.valueChanges.subscribe(() => {
-      this.appointmentForm.get('date')!.setValue(null);
-      this.appointmentForm.get('timeSlot')!.setValue(null);
-    });
-
-    this.appointmentForm.get('date')!.valueChanges.subscribe(date => {
-      if (date) {
-        this.loadTimeSlots();
-        this.appointmentForm.get('timeSlot')!.setValue(null);
-      }
-    });
   }
 
   copyInfos(): void {
     this.sameInfos = !this.sameInfos;
-    console.log('Same Infos:', this.sameInfos);
     if (this.sameInfos) {
       this.appointmentForm.patchValue({
         patientName: this.patient.fullName,
         patientEmail: this.patient.email,
         patientPhone: this.patient.phoneNumber
       });
+      this.appointmentForm.get('patientName')?.disable();
+      this.appointmentForm.get('patientEmail')?.disable();
+      this.appointmentForm.get('patientPhone')?.disable();
     } else {
+      this.appointmentForm.get('patientName')?.enable();
+      this.appointmentForm.get('patientEmail')?.enable();
+      this.appointmentForm.get('patientPhone')?.enable();
       this.appointmentForm.patchValue({
         patientName: '',
         patientEmail: '',
@@ -155,7 +147,6 @@ export class ClientAppointmentComponent {
       date: [null, Validators.required],
       timeSlot: [null, Validators.required],
       reasonForVisit: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-      isNewPatient: [false]
     });
   }
 
@@ -165,35 +156,6 @@ export class ClientAppointmentComponent {
     });
   }
 
-  filterDoctors(departmentId: number): void {
-    const department = this.departments.find(d => d.id === departmentId);
-    if (department) {
-      this.filteredDoctors = this.doctors.filter(
-        doctor => doctor.specialization === department.name && doctor.available
-      );
-    } else {
-      this.filteredDoctors = [];
-    }
-  }
-
-  loadTimeSlots(): void {
-    // Simulate API call to get available time slots for selected doctor and date
-    this.timeSlots = [
-      { id: 1, time: '09:00 AM', available: true },
-      { id: 2, time: '09:30 AM', available: true },
-      { id: 3, time: '10:00 AM', available: false },
-      { id: 4, time: '10:30 AM', available: true },
-      { id: 5, time: '11:00 AM', available: true },
-      { id: 6, time: '11:30 AM', available: true },
-      { id: 7, time: '01:00 PM', available: true },
-      { id: 8, time: '01:30 PM', available: false },
-      { id: 9, time: '02:00 PM', available: true },
-      { id: 10, time: '02:30 PM', available: true },
-      { id: 11, time: '03:00 PM', available: true },
-      { id: 12, time: '03:30 PM', available: false }
-    ];
-  }
-
   onSubmit(): void {
     this.submitted = true;
 
@@ -201,33 +163,40 @@ export class ClientAppointmentComponent {
       return;
     }
 
-    this.submitting = true;
-
     setTimeout(() => {
-      this.submitting = false;
-      this.appointmentSuccess = true;
-      console.log('Appointment booked:', this.appointmentForm.value);
-
-      // Reset form after 3 seconds
+      this.submitting = true;
+      const doctorId = this.appointmentForm.get('doctor')!.value;
+      const type = AppointmentType.IN_PERSON;
+      const reason = this.appointmentForm.get('reasonForVisit')!.value;
+      const timeSlot = this.appointmentForm.get('timeSlot')!.value;
       setTimeout(() => {
-        this.resetForm();
+        this.appointmentService.bookAppointment({
+          doctorId: doctorId,
+          date: this.date,
+          startTime: timeSlot,
+          type: type,
+          reason: reason
+        }).subscribe({
+          next: (appointment) => {
+            this.submitting = false;
+            this.appointmentSuccess = true;
+            console.log('Appointment booked successfully:', appointment);
+            this.router.navigate(['/dashboard-client']);
+          },
+          error: (error) => {
+            this.submitting = false;
+            console.error('Error booking appointment:', error);
+            this.appointmentSuccess = false;
+          }
+        }
+        );
       }, 3000);
     }, 1500);
-  }
-
-  resetForm(): void {
-    this.submitted = false;
-    this.appointmentSuccess = false;
-    this.appointmentForm.reset();
-    this.appointmentForm.patchValue({
-      isNewPatient: false
-    });
   }
 
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
-        console.log('User:', response);
         this.patient = response;
       },
       error: (error) => {
@@ -236,30 +205,6 @@ export class ClientAppointmentComponent {
       }
     });
   }
-
-  generateAvailableDates(): void {
-    // Generate dates for the next 30 days, excluding weekends
-    const dates: Date[] = [];
-    const today = new Date();
-    const endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
-
-    for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
-      // Skip weekends (0 = Sunday, 6 = Saturday)
-      if (d.getDay() !== 0 && d.getDay() !== 6) {
-        dates.push(new Date(d));
-      }
-    }
-
-    this.availableDates = dates;
-  }
-
-  isDateAvailable(date: Date): boolean {
-    // This would typically be determined by backend availability data
-    // For demo purposes, all weekdays are available
-    const day = date.getDay();
-    return day !== 0 && day !== 6;
-  }
-
 
   get f() { return this.appointmentForm.controls; }
 

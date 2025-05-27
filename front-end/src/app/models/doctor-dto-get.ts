@@ -1,3 +1,4 @@
+import { Feedback } from "../doctor/doctor-dashboard/doctor-dashboard.component";
 import { AppointmentDtoGet } from "./appointment-dto-get";
 import { DepartmentDto } from "./department";
 import { LabResultDtoGet } from "./lab-result-dto-get";
@@ -16,4 +17,5 @@ export interface DoctorDtoGet {
     address: string;
     prescriptionsGiven: MedicalPrescriptionDtoGet[];
     appointments: AppointmentDtoGet[];
+    feedbacksReceived: Feedback[];
 }

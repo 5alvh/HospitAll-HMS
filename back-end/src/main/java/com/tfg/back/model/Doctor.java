@@ -34,7 +34,6 @@ public class Doctor extends User {
     @Column(nullable = false, length = 50)
     private Specialization specialization;
 
-
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Appointment> appointments = new ArrayList<>();
 
@@ -49,4 +48,6 @@ public class Doctor extends User {
     @JsonIgnore
     private List<LabResult> labResultsGiven = new ArrayList<>();
 
+    @OneToMany(mappedBy = "writtenTo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedBack> feedbacksReceived = new ArrayList<>();
 }

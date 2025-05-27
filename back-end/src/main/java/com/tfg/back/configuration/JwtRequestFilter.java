@@ -1,6 +1,6 @@
 package com.tfg.back.configuration;
 
-import com.tfg.back.service.MyUserDetailsService;
+import com.tfg.back.service.serviceImpl.MyUserDetailsService;
 import com.tfg.back.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

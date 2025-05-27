@@ -23,4 +23,5 @@ public class AppointmentDtoGet {
     private AppointmentStatus status;
     private AppointmentType type;
     private String departmentName;
+    private String diagnosis;
 }
