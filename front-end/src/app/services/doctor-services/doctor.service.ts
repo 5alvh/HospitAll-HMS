@@ -54,4 +54,13 @@ export class DoctorService {
       })
     );
   }
+
+  confirmAppointment(appointmentId: number): Observable<void> {
+    return this.httpClient.put<void>(`${this.baseUrlForAppointments}/${appointmentId}/confirm`, {}).pipe(
+      catchError((error) => {
+        console.error('Error confirming appointment:', error);
+        return throwError(() => new Error('Failed to confirm appointment'));
+      })
+    );
+  }
 }

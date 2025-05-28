@@ -4,11 +4,13 @@ import com.tfg.back.enums.SearchType;
 import com.tfg.back.enums.UserStatus;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.FeedBack;
 import com.tfg.back.model.MedicalPrescription;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.model.dtos.feedBack.FeedBackDtoGetDoc;
 import com.tfg.back.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,7 +73,7 @@ public class ClientMapper {
         client.setAddress(dto.getAddress());
         client.setStatus(UserStatus.ACTIVE);
         client.setBloodType(dto.getBloodType());
-        client.setHashedPassword(passwordEncoder.encode("123456789"));
+
         client.setMembershipLevel(dto.getMembershipLevel());
         client.setEmergencyContact(dto.getEmergencyContact());
 
@@ -97,11 +99,26 @@ public class ClientMapper {
                 .prescriptions(medicalPrescriptionMapper.toDtoGetList(client.getPrescriptionsReceived()))
                 .labResults(labResultMapper.toDtoGetList(client.getLabResultsReceived()))
                 .notifications(client.getNotifications())
+                .feedbacksWritten(client.getFeedbacksWritten())
                 .build();
     }
 
     public List<ClientDtoGet> toGetDtoList(List<Client> clients) {
         return clients.stream().map(this::toGetDto).toList();
+    }
+
+    private FeedBackDtoGetDoc toFeedBackDtoGetDoc(FeedBack feedback) {
+        return FeedBackDtoGetDoc.builder()
+                .id(feedback.getId())
+                .comment(feedback.getComment())
+                .rating(feedback.getRating())
+                .createdAt(feedback.getCreatedAt())
+                .patientName(feedback.getAuthor().getFullName())
+                .build();
+    }
+
+    private List<FeedBackDtoGetDoc> toFeedBackDtoGetDocList(List<FeedBack> feedbacksWritten) {
+        return feedbacksWritten.stream().map(this::toFeedBackDtoGetDoc).toList();
     }
 
 }

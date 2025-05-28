@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, NgClass, NgFor, NgIf, Time, TitleCasePipe } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { AppointmentStatus } from '../../models/enums/appointment-status';
 import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
+import Swal from 'sweetalert2';
+import { AppointmentService } from '../../services/client-services/appointment.service';
 
 interface Appointment {
   id: number;
@@ -39,6 +41,14 @@ export interface Feedback {
   createdAt: Date;
 }
 
+export interface BookAppRequest {
+  searchType: string,
+  patientIdentifier: string,
+  date: Date,
+  time: string,
+  reason: string
+}
+
 @Component({
   selector: 'app-doctor-dashboard',
   imports: [FormsModule, NgIf, NgFor, NgClass, DatePipe, CommonModule],
@@ -48,27 +58,38 @@ export interface Feedback {
   encapsulation: ViewEncapsulation.None
 })
 export class DoctorDashboardComponent {
+  cancelBookAppointment() {
+    this.refreshAppointmentsForm();
+    this.changeSection('dashboard');
+  }
 
-
+  showCancelledAppointments: boolean = true;
+  filteredAppointments: any[] = [];
+  appointmentsWithoutCancelled: any[] = [];
+  selectedAppointment: any;
+  filterStatus: string = 'all';
   currentDate: Date = new Date();
   appointments: any[] = [];
   activeSection: string = 'dashboard';
-
   showUserMenu: boolean = false;
   doctor!: DoctorDtoGet;
   prescriptions: MedicalPrescriptionDtoGet[] = [];
+  feedback: Feedback[] = [];
+  isLoading: boolean = true;
 
-  // Feedback data
-  feedback: Feedback[] = [
-    
-  ];
+  dashboardStats = {
+    todayAppointments: 0,
+    pendingPrescriptions: 0,
+    totalPatients: 0,
+    averageRating: 0
+  };
 
-  // Form models
-  newAppointment: any = {
-    patientName: '',
-    date: null,
+  newAppointment: BookAppRequest = {
+    searchType: '',
+    patientIdentifier: '',
+    date: new Date(),
     time: '',
-    notes: ''
+    reason: ''
   };
 
   newPrescription: any = {
@@ -78,16 +99,32 @@ export class DoctorDashboardComponent {
     instructions: ''
   };
 
-  // Dashboard stats
-  dashboardStats = {
-    todayAppointments: 0,
-    pendingPrescriptions: 0,
-    totalPatients: 0,
-    averageRating: 0
-  };
-  isLoading: boolean = true;
+  applyFilter() {
+    this.filteredAppointments = this.appointments.filter(appointment => {
+      if (this.filterStatus === 'all') {
+        return true;
+      }
+      return appointment.status.toLocaleLowerCase() === this.filterStatus.toLocaleLowerCase();
+    });
+  }
+  filterFromCancelledAppointments() {
+    if (this.showCancelledAppointments) {
+      this.filteredAppointments = this.appointments.filter(appointment => {
+        if (appointment.status !== "CANCELLED") {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      this.filteredAppointments = this.appointments;
+    }
+  }
 
-  constructor(private docService: DoctorService, private localStorageService: LocalStorageManagerService, private router: Router) { }
+  constructor(private docService: DoctorService,
+    private localStorageService: LocalStorageManagerService,
+    private router: Router,
+    private appService: AppointmentService) { }
 
   ngOnInit(): void {
     this.docService.getProfile().subscribe({
@@ -103,19 +140,44 @@ export class DoctorDashboardComponent {
             date: date,
             time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: appointment.status,
-            reason: appointment.reason
+            reason: appointment.reason,
+            diagnosis: appointment.diagnosis,
+            type: appointment.type
           });
         });
         this.prescriptions = this.doctor.prescriptionsGiven;
         this.feedback = this.doctor.feedbacksReceived || [];
+
+        this.filteredAppointments = this.appointments;
+        this.filterFromCancelledAppointments();
         this.calculateDashboardStats()
       },
       error: (error) => {
         console.error('Error fetching doctor profile:', error);
       }
     });
+
   }
 
+  confirmAppointment(appId: any) {
+    const appointment = this.appointments.find(a => a.id === appId);
+    if (appointment) {
+      this.docService.confirmAppointment(appId).subscribe({
+        next: () => {
+          appointment.status = AppointmentStatus.CONFIRMED;
+        },
+        error: (error) => {
+          console.error('Error confirming appointment:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to confirm appointment. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+    }
+  }
   // Change active section
   changeSection(section: string): void {
     this.activeSection = section;
@@ -129,7 +191,7 @@ export class DoctorDashboardComponent {
     const todayDate = today.getDate();
 
     this.dashboardStats.todayAppointments = this.appointments.filter(appointment => {
-      const appointmentDate = appointment.date;
+      const appointmentDate = new Date(appointment.appointmentDateTime);
       return (
         appointmentDate.getFullYear() === todayYear &&
         appointmentDate.getMonth() === todayMonth &&
@@ -155,31 +217,102 @@ export class DoctorDashboardComponent {
 
   // Book a new appointment
   bookAppointment(): void {
-    const id = this.appointments.length + 1;
-    const newAppointment: Appointment = {
-      id,
-      clientFullName: this.newAppointment.patientName,
-      date: this.newAppointment.date,
-      time: this.newAppointment.time,
-      status: AppointmentStatus.SCHEDULED,
-      reason: this.newAppointment.notes
-    };
 
-    this.appointments.push(newAppointment);
+    if (!this.newAppointment.searchType || !this.newAppointment.patientIdentifier || !this.newAppointment.date || !this.newAppointment.time || !this.newAppointment.reason) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Please fill in all required fields.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
 
-    // Reset form
-    this.newAppointment = {
-      patientName: '',
-      date: null,
-      time: '',
-      notes: ''
-    };
+    if (this.newAppointment.searchType === 'id') {
+      const newAppointment = {
+        searchType: this.newAppointment.searchType,
+        id: this.newAppointment.patientIdentifier,
+        date: this.newAppointment.date,
+        startTime: this.newAppointment.time,
+        status: 'CONFIRMED',
+        reason: this.newAppointment.reason
+      };
+      this.appService.bookAppointmentByDoctorUsingClientId(newAppointment).subscribe({
+        next: (response) => {
+          this.appointments.push(response);
+          this.refreshAppointmentsForm();
+          Swal.fire({
+            title: 'Success',
+            text: 'Appointment booked successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+          this.calculateDashboardStats();
+        },
+        error: (error) => {
+          console.error('Error booking appointment:', error);
 
-    // Recalculate dashboard stats
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to book appointment. Please try again later. Check if the patient ID is valid.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+      return;
+    }
+
+    if (this.newAppointment.searchType === 'email') {
+      const newAppointment = {
+        searchType: this.newAppointment.searchType,
+        patientEmail: this.newAppointment.patientIdentifier,
+        date: this.newAppointment.date,
+        startTime: this.newAppointment.time,
+        status: 'CONFIRMED',
+        reason: this.newAppointment.reason
+      };
+      this.appService.bookAppobookAppointmentByDoctorUsingClientEmail(newAppointment).subscribe({
+        next: (response) => {
+          this.appointments.push(response);
+          this.refreshAppointmentsForm();
+          Swal.fire({
+            title: 'Success',
+            text: 'Appointment booked successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+          this.calculateDashboardStats();
+        },
+        error: (error) => {
+          console.error('Error booking appointment:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to book appointment. Please try again later. Check if the patient Email is valid.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+      return;
+    }
+
+
+
+
     this.calculateDashboardStats();
 
     // In a real app, you would submit this to your backend API
-    console.log('Appointment booked:', newAppointment);
+  }
+
+  refreshAppointmentsForm(): void {
+    this.newAppointment = {
+      searchType: '',
+      patientIdentifier: '',
+      date: new Date(),
+      time: '',
+      reason: ''
+    };
   }
 
   // Create a new prescription
@@ -245,9 +378,6 @@ export class DoctorDashboardComponent {
     }
   }
 
-
-  
-
   toggleUserMenu() {
     this.showUserMenu = !this.showUserMenu;
   }
@@ -274,11 +404,12 @@ export class DoctorDashboardComponent {
   getTodaysAppointments(): any[] {
     const today = new Date();
     return this.appointments.filter(appointment => {
-      const appointmentDate = appointment.date;
+      const appointmentDate = new Date(appointment.appointmentDateTime); // FIXED
       return (
         appointmentDate.getFullYear() === today.getFullYear() &&
         appointmentDate.getMonth() === today.getMonth() &&
-        appointmentDate.getDate() === today.getDate()
+        appointmentDate.getDate() === today.getDate() &&
+        appointment.status !== AppointmentStatus.CANCELLED
       );
     });
   }
@@ -322,7 +453,7 @@ export class DoctorDashboardComponent {
   buildDay(date: Date, isCurrentMonth: boolean): any {
     const dayAppointments = this.appointments.filter(app => {
       const appDate = new Date(app.appointmentDateTime);
-      
+
       return appDate.getFullYear() === date.getFullYear() &&
         appDate.getMonth() === date.getMonth() &&
         appDate.getDate() === date.getDate();
@@ -355,8 +486,10 @@ export class DoctorDashboardComponent {
   nextMonth() {
     this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
   }
-  hasPrescription(appointmentId: number): boolean {
-    return this.prescriptions.some(p => p.id === appointmentId);
+  hasDiagnosis(appointmentId: number): boolean {
+    const appointment = this.appointments.find(a => a.id === appointmentId);
+    console.log(appointment.diagnosis);
+    return appointment.diagnosis !== "UNAVAILABLE" && appointment.diagnosis !== null && appointment.diagnosis !== undefined;
   }
 
   createPrescriptionForAppointment(appointment: any) {
@@ -385,6 +518,13 @@ export class DoctorDashboardComponent {
 
   getRatingCount(rating: number): number {
     return this.feedback.filter(f => f.rating === rating).length;
+  }
+
+  showDetails(appointment: AppointmentDtoGet) {
+    this.selectedAppointment = appointment;
+  }
+  closeDetails() {
+    this.selectedAppointment = null;
   }
 
   logout() {

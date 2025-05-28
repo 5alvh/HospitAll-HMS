@@ -1,3 +1,25 @@
+<div class="modal-backdrop" *ngIf="selectedAppointment">
+  <div class="summary-card appointment-modal">
+    <div class="card-header">
+      <h3>Appointment Details</h3>
+      <button class="close-btn" (click)="closeDetails()">×</button>
+    </div>
+    <div class="card-body">
+      <ul class="details-list">
+        <li><strong>Appointment ID:</strong> {{ selectedAppointment.id }}</li>
+        <li><strong>Client:</strong> {{ selectedAppointment.clientFullName }}</li>
+        <li><strong>Date & Time:</strong> {{ selectedAppointment.appointmentDateTime | date:'MMM d, y' }}</li>
+        <li><strong>Reason:</strong> {{ selectedAppointment.reason }}</li>
+        <li><strong>Status:</strong> {{ selectedAppointment.status }}</li>
+        <li><strong>Type:</strong> {{ selectedAppointment.type }}</li>
+      </ul>
+      <button class="btn-outline btn-sm download-btn">
+        <i class="fas fa-download"></i> Download Summary
+      </button>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="isLoading" class="loading-container">
   <div class="loading-spinner"></div>
   <p>Loading your dashboard...</p>
@@ -185,7 +207,7 @@
                   </span>
                 </div>
                 <div class="appointment-actions">
-                  <button class="btn-icon" title="View Details">
+                  <button class="btn-icon" title="View Details" (click)="showDetails(appointment)">
                     <i class="fas fa-eye"></i>
                   </button>
                 </div>
@@ -333,14 +355,15 @@
           <div class="appointments-filters">
             <div class="filter-group">
               <label>Status:</label>
-              <select class="form-control">
-                <option value="">All Status</option>
+              <select class="form-control" [(ngModel)]="filterStatus" (ngModelChange)="applyFilter()">
+                <option value="all">All Status</option>
                 <option value="scheduled">Scheduled</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
+
             <div class="filter-group">
               <label>Date Range:</label>
               <input type="date" class="form-control">
@@ -348,7 +371,13 @@
               <input type="date" class="form-control">
             </div>
           </div>
-
+          <div class="checkbox-wrapper">
+            <label>
+              <input type="checkbox" [(ngModel)]="showCancelledAppointments"
+                (change)="filterFromCancelledAppointments()" />
+              Hide canceled appointments
+            </label>
+          </div>
           <div class="data-table">
             <table>
               <thead>
@@ -357,12 +386,12 @@
                   <th>Date & Time</th>
                   <th>Status</th>
                   <th>Reason</th>
-                  <th>Prescription</th>
+                  <th>Diagnosis</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let appointment of appointments">
+                <tr *ngFor="let appointment of filteredAppointments">
                   <td>
                     <div class="patient-info">
                       <strong>{{ appointment.clientFullName }}</strong>
@@ -370,8 +399,7 @@
                   </td>
                   <td>
                     <div class="appointment-datetime">
-                      <div>{{ appointment.date | date:'MMM d, y' }}</div>
-                      <div class="time">{{ appointment.time }}</div>
+                      <div>{{ appointment.appointmentDateTime | date: 'MMM d, y HH:mm' }}</div>
                     </div>
                   </td>
                   <td>
@@ -382,26 +410,32 @@
                   <td>{{ appointment.reason || 'General consultation' }}</td>
                   <td>
                     <div class="prescription-status">
-                      <span *ngIf="!hasPrescription(appointment.id)" class="no-prescription">
-                        <i class="fas fa-minus-circle"></i> No prescription
+                      <span *ngIf="appointment.diagnosis === 'UNAVAILABLE'" class="no-prescription">
+                        <i class="fas fa-minus-circle"></i> No diagnosis
                       </span>
-                      <span *ngIf="hasPrescription(appointment.id)" class="has-prescription">
-                        <i class="fas fa-check-circle"></i> Prescribed
+                      <span *ngIf="appointment.diagnosis !== 'UNAVAILABLE'" class="has-prescription">
+                        <i class="fas fa-check-circle"></i> Diagnosed
                       </span>
                     </div>
                   </td>
                   <td class="actions">
-                    <button class="btn-icon" title="View Details">
+                    <button class="btn-icon" title="Confirm Appointment" *ngIf="appointment.status === 'SCHEDULED'"
+                      (click)="confirmAppointment(appointment.id)">
+                      <i class="fa-solid fa-circle-check"></i>
+                    </button>
+                    <button class="btn-icon" title="View Details" *ngIf=" appointment.status !== 'CANCELLED'"
+                      (click)="showDetails(appointment)">
                       <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-icon" title="Create Prescription" *ngIf="!hasPrescription(appointment.id)"
+                    <button class="btn-icon" title="Create Prescription"
+                      *ngIf="appointment.diagnosis === 'UNAVAILABLE' && appointment.status !== 'CANCELLED'"
                       (click)="createPrescriptionForAppointment(appointment)">
                       <i class="fas fa-prescription"></i>
                     </button>
-                    <button class="btn-icon" title="View Prescription" *ngIf="hasPrescription(appointment.id)">
+                    <button class="btn-icon" title="View Prescription" *ngIf="appointment.diagnosis !== 'UNAVAILABLE'">
                       <i class="fas fa-file-medical"></i>
                     </button>
-                    <button class="btn-icon" title="Edit">
+                    <button class="btn-icon" title="Edit" *ngIf="appointment.status !== 'CANCELLED'">
                       <i class="fas fa-edit"></i>
                     </button>
                   </td>
@@ -424,15 +458,20 @@
         <form (ngSubmit)="bookAppointment()" #appointmentForm="ngForm" class="appointment-form">
           <div class="form-grid">
             <div class="form-group">
-              <label for="patientName">Patient Name *</label>
-              <input type="text" id="patientName" name="patientName" class="form-control"
-                [(ngModel)]="newAppointment.patientName" required placeholder="Enter patient full name">
+              <div class="form-group">
+                <label for="appointmentType">Patient Search Type*</label>
+                <select id="appointmentType" name="appointmentType" class="form-control" [(ngModel)]="newAppointment.searchType" required>
+                  <option value="email">Email</option>
+                  <option value="id">Patient ID</option>
+                </select>
+              </div>
+
             </div>
 
             <div class="form-group">
-              <label for="patientContact">Patient Contact</label>
+              <label for="patientContact">Patient Identifier</label>
               <input type="tel" id="patientContact" name="patientContact" class="form-control"
-                placeholder="Phone number">
+                placeholder="Id or Email" [(ngModel)]="newAppointment.patientIdentifier" required >
             </div>
 
             <div class="form-group">
@@ -446,36 +485,17 @@
               <input type="time" id="appointmentTime" name="appointmentTime" class="form-control"
                 [(ngModel)]="newAppointment.time" required>
             </div>
-
-            <div class="form-group">
-              <label for="appointmentType">Appointment Type</label>
-              <select id="appointmentType" name="appointmentType" class="form-control">
-                <option value="consultation">Consultation</option>
-                <option value="follow-up">Follow-up</option>
-                <option value="emergency">Emergency</option>
-                <option value="routine">Routine Check-up</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="priority">Priority</label>
-              <select id="priority" name="priority" class="form-control">
-                <option value="normal">Normal</option>
-                <option value="urgent">Urgent</option>
-                <option value="emergency">Emergency</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
             <label for="appointmentNotes">Notes / Reason for Visit</label>
             <textarea id="appointmentNotes" name="appointmentNotes" class="form-control" rows="4"
-              [(ngModel)]="newAppointment.notes"
+              [(ngModel)]="newAppointment.reason"
               placeholder="Describe the reason for the appointment or any special notes..."></textarea>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-outline">Cancel</button>
+            <button type="button" class="btn-outline" (click)="cancelBookAppointment()">Cancel</button>
             <button type="submit" class="btn-primary" [disabled]="!appointmentForm.form.valid">
               <i class="fas fa-calendar-plus"></i> Book Appointment
             </button>

@@ -34,8 +34,13 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Main Container */
@@ -1527,11 +1532,11 @@ textarea.form-control {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .dashboard-summary {
     grid-template-columns: 1fr;
   }
-  
+
   .rating-overview {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -1542,93 +1547,93 @@ textarea.form-control {
   .app-container {
     flex-direction: column;
   }
-  
+
   .sidebar {
     width: 100%;
     height: auto;
     position: relative;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
-  
+
   .doctor-profile-sidebar {
     display: flex;
     align-items: center;
     text-align: left;
     padding: 15px 20px;
   }
-  
+
   .doctor-profile-sidebar .profile-image {
     margin: 0 15px 0 0;
   }
-  
+
   .doctor-stats {
     margin-left: auto;
   }
-  
+
   .menu {
     display: flex;
     flex-wrap: wrap;
     padding: 0 20px 20px;
   }
-  
+
   .menu-item {
     width: 50%;
     margin-bottom: 0;
   }
-  
+
   .main-content {
     margin-left: 0;
     padding: 15px;
   }
-  
+
   .header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-  
+
   .header-actions {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .dashboard-actions {
     grid-template-columns: 1fr;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .appointments-filters {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .profile-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .calendar-controls {
     flex-direction: column;
     gap: 10px;
     align-items: center;
   }
-  
+
   .calendar-day {
     min-height: 80px;
   }
-  
+
   .support-options {
     grid-template-columns: 1fr;
   }
-  
+
   .feedback-list {
     grid-template-columns: 1fr;
   }
@@ -1638,26 +1643,26 @@ textarea.form-control {
   .menu-item {
     width: 100%;
   }
-  
+
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-  
+
   .section-tabs {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .data-table {
     font-size: 12px;
   }
-  
+
   .data-table th,
   .data-table td {
     padding: 8px 10px;
@@ -1703,4 +1708,84 @@ textarea.form-control {
 
 .bg-gray-50 {
   background-color: #f8fafc;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(100, 116, 139, 0.4);
+  /* blue-gray overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.appointment-modal {
+  max-width: 500px;
+  width: 90%;
+  animation: fadeIn 0.3s ease-in-out;
+  position: relative;
+}
+
+.appointment-modal .card-header h3 {
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #ef4444;
+  /* red-500 */
+}
+
+.details-list {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  color: #334155;
+  margin-bottom: 20px;
+}
+
+.details-list li {
+  margin-bottom: 10px;
+}
+
+.download-btn {
+  font-size: 13px;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.download-btn:hover {
+  background: #2563eb;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

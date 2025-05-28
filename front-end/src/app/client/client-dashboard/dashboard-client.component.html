@@ -409,8 +409,6 @@
           <div class="section-tabs">
             <div class="tab active">Prescriptions</div>
             <div class="tab">Lab Results</div>
-            <div class="tab">Medical History</div>
-            <div class="tab">Vaccinations</div>
           </div>
         </div>
 
@@ -431,8 +429,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <div *ngIf="pastAppointments.length === 0" class="no-data">
-                    No past appointments found.
+                  <div *ngIf="medications.length === 0" class="no-data">
+                    No prescriptions found.
                   </div>
                   <tr *ngFor="let medication of medications">
                     <td>{{medication.medicationName}}</td>
@@ -464,8 +462,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <div *ngIf="pastAppointments.length === 0" class="no-data">
-                    No past appointments found.
+                  <div *ngIf="labResults.length === 0" class="no-data">
+                    No Lab Results found.
                   </div>
                   <tr *ngFor="let result of labResults">
                     <td>{{result.testName}}</td>
@@ -687,8 +685,27 @@
           </div>
 
           <div class="surveys">
-            <h3>Past Surveys</h3>
-            <!-- TO DO: RATING HISTORY -->
+            <h3>Past Feedback</h3>
+            <!-- TO DO: give me a feedback representation with rating with stars -->
+            <div class="feedback-list">
+              <div *ngFor="let feedback of feedbacks" class="feedback-card">
+                <p class="feedback-comment">"{{ feedback.comment }}"</p>
+
+                <div class="feedback-rating">
+                  <ng-container *ngFor="let star of [1,2,3,4,5]">
+                    <i class="fa-star" [ngClass]="{'fas': star <= feedback.rating, 'far': star > feedback.rating}">
+                    </i>
+                  </ng-container>
+                </div>
+
+                <p class="feedback-date">Submitted on: {{ feedback.createdAt | date:'medium' }}</p>
+
+                <div class="feedback-actions">
+                  <button class="btn-edit" (click)="editFeedback(feedback.id)">Update</button>
+                  <button class="btn-delete" (click)="deleteFeedback(feedback.id)">Delete</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

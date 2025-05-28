@@ -1,6 +1,8 @@
 package com.tfg.back.controller;
 
+import com.tfg.back.enums.AppointmentStatus;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
+import com.tfg.back.model.dtos.appointment.BookAppointmentByDoctorRequest;
 import com.tfg.back.service.AppointmentService;
 import com.tfg.back.model.dtos.appointment.BookAppointmentRequest;
 import com.tfg.back.model.dtos.appointment.DiagnosisRequest;
@@ -63,7 +65,19 @@ public class AppointmentController {
     @PostMapping("/book-appointment")
     public ResponseEntity<AppointmentDtoGet> bookAppointment(@RequestBody BookAppointmentRequest request, Authentication authentication) {
         String email = authentication.getName();
-        return ResponseEntity.ok(appointmentService.bookAppointment(request.doctorId(), request.date(), request.startTime(), email ,request.type(),request.reason()));
+        return ResponseEntity.ok(appointmentService.bookAppointment(request.doctorId(), request.date(), request.startTime(), email ,request.type(),request.reason(), AppointmentStatus.SCHEDULED));
+    }
+
+    @PostMapping("/book-appointment-doctor/client-email")
+    public ResponseEntity<AppointmentDtoGet> bookAppointmentByDoctorUsingClientEmail(@RequestBody BookAppointmentByDoctorRequest request, Authentication authentication) {
+        String doctorEmail = authentication.getName();
+        return ResponseEntity.ok(appointmentService.bookAppointmentByDoctorUsingClientEmail(request, doctorEmail));
+    }
+
+    @PostMapping("/book-appointment-doctor/client-id")
+    public ResponseEntity<AppointmentDtoGet> bookAppointmentByDoctorUsingClientId(@RequestBody BookAppointmentByDoctorRequest request, Authentication authentication) {
+        String doctorEmail = authentication.getName();
+        return ResponseEntity.ok(appointmentService.bookAppointmentByDoctorUsingClientId(request, doctorEmail));
     }
 
     @PutMapping("/diagnosis")

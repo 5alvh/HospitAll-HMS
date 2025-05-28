@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppointmentCreateDto } from '../../models/appointment-dto-create';
 import { Observable } from 'rxjs';
+import { BookAppRequest } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +25,20 @@ export class AppointmentService {
     );
   }
 
-  getAvailableSlots(doctorId: number, date: Date): Observable<{id: number, startTime: string, endTime: string}[]> {
-    return this.httpClient.post<any>(`${this.doctorBaseUrl}/available-slots`, { doctorId, date } );
+  getAvailableSlots(doctorId: number, date: Date): Observable<{ id: number, startTime: string, endTime: string }[]> {
+    return this.httpClient.post<any>(`${this.doctorBaseUrl}/available-slots`, { doctorId, date });
   }
 
   cancelAppointment(appointmentId: number) {
     return this.httpClient.put(`${this.baseUrl}/${appointmentId}/cancel`, null);
   }
+
+  bookAppobookAppointmentByDoctorUsingClientEmail(appointment: any): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/book-appointment-doctor/client-email`, appointment);
+  }
+
+  bookAppointmentByDoctorUsingClientId(appointment: any): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/book-appointment-doctor/client-id`, appointment);
+  }
+
 }

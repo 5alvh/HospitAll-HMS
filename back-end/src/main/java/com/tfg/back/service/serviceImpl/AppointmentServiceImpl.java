@@ -11,6 +11,7 @@ import com.tfg.back.mappers.AppointmentMapper;
 import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
+import com.tfg.back.model.dtos.appointment.BookAppointmentByDoctorRequest;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
@@ -86,11 +87,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void confirmAppointment(Long id, String email) {
         Appointment appointment = getAppointment(id);
-        if (appointment.getDoctor().getEmail().equals(email) && appointment.isScheduled()){
+
+        if (appointment.getDoctor().getEmail().equals(email)){
             appointment.setStatus(AppointmentStatus.CONFIRMED);
             appointmentRepository.save(appointment);
             createAppointmentNotification(appointment.getClient(),
-                    "Appointment Cancelled", "Appointment cancelled by: " +
+                    "Appointment Confirmed", "Appointment confirmed by: " +
                     appointment.getClient().getFullName() + " at: " + new Date());
         }else {
             throw new UnauthorizedToPerformThisAction("You are not authorized to confirm this appointment");
@@ -98,7 +100,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDtoGet bookAppointment(Long doctorId, LocalDate date, LocalTime startTime, String email, AppointmentType type, String reason) {
+    public AppointmentDtoGet bookAppointment(Long doctorId, LocalDate date, LocalTime startTime, String email, AppointmentType type, String reason, AppointmentStatus status) {
         LocalDateTime appointmentDateTime = LocalDateTime.of(date, startTime);
 
         // Check if slot is already taken
@@ -133,6 +135,28 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public AppointmentDtoGet bookAppointmentByDoctorUsingClientEmail(BookAppointmentByDoctorRequest request, String email) {
+        Doctor doctor = doctorRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+
+        Client client = clientRepository.findByEmail(request.patientEmail())
+                .orElseThrow(() -> new UserNotFoundException(request.patientEmail(), SearchType.EMAIL));
+
+        return bookAppointment(doctor.getId(), request.date(), request.startTime(), client.getEmail(), AppointmentType.IN_PERSON, request.reason(), AppointmentStatus.CONFIRMED);
+    }
+
+    @Override
+    public AppointmentDtoGet bookAppointmentByDoctorUsingClientId(BookAppointmentByDoctorRequest request, String email) {
+        Doctor doctor = doctorRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+
+        Client client = clientRepository.findById(request.id())
+                .orElseThrow(() -> new UserNotFoundException(request.id(), SearchType.ID));
+
+        return bookAppointment(doctor.getId(), request.date(), request.startTime(), client.getEmail(), AppointmentType.IN_PERSON, request.reason(), AppointmentStatus.CONFIRMED);
+    }
+
+    @Override
     public AppointmentDtoGet addDiagnosis(DiagnosisRequest request) {
         Appointment appointment = getAppointment(request.appointmentId());
         appointment.setDiagnosis(request.diagnosis());
@@ -145,6 +169,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Long getTotalPatients(Long id) {
         return appointmentRepository.countDistinctClientsByDoctorId(id);
     }
+
+
 
 
     private Appointment getAppointment(Long id) {

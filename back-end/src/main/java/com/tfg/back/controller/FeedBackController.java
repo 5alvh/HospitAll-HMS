@@ -15,7 +15,7 @@ public class FeedBackController {
     private final FeedbackService feedbackService;
 
     @PostMapping("/create")
-    public ResponseEntity sendFeedback(@RequestBody FeedbackDtoCreate feedbackDtoCreate, Authentication authentication) {
+    public ResponseEntity<Void> sendFeedback(@RequestBody FeedbackDtoCreate feedbackDtoCreate, Authentication authentication) {
         String clientEmail = authentication.getName();
         Boolean saved = feedbackService.sendFeedback(clientEmail, feedbackDtoCreate);
         if (saved){

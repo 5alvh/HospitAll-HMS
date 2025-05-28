@@ -1,4 +1,5 @@
 
+import { Feedback } from "../doctor/doctor-dashboard/doctor-dashboard.component";
 import { AppointmentDtoGet } from "./appointment-dto-get";
 import { EmergencyContact } from "./emergency-contact";
 import { BloodType } from "./enums/blood-type";
@@ -22,6 +23,7 @@ export class ClientDtoGet {
   notifications!: NotificationDto[];
   prescriptions!: MedicalPrescriptionDtoGet[];
   labResults!: LabResultDtoGet[];
+  feedbacksWritten!: Feedback[];
 
   constructor(init?: Partial<ClientDtoGet>) {
     Object.assign(this, init);

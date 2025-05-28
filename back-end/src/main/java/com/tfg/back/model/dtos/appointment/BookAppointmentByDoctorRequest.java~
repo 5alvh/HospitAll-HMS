@@ -1,0 +1,9 @@
+package com.tfg.back.model.dtos.appointment;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public record BookAppointmentByDoctorRequest(String patientEmail, LocalDate date, LocalTime startTime, String reason) {
+}
+public record BookAppointmentByDoctorRequest(Long id, LocalDate date, LocalTime startTime, String reason) {
+}

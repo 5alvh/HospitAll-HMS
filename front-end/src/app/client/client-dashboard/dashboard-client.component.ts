@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import { AppointmentStatus } from '../../models/enums/appointment-status';
 import { DoctorService } from '../../services/doctor-services/doctor.service';
 import { FeedbackService } from '../../services/feedback-service/feedback.service';
+import { Feedback } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
 
 export interface VisitedDoctorDto {
   id: number;
@@ -31,6 +32,12 @@ export interface VisitedDoctorDto {
 
 })
 export class DashboardClientComponent implements OnInit {
+editFeedback(arg0: number) {
+throw new Error('Method not implemented.');
+}
+deleteFeedback(arg0: number) {
+throw new Error('Method not implemented.');
+}
 
   selectedRating: number = 0;
   hoveredRating: number = 0;
@@ -54,6 +61,7 @@ export class DashboardClientComponent implements OnInit {
   feedbackDoctors: VisitedDoctorDto[] = [];
   selectedAppointment: AppointmentDtoGet | null = null;
   feedbackMessage: string = '';
+  feedbacks: Feedback[] = [];
 
   showDetails(appointment: AppointmentDtoGet) {
     this.selectedAppointment = appointment;
@@ -158,6 +166,8 @@ export class DashboardClientComponent implements OnInit {
         this.patient = response;
         this.notifications = this.patient.notifications;
         this.labResults = this.patient.labResults;
+        this.feedbacks = this.patient.feedbacksWritten;
+        console.log('Feedbacks:', this.feedbacks);
         this.refreshTopUnseenNotifications();
 
         this.medications = this.patient.prescriptions;
