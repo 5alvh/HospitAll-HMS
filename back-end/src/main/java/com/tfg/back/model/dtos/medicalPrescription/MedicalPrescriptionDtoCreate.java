@@ -1,6 +1,8 @@
 package com.tfg.back.model.dtos.medicalPrescription;
 
 
+import com.tfg.back.enums.PrescriptionStatus;
+import com.tfg.back.enums.SearchType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,23 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class MedicalPrescriptionDtoCreate {
 
-    private String medicationName;
+public record MedicalPrescriptionDtoCreate(Medication[] medications, String clientEmail, Long clientId,
 
-    private String dosage;
-
-    private String frequency;
-
-    private LocalDate startDate;
-
-    private LocalDate endDate;
-
-    private String notes;
-
-    private String clientEmail;
-}
+     SearchType searchType, String appointmentId, PrescriptionStatus status)
+{}

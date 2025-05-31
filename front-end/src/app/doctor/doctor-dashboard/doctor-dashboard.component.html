@@ -22,7 +22,6 @@
 
 <div *ngIf="isLoading" class="loading-container">
   <div class="loading-spinner"></div>
-  <p>Loading your dashboard...</p>
 </div>
 
 <div class="app-container" *ngIf="!isLoading && doctor">
@@ -346,8 +345,8 @@
           <h2>Appointments Management</h2>
           <div class="section-tabs">
             <div class="tab active">All Appointments</div>
-            <div class="tab">Today</div>
-            <div class="tab">This Week</div>
+           <!-- <div class="tab">Today</div>
+            <div class="tab">This Week</div>-->
           </div>
         </div>
 
@@ -414,7 +413,7 @@
                         <i class="fas fa-minus-circle"></i> No diagnosis
                       </span>
                       <span *ngIf="appointment.diagnosis !== 'UNAVAILABLE'" class="has-prescription">
-                        <i class="fas fa-check-circle"></i> Diagnosed
+                        <i class="fas fa-check-circle"></i> {{appointment.diagnosis}}
                       </span>
                     </div>
                   </td>
@@ -423,21 +422,36 @@
                       (click)="confirmAppointment(appointment.id)">
                       <i class="fa-solid fa-circle-check"></i>
                     </button>
+                    <button class="btn-icon" title="Completed Appointment" *ngIf="appointment.status === 'CONFIRMED'"
+                      (click)="completeAppointment(appointment.id)">
+                      <i class="fa-solid fa-list"></i>
+                    </button>
                     <button class="btn-icon" title="View Details" *ngIf=" appointment.status !== 'CANCELLED'"
                       (click)="showDetails(appointment)">
                       <i class="fas fa-eye"></i>
                     </button>
                     <button class="btn-icon" title="Create Prescription"
-                      *ngIf="appointment.diagnosis === 'UNAVAILABLE' && appointment.status !== 'CANCELLED'"
+                      *ngIf=" appointment.status !== 'CANCELLED'"
                       (click)="createPrescriptionForAppointment(appointment)">
                       <i class="fas fa-prescription"></i>
                     </button>
                     <button class="btn-icon" title="View Prescription" *ngIf="appointment.diagnosis !== 'UNAVAILABLE'">
                       <i class="fas fa-file-medical"></i>
                     </button>
-                    <button class="btn-icon" title="Edit" *ngIf="appointment.status !== 'CANCELLED'">
-                      <i class="fas fa-edit"></i>
+                    <button class="btn-icon" title="Edit" *ngIf="appointment.status !== 'CANCELLED'" (click)="toggleDiagnosisForm(appointment)">
+                      <i class="fa-solid fa-stethoscope"></i>
                     </button>
+                    <!-- Publish Diagnosis Form -->
+                    <div *ngIf="showDiagnosisForm[appointment.id]" class="diagnosis-form">
+                      <input type="text" placeholder="Enter diagnosis" [(ngModel)]="diagnosisInputs[appointment.id]"
+                        class="diagnosis-input" />
+                      <button class="btn-success btn-sm" (click)="submitDiagnosis(appointment.id)">
+                        Diagnose
+                      </button>
+                    </div>
+
+          
+
                   </td>
                 </tr>
                 <tr *ngIf="!appointments || appointments.length === 0">
@@ -458,20 +472,18 @@
         <form (ngSubmit)="bookAppointment()" #appointmentForm="ngForm" class="appointment-form">
           <div class="form-grid">
             <div class="form-group">
-              <div class="form-group">
-                <label for="appointmentType">Patient Search Type*</label>
-                <select id="appointmentType" name="appointmentType" class="form-control" [(ngModel)]="newAppointment.searchType" required>
-                  <option value="email">Email</option>
-                  <option value="id">Patient ID</option>
-                </select>
-              </div>
-
+              <label for="appointmentType">Patient Search Type*</label>
+              <select id="appointmentType" name="appointmentType" class="form-control"
+                [(ngModel)]="newAppointment.searchType" required>
+                <option value="id" selected>Patient ID</option>
+                <option value="email">Email</option>
+              </select>
             </div>
 
             <div class="form-group">
               <label for="patientContact">Patient Identifier</label>
-              <input type="tel" id="patientContact" name="patientContact" class="form-control"
-                placeholder="Id or Email" [(ngModel)]="newAppointment.patientIdentifier" required >
+              <input type="tel" id="patientContact" name="patientContact" class="form-control" placeholder="Id or Email"
+                [(ngModel)]="newAppointment.patientIdentifier" required>
             </div>
 
             <div class="form-group">
@@ -560,8 +572,8 @@
                   <td>{{ prescription.dosage }}</td>
                   <td>{{ prescription.createdAt | date:'MMM d, y' }}</td>
                   <td>
-                    <span class="status-badge" [ngClass]="prescription.isPublished ? 'published' : 'draft'">
-                      {{ prescription.isPublished ? 'Published' : 'Draft' }}
+                    <span class="status-badge" [ngClass]="isPublished(prescription) ? 'published' : 'draft'">
+                      {{ isPublished(prescription) ? 'Published' : 'Draft' }}
                     </span>
                   </td>
                   <td>
@@ -576,7 +588,7 @@
                     </div>
                   </td>
                   <td class="actions">
-                    <button *ngIf="!prescription.isPublished" class="btn-success btn-sm"
+                    <button *ngIf="!isPublished(prescription)" class="btn-success btn-sm"
                       (click)="publishPrescription(prescription.id)">
                       <i class="fas fa-paper-plane"></i> Publish
                     </button>
@@ -609,21 +621,25 @@
             <h3>Patient Information</h3>
             <div class="form-grid">
               <div class="form-group">
-                <label for="patientId">Patient ID *</label>
-                <input type="text" id="patientId" name="patientId" class="form-control"
-                  [(ngModel)]="newPrescription.patientId" required placeholder="Enter patient ID">
+                <label for="appointmentType">Patient Search Type*</label>
+                <select id="appointmentType" name="appointmentType" class="form-control"
+                  [(ngModel)]="newPrescription.searchType" required>
+                  <option value="id" selected>Patient Id</option>
+                  <option value="email">Email</option>
+                </select>
               </div>
 
               <div class="form-group">
-                <label for="prescriptionPatientName">Patient Name *</label>
+                <label for="prescriptionPatientName">Patient Identifier*</label>
                 <input type="text" id="prescriptionPatientName" name="prescriptionPatientName" class="form-control"
-                  [(ngModel)]="newPrescription.patientName" required placeholder="Enter patient full name">
+                  [(ngModel)]="newPrescription.patientIdentifier" required placeholder="Id or Email">
               </div>
 
               <div class="form-group">
                 <label for="connectedAppointment">Connect to Appointment (Optional)</label>
-                <select id="connectedAppointment" name="connectedAppointment" class="form-control">
-                  <option value="">Select an appointment</option>
+                <select id="connectedAppointment" name="connectedAppointment" class="form-control"
+                  [(ngModel)]="newPrescription.appointmentId">
+                  <option [value]="">Select an appointment</option>
                   <option *ngFor="let appointment of appointments" [value]="appointment.id">
                     {{ appointment.clientFullName }} - {{ appointment.date | date:'MMM d, y' }} {{ appointment.time }}
                   </option>
@@ -655,7 +671,7 @@
                   <div class="form-group">
                     <label [for]="'medicationName' + i">Medication Name *</label>
                     <input type="text" [id]="'medicationName' + i" [name]="'medicationName' + i" class="form-control"
-                      [(ngModel)]="medication.name" required placeholder="e.g., Paracetamol">
+                      [(ngModel)]="medication.medicationName" required placeholder="e.g., Paracetamol">
                   </div>
 
                   <div class="form-group">
@@ -697,16 +713,6 @@
             </div>
           </div>
 
-          <!-- General Instructions -->
-          <div class="form-section">
-            <h3>General Instructions</h3>
-            <div class="form-group">
-              <label for="prescriptionInstructions">Additional Instructions</label>
-              <textarea id="prescriptionInstructions" name="prescriptionInstructions" class="form-control" rows="4"
-                [(ngModel)]="newPrescription.instructions"
-                placeholder="Enter any additional instructions for the patient..."></textarea>
-            </div>
-          </div>
 
           <div class="form-actions">
             <button type="button" class="btn-outline">Cancel</button>
@@ -724,7 +730,7 @@
       <div *ngIf="activeSection === 'profile'" class="profile-section">
         <div class="section-header">
           <h2>Doctor Profile</h2>
-          <button class="btn-outline">
+          <button class="btn-outline" [routerLink]="['/edit-profile-doctor']">
             <i class="fas fa-edit"></i> Edit Profile
           </button>
         </div>
@@ -783,8 +789,8 @@
                 <span class="info-value">{{ doctor.medicalLicenseNumber }}</span>
               </div>
               <div class="info-row">
-                <span class="info-label">Experience:</span>
-                <span class="info-value">8+ years</span>
+                <span class="info-label">Identifier:</span>
+                <span class="info-value">{{ doctor.id }}</span>
               </div>
             </div>
           </div>

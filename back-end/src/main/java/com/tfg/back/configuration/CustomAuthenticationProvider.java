@@ -2,6 +2,7 @@ package com.tfg.back.configuration;
 
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
+import com.tfg.back.model.User;
 import com.tfg.back.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
@@ -27,9 +28,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        com.tfg.back.model.User user = userRepository.findByEmail(email)
+        //I should use loadUserByUsername instead
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
 
         if (!passwordEncoder.matches(password, user.getHashedPassword())) {
             throw new BadCredentialsException("Invalid credentials");
@@ -47,7 +48,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         return new UsernamePasswordAuthenticationToken(
                 user.getEmail(),
-                user.getHashedPassword(),
+                null,
                 Collections.singletonList(new SimpleGrantedAuthority(role))
         );
     }

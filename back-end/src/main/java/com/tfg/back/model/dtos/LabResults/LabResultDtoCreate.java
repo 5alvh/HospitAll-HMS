@@ -1,4 +1,4 @@
-package com.tfg.back.model.dtos.LabResults;
+package com.tfg.back.model.dtos.labResults;
 
 
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

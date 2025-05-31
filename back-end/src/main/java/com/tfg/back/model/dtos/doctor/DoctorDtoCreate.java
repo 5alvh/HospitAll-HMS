@@ -12,43 +12,46 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class DoctorDtoCreate {
 
-    @NotBlank(message = "Full name is required")
-    @Size(max = 100, message = "Name must be less than 100 characters")
-    private String fullName;
+public record DoctorDtoCreate (
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
+        @NotBlank(message = "Full name is required")
+        @Size(max = 100, message = "Name must be less than 100 characters")
+        String fullName,
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String hashedPassword;
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
+        String email,
 
-    @NotNull(message = "Password confirmation is required")
-    private String passwordConfirmation;
+        @NotBlank(message = "Password is required")
+        @Size(min = 8, message = "Password must be at least 8 characters")
+        String hashedPassword,
+
+        @NotNull(message = "Password confirmation is required")
+        String passwordConfirmation,
 
 
-    @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
-    private String phoneNumber;
+        @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
+        String phoneNumber,
 
-    private LocalDate dateOfBirth;
+        LocalDate dateOfBirth,
 
-    @NotBlank(message = "Medical license number is required")
-    private String medicalLicenseNumber;
+        @NotBlank(message = "Medical license number is required")
+        String medicalLicenseNumber,
 
 
-    @NotNull(message = "Department ID is required")
-    private Long departmentId;
+        @NotNull(message = "Department ID is required")
+        Long departmentId,
 
-    private Specialization specialization;
+        Specialization specialization,
 
-    @ListSize(value = 7, message = "Working hours must be provided for all 7 days of the week")
-    private Set<WorkingHours> workingHours;
+        @ListSize(value = 7, message = "Working hours must be provided for all 7 days of the week")
+        Set<WorkingHours> workingHours,
 
-    private String address;
+        String address
+){
+
 }
+
+
+

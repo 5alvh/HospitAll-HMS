@@ -1,5 +1,6 @@
 package com.tfg.back.model.dtos.medicalPrescription;
 
+import com.tfg.back.enums.PrescriptionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,5 +37,5 @@ public class MedicalPrescriptionDtoGet {
 
     private String clientEmail;
 
-    private boolean isPublished;
+    private PrescriptionStatus status;
 }

@@ -4,14 +4,18 @@ import { DoctorDtoGet } from '../../models/doctor-dto-get';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { VisitedDoctorDto } from '../../client/client-dashboard/dashboard-client.component';
+import { prescriptionRequest } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
+import { ClientDtoGet } from '../../models/client-dto-get';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DoctorService {
+  
 
   baseUrl = 'http://localhost:8080/doctors';
   baseUrlForAppointments = 'http://localhost:8080/appointment';
+  baseUrlMedicalPrescriptions = 'http://localhost:8080/medical-prescription';
   constructor(private httpClient: HttpClient, private router: Router) { }
 
   getAllDoctors() {
@@ -60,6 +64,41 @@ export class DoctorService {
       catchError((error) => {
         console.error('Error confirming appointment:', error);
         return throwError(() => new Error('Failed to confirm appointment'));
+      })
+    );
+  }
+
+  completeAppointment(appointmentId: number): Observable<void> {
+    return this.httpClient.put<void>(`${this.baseUrlForAppointments}/${appointmentId}/complete`, {}).pipe(
+      catchError((error) => {
+        console.error('Error confirming appointment:', error);
+        return throwError(() => new Error('Failed to confirm appointment'));
+      })
+    );
+  }
+
+  createPrescription(prescription: any): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrlMedicalPrescriptions}/create`, prescription).pipe(
+      catchError((error) => {
+        console.error('Error creating prescription:', error);
+        return throwError(() => new Error('Failed to create prescription'));
+      })
+    );
+  }
+
+  publishPrescription(id: number) {
+    return this.httpClient.patch<any>(`${this.baseUrlMedicalPrescriptions}/publish/${id}`, {}).pipe(
+      catchError((error) => {
+        console.error('Error publishing prescription:', error);
+        return throwError(() => new Error('Failed to publish prescription'));
+      })
+    )
+  }
+  updateProfile(client: any, id: number): Observable<ClientDtoGet> {
+    return this.httpClient.put<ClientDtoGet>(`${this.baseUrl}/${id}`, client).pipe(
+      catchError((error) => {
+        console.error('Error updating profile:', error);
+        return throwError(() => error);
       })
     );
   }

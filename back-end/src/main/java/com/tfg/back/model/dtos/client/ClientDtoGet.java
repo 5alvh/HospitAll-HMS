@@ -3,12 +3,10 @@ package com.tfg.back.model.dtos.client;
 import com.tfg.back.enums.BloodType;
 import com.tfg.back.enums.MembershipLevel;
 import com.tfg.back.model.EmergencyContact;
-import com.tfg.back.model.FeedBack;
 import com.tfg.back.model.Notification;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoGet;
+import com.tfg.back.model.dtos.labResults.LabResultDtoGet;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
-import com.tfg.back.model.dtos.feedBack.FeedBackDtoGetDoc;
-import com.tfg.back.model.dtos.feedBack.FeedbackDtoGet;
+import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +22,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientDtoGet {
-
     private Long id;
     private String fullName;
     private String email;
@@ -39,5 +36,5 @@ public class ClientDtoGet {
     private List<Notification> notifications;
     private List<MedicalPrescriptionDtoGet> prescriptions;
     private List<LabResultDtoGet> labResults;
-    private List<FeedBackDtoGetDoc> feedbacksWritten;
+    private List<FeedBackDtoGet> feedbacksWritten;
 }

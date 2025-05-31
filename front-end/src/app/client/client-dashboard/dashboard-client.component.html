@@ -24,10 +24,9 @@
   </div>
 </div>
 
-
 <div *ngIf="isLoading" class="loading-container">
-  <div class="loading-spinner"></div>
-  <p>Loading your dashboard...</p>
+  <i class="fas fa-circle-notch fa-spin"></i>
+  <span class="loading-text">Loading profile information...</span>
 </div>
 
 <!-- app.component.html -->
@@ -129,7 +128,8 @@
                     }}</p>
                   <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'"
                     [class.status-scheduled]="appointment.status === 'SCHEDULED'"
-                    [class.status-cancelled]="appointment.status === 'CANCELLED'">
+                    [class.status-cancelled]="appointment.status === 'CANCELLED'"
+                    [class.status-completed]="appointment.status === 'COMPLETED'">
                     {{appointment.status}}
                   </span>
                 </div>
@@ -284,10 +284,6 @@
                   <span class="info-label">created At:</span>
                   <span class="info-value">{{patient.createdAt}}</span>
                 </div>
-                <div class="info-row">
-                  <span class="info-label">Validity:</span>
-                  <span class="info-value">NOT IMPLEMENTED YET</span>
-                </div>
                 <div class="delete-account">
                   <button class="btn-danger" (click)="onDeleteAccount()">
                     <i class="fas fa-trash-alt"></i> Inactivate Account
@@ -342,14 +338,15 @@
                     <td>
                       <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'"
                         [class.status-scheduled]="appointment.status === 'SCHEDULED'"
-                        [class.status-cancelled]="appointment.status === 'CANCELLED'">
+                        [class.status-cancelled]="appointment.status === 'CANCELLED'"
+                        [class.status-completed]="appointment.status === 'COMPLETED'">
                         {{appointment.status}}
                       </span>
                     </td>
                     <td>
-                      <button class="btn-icon" title="Reschedule" *ngIf="appointment.status !== 'CANCELLED'"><i
-                          class="fas fa-clock"></i></button>
-                      <button class="btn-icon" title="Cancel" *ngIf="appointment.status !== 'CANCELLED'"><i
+                      <button class="btn-icon" title="Reschedule" (click)="rescheduleAppointment()"
+                        *ngIf="appointment.status !== 'COMPLETED'"><i class="fas fa-clock"></i></button>
+                      <button class="btn-icon" title="Cancel" *ngIf="canBeCancelled(appointment.status)"><i
                           class="fas fa-times" (click)="cancelAppointment(appointment.id)"></i></button>
                       <button class="btn-icon" title="View Details" (click)="showDetails(appointment)"><i
                           class="fas fa-eye"></i></button>

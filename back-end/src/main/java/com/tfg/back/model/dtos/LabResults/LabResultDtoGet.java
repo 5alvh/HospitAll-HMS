@@ -1,12 +1,5 @@
-package com.tfg.back.model.dtos.LabResults;
+package com.tfg.back.model.dtos.labResults;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tfg.back.model.Client;
-import com.tfg.back.model.Doctor;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

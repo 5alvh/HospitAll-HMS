@@ -10,30 +10,27 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ClientDtoUpdate {
+public record ClientDtoUpdate(
 
-    @NotBlank(message = "Full name is required")
-    @Size(max = 100, message = "Name must be less than 100 characters")
-    private String fullName;
+        @NotBlank(message = "Full name is required")
+        @Size(max = 100, message = "Name must be less than 100 characters")
+        String fullName,
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
+        String email,
 
+        @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
+        String phoneNumber,
 
-    @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
-    private String phoneNumber;
+        LocalDate dateOfBirth,
 
-    private LocalDate dateOfBirth;
+        MembershipLevel membershipLevel,
 
-    private MembershipLevel membershipLevel;
+        EmergencyContact emergencyContact,
 
-    private EmergencyContact emergencyContact;
+        String address,
 
-    private String address;
+        BloodType bloodType
 
-    private BloodType bloodType;
-}
+) {}

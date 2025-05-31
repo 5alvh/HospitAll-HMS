@@ -1,5 +1,6 @@
 package com.tfg.back.controller;
 
+import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoCreate;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import com.tfg.back.service.MedicalPrescriptionService;
@@ -9,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/medicalPrescription")
+@RequestMapping(MEDICAL_PRESCRIPTION)
 public class MedicalPrescriptionController {
 
     private final MedicalPrescriptionService medicalPrescriptionService;
@@ -19,10 +20,22 @@ public class MedicalPrescriptionController {
         this.medicalPrescriptionService = medicalPrescriptionService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<MedicalPrescriptionDtoGet> createMedicalPrescription(@RequestBody  MedicalPrescriptionDtoCreate dto, Authentication authentication) {
-        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.createPrescription(dto, authentication.getName());
+    @GetMapping("/get/{id}")
+    public ResponseEntity<MedicalPrescriptionDtoGet> getMedicalPrescription(@PathVariable Long id, Authentication authentication) {
+        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.getPrescriptionById(id, authentication.getName());
         return ResponseEntity.ok(prescription);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Boolean> createMedicalPrescription(@RequestBody  MedicalPrescriptionDtoCreate dto, Authentication authentication) {
+        Boolean prescription = medicalPrescriptionService.createPrescription(dto, authentication.getName());
+        return ResponseEntity.ok(prescription);
+    }
+
+    @PatchMapping("/publish/{id}")
+    public ResponseEntity<Boolean> publishPrescription(@PathVariable Long id, Authentication authentication) {
+        Boolean published = medicalPrescriptionService.publishPrescription(id, authentication.getName());
+        return ResponseEntity.ok(published);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -31,9 +44,7 @@ public class MedicalPrescriptionController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<MedicalPrescriptionDtoGet> getMedicalPrescription(@PathVariable Long id, Authentication authentication) {
-        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.getPrescriptionById(id, authentication.getName());
-        return ResponseEntity.ok(prescription);
-    }
+
+
+
 }

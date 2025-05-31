@@ -23,11 +23,6 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Department endpoint is working!");
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<Department>> getAllDepartments() {
         List<Department> departments = departmentService.getAllDepartments();

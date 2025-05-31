@@ -1,7 +1,7 @@
 package com.tfg.back.controller;
 
+import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.service.NotificationService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping(NOTIFICATION)
 public class NotificationController {
 
     private final NotificationService notificationService;

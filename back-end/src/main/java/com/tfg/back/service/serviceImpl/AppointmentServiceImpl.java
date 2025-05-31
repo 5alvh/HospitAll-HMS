@@ -46,15 +46,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDtoGet createAppointment(AppointmentCreateDto appointment, String email) {
-        Doctor doctor = getDoctor(appointment.getDoctorEmail());
-        Appointment newAppointment = appointmentMapper.toEntity(appointment, email);
-        Appointment savedAppointment = appointmentRepository.save(newAppointment);
-        createAppointmentNotification(savedAppointment.getClient(), "New Appointment!!", "You have a new appointment:" + savedAppointment.getAppointmentDateTime());
-        return appointmentMapper.toDtoGet(savedAppointment);
-    }
-
-    @Override
     public List<AppointmentDtoGet> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointmentMapper.toDtoGetList(appointments);
@@ -93,7 +84,22 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentRepository.save(appointment);
             createAppointmentNotification(appointment.getClient(),
                     "Appointment Confirmed", "Appointment confirmed by: " +
-                    appointment.getClient().getFullName() + " at: " + new Date());
+                    appointment.getClient().getFullName());
+        }else {
+            throw new UnauthorizedToPerformThisAction("You are not authorized to confirm this appointment");
+        }
+    }
+
+    @Override
+    public void completeAppointment(Long id, String email) {
+        Appointment appointment = getAppointment(id);
+
+        if (appointment.getDoctor().getEmail().equals(email)){
+            appointment.setStatus(AppointmentStatus.COMPLETED);
+            appointmentRepository.save(appointment);
+            createAppointmentNotification(appointment.getClient(),
+                    "Appointment Confirmed", "Appointment confirmed by: " +
+                            appointment.getClient().getFullName());
         }else {
             throw new UnauthorizedToPerformThisAction("You are not authorized to confirm this appointment");
         }
@@ -130,7 +136,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .diagnosis("UNAVAILABLE")
                 .build();
 
-        createAppointmentNotification(appointment.getClient(), "New Appointment!!", "You have a new appointment:" + appointment.getAppointmentDateTime());
+        createAppointmentNotification(appointment.getClient(), "New Appointment!!", "You have a new appointment, check your appointments");
         return appointmentMapper.toDtoGet(appointmentRepository.save(appointment));
     }
 
@@ -161,7 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = getAppointment(request.appointmentId());
         appointment.setDiagnosis(request.diagnosis());
         Appointment updatedAppointment = appointmentRepository.save(appointment);
-        createAppointmentNotification(appointment.getClient(), "Diagnosis added!", "Diagnosis added by " + appointment.getClient().getFullName()+", Check your appointments");
+        createAppointmentNotification(appointment.getClient(), "Diagnosis added!", "Diagnosis added by " + appointment.getDoctor().getFullName()+", Check your appointments section");
         return appointmentMapper.toDtoGet(updatedAppointment);
     }
 

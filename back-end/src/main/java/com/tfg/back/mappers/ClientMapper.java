@@ -1,17 +1,10 @@
 package com.tfg.back.mappers;
 
-import com.tfg.back.enums.SearchType;
 import com.tfg.back.enums.UserStatus;
-import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Client;
-import com.tfg.back.model.FeedBack;
-import com.tfg.back.model.MedicalPrescription;
-import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
-import com.tfg.back.model.dtos.feedBack.FeedBackDtoGetDoc;
-import com.tfg.back.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ClientMapper {
@@ -37,45 +31,41 @@ public class ClientMapper {
     }
 
     public Client toEntity(ClientDtoCreate dto) {
-        if (dto == null) {
-            throw new IllegalArgumentException("Client is null");
-        }
+        Objects.requireNonNull(dto, "Client DTO cannot be null");
 
         Client client = new Client();
 
-        client.setFullName(dto.getFullName());
-        client.setEmail(dto.getEmail());
-        client.setAddress(dto.getAddress());
-        client.setHashedPassword(passwordEncoder.encode(dto.getPassword()));
-        client.setPhoneNumber(dto.getPhoneNumber());
-        client.setDateOfBirth(dto.getDateOfBirth());
-        client.setBloodType(dto.getBloodType());
+        client.setFullName(dto.fullName());
+        client.setEmail(dto.email());
+        client.setAddress(dto.address());
+        client.setHashedPassword(passwordEncoder.encode(dto.password()));
+        client.setPhoneNumber(dto.phoneNumber());
+        client.setDateOfBirth(dto.dateOfBirth());
+        client.setBloodType(dto.bloodType());
 
         client.setStatus(UserStatus.ACTIVE);
         client.setCreatedAt(LocalDateTime.now());
 
-        client.setMembershipLevel(dto.getMembershipLevel());
-        client.setEmergencyContact(dto.getEmergencyContact());
+        client.setMembershipLevel(dto.membershipLevel());
+        client.setEmergencyContact(dto.emergencyContact());
 
         client.setAppointments(new ArrayList<>());
         return client;
     }
 
-    public Client updateEntity(Client client, ClientDtoUpdate dto){
-        if (dto == null){
-            throw new IllegalArgumentException("ClientDtoUpdate is null");
-        }
+    public Client updateEntity(Client client, ClientDtoUpdate dto) {
+        Objects.requireNonNull(dto, "Client DTO cannot be null");
 
-        client.setFullName(dto.getFullName());
-        client.setEmail(dto.getEmail());
-        client.setPhoneNumber(dto.getPhoneNumber());
-        client.setDateOfBirth(dto.getDateOfBirth());
-        client.setAddress(dto.getAddress());
+        client.setFullName(dto.fullName());
+        client.setEmail(dto.email());
+        client.setPhoneNumber(dto.phoneNumber());
+        client.setDateOfBirth(dto.dateOfBirth());
+        client.setAddress(dto.address());
         client.setStatus(UserStatus.ACTIVE);
-        client.setBloodType(dto.getBloodType());
+        client.setBloodType(dto.bloodType());
 
-        client.setMembershipLevel(dto.getMembershipLevel());
-        client.setEmergencyContact(dto.getEmergencyContact());
+        client.setMembershipLevel(dto.membershipLevel());
+        client.setEmergencyContact(dto.emergencyContact());
 
         client.setUpdatedAt(LocalDateTime.now());
 
@@ -99,26 +89,12 @@ public class ClientMapper {
                 .prescriptions(medicalPrescriptionMapper.toDtoGetList(client.getPrescriptionsReceived()))
                 .labResults(labResultMapper.toDtoGetList(client.getLabResultsReceived()))
                 .notifications(client.getNotifications())
-                .feedbacksWritten(toFeedBackDtoGetDocList(client.getFeedbacksWritten()))
+                .feedbacksWritten(FeedbackMapper.toFeedBackDtoGetList(client.getFeedbacksWritten()))
                 .build();
     }
 
     public List<ClientDtoGet> toGetDtoList(List<Client> clients) {
         return clients.stream().map(this::toGetDto).toList();
-    }
-
-    private FeedBackDtoGetDoc toFeedBackDtoGetDoc(FeedBack feedback) {
-        return FeedBackDtoGetDoc.builder()
-                .id(feedback.getId())
-                .comment(feedback.getComment())
-                .rating(feedback.getRating())
-                .createdAt(feedback.getCreatedAt())
-                .patientName(feedback.getAuthor().getFullName())
-                .build();
-    }
-
-    private List<FeedBackDtoGetDoc> toFeedBackDtoGetDocList(List<FeedBack> feedbacksWritten) {
-        return feedbacksWritten.stream().map(this::toFeedBackDtoGetDoc).toList();
     }
 
 }

@@ -12,13 +12,12 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface AppointmentService {
-    AppointmentDtoGet createAppointment(AppointmentCreateDto appointment, String email);
     List<AppointmentDtoGet> getAllAppointments();
     AppointmentDtoGet getAppointmentById(Long id);
     void deleteAppointment(Long id);
     void cancelAppointment(Long id, String email);
     void confirmAppointment(Long id, String email);
-
+    void completeAppointment(Long id, String email);
     AppointmentDtoGet bookAppointment(Long doctorId, LocalDate date, LocalTime startTime, String email, AppointmentType type, String reason, AppointmentStatus status);
 
     AppointmentDtoGet addDiagnosis(DiagnosisRequest request);

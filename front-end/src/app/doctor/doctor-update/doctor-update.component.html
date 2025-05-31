@@ -1,0 +1,154 @@
+<div *ngIf="!isLoading" class="profile-container">
+  <div class="section-header">
+    <h2>Update Profile Information</h2>
+    <button href="#" class="btn-back" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Go Back
+    </button>
+  </div>
+
+  <div class="profile-section">
+    <form (ngSubmit)="onUpdateProfile()" class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <div class="avatar-container">
+            <img [src]="'./user-profile.jpg'" alt="User Profile">
+            <div class="avatar-overlay">
+              <label for="profileImage" class="change-photo-btn">
+                <i class="fas fa-camera"></i>
+              </label>
+            </div>
+          </div>
+          <input type="file" id="profileImage" (change)="onFileSelected($event)" hidden>
+          <label for="profileImage" class="btn-change-photo">Change Photo</label>
+        </div>
+
+        <div class="profile-info">
+          <div class="form-group">
+            <label class="floating-label">Full Name</label>
+            <input type="text" class="form-control" [(ngModel)]="doctor.fullName" name="fullName" required>
+          </div>
+          <div class="patient-id">
+            <span class="id-label">Patient ID:</span>
+            <span class="id-value">{{doctor.id}}</span>
+          </div>
+          <div class="form-group">
+            <label class="floating-label">Date of Birth</label>
+            <input type="date" class="form-control" [(ngModel)]="doctor.dateOfBirth" name="dob" required>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="profile-body">
+        <div class="info-group">
+          <div class="info-header">
+            <i class="fas fa-address-book"></i>
+            <h4>Contact Information</h4>
+          </div>
+          <div class="info-content">
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">Phone:</span>
+                <input type="tel" class="form-control" [(ngModel)]="doctor.phoneNumber" name="phone" required>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">Email:</span>
+                <input type="email" class="form-control" [(ngModel)]="doctor.email" name="email" required>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">Address:</span>
+                <textarea class="form-control" [(ngModel)]="doctor.address" name="address" required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-group">
+          <div class="info-header">
+            <i class="fas fa-ambulance"></i>
+            <h4>Emergency Contact</h4>
+          </div>
+          <div class="info-content">
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">Medical License Number:</span>
+                <input type="text" class="form-control" [(ngModel)]="doctor.medicalLicenseNumber"
+                  name="emergencyName" required>
+              </div>
+            </div>
+            <div class="info-content">
+              <div class="info-row">
+                <div class="form-floating">
+                  <span class="info-label">Membership Type:</span>
+                  <select id="membershipLevel" [(ngModel)]="doctor.specialization" name="membershipLevel"
+                    class="form-control" required>
+                    <option *ngFor="let level of membershipLevels" [value]="level">
+                      {{level}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-group">
+          <div class="info-header">
+            <i class="fas fa-lock"></i>
+            <h4>Change Password</h4>
+          </div>
+          <div class="info-content">
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">Current Password:</span>
+                <input type="password" class="form-control" [(ngModel)]="passwords.current" name="currentPassword"
+                  required>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">New Password:</span>
+                <input type="password" class="form-control" [(ngModel)]="passwords.new" name="newPassword" required>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="form-floating">
+                <span class="info-label">Confirm New Password:</span>
+                <input type="password" class="form-control" [(ngModel)]="passwords.confirm" name="confirmPassword"
+                  required>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top: 20px;">
+              <button type="button" class="btn-update" (click)="onChangePassword()" [disabled]="processing">
+                <span *ngIf="!updatePassprocessing">Change Password</span>
+                <span *ngIf="updatePassprocessing" class="loading-spinner">
+                  <i class="fas fa-circle-notch fa-spin"></i> Changing...
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button href="#" type="button" class="btn-cancel" (click)="goBack()">Cancel</button>
+          <button type="submit" class="btn-update" [disabled]="processing">
+            <span *ngIf="!processing">Update Profile</span>
+            <span *ngIf="processing" class="loading-spinner">
+              <i class="fas fa-circle-notch fa-spin"></i> Processing...
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Loading spinner -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner-pulse"></div>
+  <span class="loading-text">Loading profile information...</span>
+</div>

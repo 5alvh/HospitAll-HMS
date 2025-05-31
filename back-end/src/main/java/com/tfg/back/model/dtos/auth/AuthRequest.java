@@ -1,10 +1,8 @@
 package com.tfg.back.model.dtos.auth;
 
-import lombok.Data;
 
-@Data
-public class AuthRequest {
-    private String email;
-    private String password;
-    private boolean rememberMe;
-}
+public record AuthRequest (
+    String email,
+     String password,
+    boolean rememberMe
+){}

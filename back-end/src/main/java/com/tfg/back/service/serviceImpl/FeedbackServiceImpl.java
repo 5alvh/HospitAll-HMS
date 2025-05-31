@@ -4,9 +4,11 @@ import com.tfg.back.enums.FeedBackType;
 import com.tfg.back.enums.SearchType;
 import com.tfg.back.exceptions.feedback.FeedbackNotFoundException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
+import com.tfg.back.mappers.FeedbackMapper;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.FeedBack;
+import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.feedBack.FeedbackDtoCreate;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
@@ -15,7 +17,6 @@ import com.tfg.back.service.FeedbackService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -26,33 +27,22 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final DoctorRepository doctorRepository;
 
     @Override
-    public Boolean sendFeedback(String clientEmail, FeedbackDtoCreate feedbackDtoCreate) {
+    public FeedBackDtoGet sendFeedback(String clientEmail, FeedbackDtoCreate feedbackDtoCreate) {
 
         Client author = clientRepository.findByEmail(clientEmail)
                 .orElseThrow(()-> new UserNotFoundException(clientEmail, SearchType.EMAIL));
         Doctor writtenTo;
-        if (!(feedbackDtoCreate.getType() == FeedBackType.GENERAL)) {
-            writtenTo = doctorRepository.findById(feedbackDtoCreate.getWrittenToId())
-                    .orElseThrow(()-> new UserNotFoundException(feedbackDtoCreate.getWrittenToId(), SearchType.ID));
+        if (!(feedbackDtoCreate.type() == FeedBackType.GENERAL)) {
+            writtenTo = doctorRepository.findById(feedbackDtoCreate.writtenToId())
+                    .orElseThrow(()-> new UserNotFoundException(feedbackDtoCreate.writtenToId(), SearchType.ID));
         }else{
             writtenTo = null;
         }
 
-        FeedBack fb = FeedBack.builder()
-                .comment(feedbackDtoCreate.getComment())
-                .rating(feedbackDtoCreate.getRating())
-                .author(author)
-                .writtenTo(writtenTo)
-                .createdAt(LocalDateTime.now())
-                .type(feedbackDtoCreate.getType())
-                .build();
-
+        FeedBack fb = FeedbackMapper.toEntity(feedbackDtoCreate, author, writtenTo);
         FeedBack savedFeedback = feedbackRepository.save(fb);
-        if (savedFeedback != null) {
-            return true;
-        }
 
-        return false;
+        return FeedbackMapper.toFeedBackDtoGet(savedFeedback);
     }
 
     @Override

@@ -33,10 +33,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
-
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                    new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         } catch (DisabledException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Your account is inactive, Contact support to reactivate"));
         } catch (LockedException e) {
@@ -46,11 +45,9 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
-
-        long expiration = request.isRememberMe() ? 30 * 24 * 60 * 60 * 1000L : 60 * 60 * 1000L;
-
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
+        long expiration = request.rememberMe() ? 30 * 24 * 60 * 60 * 1000L : 60 * 60 * 1000L;
 
         String jwt = jwtUtil.generateToken(userDetails, expiration);
         String role = userDetails.getAuthorities().iterator().next().getAuthority();

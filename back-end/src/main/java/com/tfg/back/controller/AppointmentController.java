@@ -26,7 +26,7 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<AppointmentDtoGet>> getAllAppointments() {
         List<AppointmentDtoGet> appointments = appointmentService.getAllAppointments();
         if (appointments.isEmpty()){
@@ -47,7 +47,6 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long id, Authentication authentication) {
         String clientEmail = authentication.getName();
@@ -59,6 +58,13 @@ public class AppointmentController {
     public ResponseEntity<Void> confirmAppointment(@PathVariable Long id, Authentication authentication) {
         String clientEmail = authentication.getName();
         appointmentService.confirmAppointment(id, clientEmail);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<Void> completeAppointment(@PathVariable Long id, Authentication authentication) {
+        String clientEmail = authentication.getName();
+        appointmentService.completeAppointment(id, clientEmail);
         return ResponseEntity.noContent().build();
     }
 
@@ -89,6 +95,7 @@ public class AppointmentController {
     public ResponseEntity<Long> getTotalPatients(@PathVariable Long id) {
         return ResponseEntity.ok(appointmentService.getTotalPatients(id));
     }
+
     /*
     @GetMapping("/available")
     public ResponseEntity<List<LocalDateTime>> getAvailableSlots(

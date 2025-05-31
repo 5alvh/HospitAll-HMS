@@ -1,8 +1,9 @@
 package com.tfg.back.controller;
 
+import static com.tfg.back.constants.BaseRoutes.*;
+
 import com.tfg.back.model.TimeInterval;
-import com.tfg.back.model.dtos.EmailRequest;
-import com.tfg.back.model.dtos.client.ClientDtoGet;
+import com.tfg.back.model.dtos.users.EmailRequest;
 import com.tfg.back.model.dtos.doctor.*;
 import com.tfg.back.service.DoctorService;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctors")
+@RequestMapping(DOCTOR)
 public class DoctorController {
 
     private final DoctorService doctorService;
@@ -25,30 +26,42 @@ public class DoctorController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<DoctorDtoGet> createDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
-        return ResponseEntity.ok(doctorService.createDoctor(doctor));
+    public ResponseEntity<DoctorDtoGet> registerDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
+        DoctorDtoGet createdDoctor = doctorService.createDoctor(doctor);
+        return ResponseEntity.ok(createdDoctor);
     }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DoctorDtoGet> updateClient(@PathVariable Long id,@Valid @RequestBody DoctorDtoUpdate dto){
+        DoctorDtoGet client = doctorService.updateDoctor(id, dto);
+        return ResponseEntity.ok(client);
+    }
+
 
     @GetMapping("/profile")
     public ResponseEntity<DoctorDtoGet> getDoctor(Authentication authentication) {
         String email = authentication.getName();
-        System.out.println(email);
-        return ResponseEntity.ok(doctorService.getDoctorByEmail(email));
+        DoctorDtoGet doctor = doctorService.getDoctorByEmail(email);
+        return ResponseEntity.ok(doctor);
     }
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDtoGet> getDoctorById(@PathVariable Long id) {
-        return ResponseEntity.ok(doctorService.getDoctor(id));
+        DoctorDtoGet doctor = doctorService.getDoctorById(id);
+        return ResponseEntity.ok(doctor);
     }
 
     @GetMapping("/email")
     public ResponseEntity<DoctorDtoGet> getDoctorByEmail(@RequestBody EmailRequest request) {
-        String email = request.getEmail();
-        return ResponseEntity.ok(doctorService.getDoctorByEmail(email));
+        String email = request.email();
+        DoctorDtoGet doctor = doctorService.getDoctorByEmail(email);
+        return ResponseEntity.ok(doctor);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<DoctorDtoGet>> getAllDoctors() {
-        return ResponseEntity.ok(doctorService.getAllDoctors());
+        List<DoctorDtoGet> doctors = doctorService.getAllDoctors();
+        return ResponseEntity.ok(doctors);
     }
 
     @DeleteMapping("/{id}")
@@ -59,18 +72,19 @@ public class DoctorController {
 
     @PostMapping("/available-doctors")
     public ResponseEntity<List<AvailableDoctorGet>> getAvailableDoctors(@RequestBody AvailableDoctorsRequest request) {
-        return ResponseEntity.ok(doctorService.getAvailableDoctors(request.departmentId(), request.date()));
+        List<AvailableDoctorGet> availableDoctors = doctorService.getAvailableDoctors(request.departmentId(), request.date());
+        return ResponseEntity.ok(availableDoctors);
     }
 
     @PostMapping("/available-slots")
     public ResponseEntity<List<TimeInterval>> getAvailableSlotsByDoctorIdAndDate(@RequestBody AvailableSlotsRequest request){
-        return ResponseEntity.ok(doctorService.getAvailableSlots(request.doctorId(), request.date()));
+        List<TimeInterval> timeIntervals = doctorService.getAvailableSlots(request.doctorId(), request.date());
+        return ResponseEntity.ok(timeIntervals);
     }
 
     @GetMapping("/get-doctors/{id}")
-    public ResponseEntity<List<VisitedDoctorGet>> getDoctors(@PathVariable Long id) {
-        return ResponseEntity.ok(doctorService.getDoctorsClientVisited(id));
+    public ResponseEntity<List<VisitedDoctorGet>> getDoctorsClientVisited(@PathVariable Long id) {
+        List<VisitedDoctorGet> doctors = doctorService.getDoctorsClientVisited(id);
+        return ResponseEntity.ok(doctors);
     }
-
-
 }

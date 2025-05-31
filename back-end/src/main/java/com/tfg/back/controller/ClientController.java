@@ -1,25 +1,37 @@
 package com.tfg.back.controller;
 
+import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.service.ClientService;
-import com.tfg.back.model.dtos.ChangePasswordRequest;
+import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping(CLIENT)
+@Validated
 public class ClientController {
 
+    /**
+     *TODO:
+     *Consistent Naming & REST Semantics
+     *Add JavaDoc to Public Methods
+     * Validation
+     * Logging
+     * Constants
+     */
     private final ClientService clientService;
 
     @Autowired
@@ -28,12 +40,13 @@ public class ClientController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ClientDtoGet> createClient(@Valid @RequestBody ClientDtoCreate client) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(client));
+    public ResponseEntity<ClientDtoGet> registerClient(@Valid @RequestBody ClientDtoCreate client) {
+        ClientDtoGet createdClient = clientService.createClient(client);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
     }
 
     @GetMapping("/by-id/{id}")
-    public ResponseEntity<ClientDtoGet> getClientById(@PathVariable Long id) {
+    public ResponseEntity<ClientDtoGet> getClientById(@NotNull @PathVariable Long id) {
         ClientDtoGet client = clientService.getClientById(id);
         return ResponseEntity.ok(client);
     }
@@ -46,7 +59,7 @@ public class ClientController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<Void> changePassword(Authentication authentication, @RequestBody ChangePasswordRequest newPassword) {
+    public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest newPassword) {
         String email = authentication.getName();
         clientService.changePassword(email, newPassword);
         return ResponseEntity.noContent().build();
@@ -64,20 +77,6 @@ public class ClientController {
     public ResponseEntity<ClientDtoGet> updateClient(@PathVariable Long id,@Valid @RequestBody ClientDtoUpdate dto){
         ClientDtoGet client = clientService.updateClient(id, dto);
         return ResponseEntity.ok(client);
-    }
-
-    @DeleteMapping("/by-email")
-    public ResponseEntity<Void> deleteClient(Authentication authentication) {
-        String email = authentication.getName();
-        clientService.deleteClient(email);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentDtoGet>> getAppointmentsByClientEmail(Authentication authentication) {
-        String email = authentication.getName();
-        List<AppointmentDtoGet> clients = clientService.getAppointmentsByClientEmail(email);
-        return ResponseEntity.ok(clients);
     }
 
     @PutMapping("/inactivateAccount")
@@ -108,5 +107,17 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/appointments")
+    public ResponseEntity<List<AppointmentDtoGet>> getAppointmentsByClientEmail(Authentication authentication) {
+        String email = authentication.getName();
+        List<AppointmentDtoGet> clients = clientService.getAppointmentsByClientEmail(email);
+        return ResponseEntity.ok(clients);
+    }
 
+    @DeleteMapping("/by-email")
+    public ResponseEntity<Void> deleteClient(Authentication authentication) {
+        String email = authentication.getName();
+        clientService.deleteClient(email);
+        return ResponseEntity.noContent().build();
+    }
 }

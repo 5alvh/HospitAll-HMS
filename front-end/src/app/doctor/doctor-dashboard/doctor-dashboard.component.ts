@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe, NgClass, NgFor, NgIf, Time, TitleCasePipe } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DoctorService } from '../../services/doctor-services/doctor.service';
 import { DoctorDtoGet } from '../../models/doctor-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
@@ -10,28 +10,8 @@ import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import Swal from 'sweetalert2';
 import { AppointmentService } from '../../services/client-services/appointment.service';
+import { PrescriptionStatus } from '../../models/enums/prescription-status';
 
-interface Appointment {
-  id: number;
-  clientFullName: string;
-  date: Date;
-  time: string;
-  status: AppointmentStatus;
-  reason?: string;
-}
-
-interface Prescription {
-  id: number;
-  clientEmail: string;
-  prescribedTo: string;
-  medicationName: string;
-  dosage: string;
-  frequency: string;
-  endDate: string;
-  notes: string;
-  createdAt: string;
-  isPublished: boolean;
-}
 
 export interface Feedback {
   id: number;
@@ -49,15 +29,74 @@ export interface BookAppRequest {
   reason: string
 }
 
+export interface prescriptionRequest {
+  searchType: string,
+  patientIdentifier: string,
+  medications: [{ medicationName: string, dosage: string, frequency: string, duration: string, notes: string }],
+  appointmentId: number,
+  status: string
+}
 @Component({
   selector: 'app-doctor-dashboard',
-  imports: [FormsModule, NgIf, NgFor, NgClass, DatePipe, CommonModule],
+  imports: [FormsModule, NgIf, NgFor, NgClass, DatePipe, CommonModule, RouterLink],
   templateUrl: './doctor-dashboard.component.html',
   styleUrl: './doctor-dashboard.component.scss',
   providers: [DatePipe],
   encapsulation: ViewEncapsulation.None
 })
 export class DoctorDashboardComponent {
+
+
+  showDiagnosisForm: { [key: string]: boolean } = {};
+  diagnosisInputs: { [key: string]: string } = {};
+
+  toggleDiagnosisForm(appointment: any): void {
+    this.showDiagnosisForm[appointment.id] = !this.showDiagnosisForm[appointment.id];
+    this.diagnosisInputs[appointment.id] = appointment.diagnosis === 'UNAVAILABLE' ? '' : appointment.diagnosis;
+  }
+
+  submitDiagnosis(appointmentId: number): void {
+    var diagnosis = this.diagnosisInputs[appointmentId];
+
+    if ( !appointmentId) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Please enter a diagnosis.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+      return;
+    }
+    if (diagnosis === '') {
+      diagnosis = 'UNAVAILABLE';
+    }
+
+    // Handle submission logic here
+    console.log(`Publishing diagnosis for appointment ${appointmentId}: ${diagnosis}`);
+    this.appService.giveDiagnosis(appointmentId, diagnosis).subscribe({
+      next: (res) => {
+        console.log('Diagnosis published successfully.');
+        this.appointments.find(a => a.id === appointmentId)!.diagnosis = diagnosis;
+        Swal.fire({
+          title: 'Success',
+          text: 'Diagnosis published successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        })
+      },
+      error: (err) => {
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to publish diagnosis. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+      }
+    })
+    // Optionally reset form
+    this.diagnosisInputs[appointmentId] = '';
+    this.showDiagnosisForm[appointmentId] = false;
+  }
   cancelBookAppointment() {
     this.refreshAppointmentsForm();
     this.changeSection('dashboard');
@@ -85,29 +124,36 @@ export class DoctorDashboardComponent {
   };
 
   newAppointment: BookAppRequest = {
-    searchType: '',
+    searchType: 'id',
     patientIdentifier: '',
     date: new Date(),
     time: '',
     reason: ''
   };
 
-  newPrescription: any = {
-    patientId: '',
-    patientName: '',
-    medications: [{ name: '', dosage: '', frequency: '', duration: '' }],
-    instructions: ''
+  newPrescription: prescriptionRequest = {
+    searchType: 'id',
+    patientIdentifier: '',
+    medications: [{ medicationName: '', dosage: '', frequency: '', duration: '', notes: '' }],
+    appointmentId: 0,
+    status: ''
   };
 
   applyFilter() {
     this.filteredAppointments = this.appointments.filter(appointment => {
-      if (this.filterStatus === 'all') {
+      if (this.filterStatus === 'all' && this.showCancelledAppointments) {
+        return appointment.status.toLocaleLowerCase() !== 'cancelled';
+      } else if (this.filterStatus === 'all') {
         return true;
       }
       return appointment.status.toLocaleLowerCase() === this.filterStatus.toLocaleLowerCase();
     });
   }
   filterFromCancelledAppointments() {
+    if (this.filterStatus !== 'all') {
+      this.applyFilter();
+      return;
+    }
     if (this.showCancelledAppointments) {
       this.filteredAppointments = this.appointments.filter(appointment => {
         if (appointment.status !== "CANCELLED") {
@@ -178,6 +224,26 @@ export class DoctorDashboardComponent {
       });
     }
   }
+
+  completeAppointment(appId: any) {
+    const appointment = this.appointments.find(a => a.id === appId);
+    if (appointment) {
+      this.docService.completeAppointment(appId).subscribe({
+        next: () => {
+          appointment.status = AppointmentStatus.COMPLETED;
+        },
+        error: (error) => {
+          console.error('Error completing appointment:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to complete appointment. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+    }
+  }
   // Change active section
   changeSection(section: string): void {
     this.activeSection = section;
@@ -193,6 +259,7 @@ export class DoctorDashboardComponent {
     this.dashboardStats.todayAppointments = this.appointments.filter(appointment => {
       const appointmentDate = new Date(appointment.appointmentDateTime);
       return (
+        appointment.status !== AppointmentStatus.CANCELLED &&
         appointmentDate.getFullYear() === todayYear &&
         appointmentDate.getMonth() === todayMonth &&
         appointmentDate.getDate() === todayDate
@@ -200,9 +267,15 @@ export class DoctorDashboardComponent {
     }).length;
 
     this.dashboardStats.pendingPrescriptions = this.prescriptions.filter(
-      prescription => !prescription.isPublished
+      prescription => prescription.status === PrescriptionStatus.DRAFT
     ).length;
+    this.getTotalPatients();
 
+    const totalRating = this.feedback.reduce((sum, item) => sum + item.rating, 0);
+    this.dashboardStats.averageRating = totalRating / this.feedback.length;
+  }
+
+  getTotalPatients() {
     this.docService.getNumberOfPatientsByDoctorId(this.doctor.id).subscribe({
       next: (response) => {
         this.dashboardStats.totalPatients = response;
@@ -211,10 +284,7 @@ export class DoctorDashboardComponent {
         console.error('Error fetching number of patients:', error);
       }
     });
-    const totalRating = this.feedback.reduce((sum, item) => sum + item.rating, 0);
-    this.dashboardStats.averageRating = totalRating / this.feedback.length;
   }
-
   // Book a new appointment
   bookAppointment(): void {
 
@@ -247,6 +317,7 @@ export class DoctorDashboardComponent {
             icon: 'success',
             confirmButtonText: 'OK'
           });
+          this.getTotalPatients();
           this.calculateDashboardStats();
         },
         error: (error) => {
@@ -307,7 +378,7 @@ export class DoctorDashboardComponent {
 
   refreshAppointmentsForm(): void {
     this.newAppointment = {
-      searchType: '',
+      searchType: 'id',
       patientIdentifier: '',
       date: new Date(),
       time: '',
@@ -318,42 +389,60 @@ export class DoctorDashboardComponent {
   // Create a new prescription
   createPrescription(): void {
     const id = this.prescriptions.length + 1;
-    const newPrescription: Prescription = {
-      id,
-      clientEmail: 'parseInt(this.newPrescription.patientId)',
-      prescribedTo: this.newPrescription.patientName,
-      medicationName: this.newPrescription.medications[0].name,
-      dosage: this.newPrescription.medications[0].dosage,
-      frequency: this.newPrescription.medications[0].frequency,
-      endDate: this.newPrescription.medications[0].duration,
-      notes: this.newPrescription.instructions,
-      createdAt: 'new Date()',
-      isPublished: false
+
+    console.log(this.newPrescription);
+
+    const prescriptionRequest = {
+      searchType: this.newPrescription.searchType.toUpperCase(),
+      ...(this.newPrescription.searchType.toUpperCase() === 'EMAIL'
+        ? { clientEmail: this.newPrescription.patientIdentifier }
+        : { clientId: this.newPrescription.patientIdentifier }),
+      medications: this.newPrescription.medications,
+      appointmentId: this.newPrescription.appointmentId,
+      status: 'published'.toUpperCase()
     };
 
-
-    // Reset form
-    this.newPrescription = {
-      patientId: '',
-      patientName: '',
-      medications: [{ name: '', dosage: '', frequency: '', duration: '' }],
-      instructions: ''
-    };
-
-    // Recalculate dashboard stats
-    this.calculateDashboardStats();
-
-    // In a real app, you would submit this to your backend API
-    console.log('Prescription created:', newPrescription);
+    this.docService.createPrescription(prescriptionRequest).subscribe({
+      next: (response) => {
+        this.prescriptions.push(response);
+        this.calculateDashboardStats();
+        this.refreshPrescriptionsForm();
+        Swal.fire({
+          title: 'Success',
+          text: 'Prescription created successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      },
+      error: (error) => {
+        console.error('Error creating prescription:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to create prescription. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    })
   }
 
+  refreshPrescriptionsForm(): void {
+    this.newPrescription = {
+      searchType: 'id',
+      patientIdentifier: '',
+      medications: [{ medicationName: '', dosage: '', frequency: '', duration: '', notes: '' }],
+      appointmentId: 0,
+      status: ''
+    };
+  }
   // Add medication field to prescription form
   addMedication(): void {
     this.newPrescription.medications.push({
-      name: '',
+      medicationName: '',
       dosage: '',
       frequency: '',
-      duration: ''
+      duration: '',
+      notes: ''
     });
   }
 
@@ -366,15 +455,35 @@ export class DoctorDashboardComponent {
 
   // Publish a prescription
   publishPrescription(id: number): void {
-    const index = this.prescriptions.findIndex(p => p.id === id);
-    if (index !== -1) {
-      this.prescriptions[index].isPublished = true;
 
-      // Recalculate dashboard stats
-      this.calculateDashboardStats();
+    if (id !== null) {
+      this.docService.publishPrescription(id).subscribe({
+        next: (response) => {
+          const prescription = this.prescriptions.find(prescription => prescription.id === id);
+          if (prescription !== null) {
+            prescription!.status = PrescriptionStatus.PUBLISHED;
+          }
+          this.calculateDashboardStats();
+          this.refreshPrescriptionsForm();
 
-      // In a real app, you would submit this to your backend API
-      console.log('Prescription published:', this.prescriptions[index]);
+          Swal.fire({
+            title: 'Success',
+            text: 'Prescription published successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        },
+        error: (error) => {
+          console.error('Error publishing prescription:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to publish prescription. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      })
+
     }
   }
 
@@ -493,8 +602,8 @@ export class DoctorDashboardComponent {
   }
 
   createPrescriptionForAppointment(appointment: any) {
-    this.newPrescription.patientName = appointment.clientFullName;
-    this.newPrescription.appointmentId = appointment.id;
+    /*this.newPrescription.patientName = appointment.clientFullName;
+    this.newPrescription.appointmentId = appointment.id;*/
     this.changeSection('create-prescription');
   }
 
@@ -504,13 +613,16 @@ export class DoctorDashboardComponent {
   }
 
   getPublishedPrescriptions(): any[] {
-    return this.prescriptions.filter(p => p.isPublished);
+    return this.prescriptions.filter(p => p.status === PrescriptionStatus.PUBLISHED);
   }
 
   getDraftPrescriptions(): any[] {
-    return this.prescriptions.filter(p => !p.isPublished);
+    return this.prescriptions.filter(p => p.status === PrescriptionStatus.DRAFT);
   }
 
+  isPublished(prescription: any): boolean {
+    return prescription.status === PrescriptionStatus.PUBLISHED;
+  }
   getRatingPercentage(rating: number): number {
     const count = this.feedback.filter(f => f.rating === rating).length;
     return this.feedback.length > 0 ? (count / this.feedback.length) * 100 : 0;

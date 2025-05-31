@@ -4,44 +4,37 @@ import com.tfg.back.enums.BloodType;
 import com.tfg.back.enums.MembershipLevel;
 import com.tfg.back.model.EmergencyContact;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ClientDtoCreate {
+public record ClientDtoCreate(
 
-    @NotBlank(message = "Full name is required")
-    @Size(max = 100, message = "Name must be less than 100 characters")
-    private String fullName;
+        @NotBlank(message = "Full name is required")
+        @Size(max = 100, message = "Name must be less than 100 characters")
+        String fullName,
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
+        String email,
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String password;
+        @NotBlank(message = "Password is required")
+        @Size(min = 8, message = "Password must be at least 8 characters")
+        String password,
 
-    @NotNull(message = "Password confirmation is required")
-    private String passwordConfirmation;
+        @NotNull(message = "Password confirmation is required")
+        String passwordConfirmation,
 
+        @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
+        String phoneNumber,
 
-    @Pattern(regexp = "^\\+?[0-9\\-\\s()]*$", message = "Invalid phone number format")
-    private String phoneNumber;
+        LocalDate dateOfBirth,
 
-    private LocalDate dateOfBirth;
+        MembershipLevel membershipLevel,
 
-    private MembershipLevel membershipLevel;
+        EmergencyContact emergencyContact,
 
-    private EmergencyContact emergencyContact;
+        String address,
 
-    private String address;
+        BloodType bloodType
 
-    private BloodType bloodType;
-
-}
+) {}

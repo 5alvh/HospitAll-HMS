@@ -30,7 +30,8 @@ export class ClientUpdateComponent {
     new: '',
     confirm: ''
   };
-updatePassprocessing: boolean = false;
+
+  updatePassprocessing: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -51,13 +52,13 @@ updatePassprocessing: boolean = false;
       },
       error: (error) => {
         console.error('Error fetching user profile:', error);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
         this.isLoading = false;
       }
     });
   }
 
-   onUpdateProfile() {
+  onUpdateProfile() {
     this.processing = true;
 
     const updatedClient: ClientDtoUpdate = {

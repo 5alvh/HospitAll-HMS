@@ -3,17 +3,21 @@ package com.tfg.back.mappers;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.LabResult;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoCreate;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoGet;
+import com.tfg.back.model.dtos.labResults.LabResultDtoCreate;
+import com.tfg.back.model.dtos.labResults.LabResultDtoGet;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class LabResultMapper {
 
     public LabResult toEntity(LabResultDtoCreate dto, Doctor doctor, Client client) {
+        Objects.requireNonNull(dto, "Lab Result DTO cannot be null");
+        Objects.requireNonNull(doctor, "Doctor cannot be null");
+        Objects.requireNonNull(client, "Client cannot be null");
         return LabResult.builder()
                 .testName(dto.getTestName())
                 .resultValue(dto.getResultValue())
@@ -29,6 +33,7 @@ public class LabResultMapper {
     }
 
     public LabResultDtoGet toDtoGet(LabResult labResult) {
+        Objects.requireNonNull(labResult, "Lab Result cannot be null");
         return LabResultDtoGet.builder()
                 .id(labResult.getId())
                 .testName(labResult.getTestName())

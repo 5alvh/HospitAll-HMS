@@ -1,10 +1,43 @@
 package com.tfg.back.service;
 
+import com.tfg.back.exceptions.feedback.FeedbackNotFoundException;
+import com.tfg.back.exceptions.user.UserNotFoundException;
+import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.feedBack.FeedbackDtoCreate;
 
 public interface FeedbackService {
 
-    Boolean sendFeedback(String clientEmail,FeedbackDtoCreate feedbackDtoCreate);
+    /**
+     * Submits feedback from a client, either general or directed to a specific doctor.
+     * <p>
+     * Handles two feedback types:
+     * <ol>
+     *   <li><b>General feedback</b> (not directed to a specific doctor)</li>
+     *   <li><b>Doctor-specific feedback</b> (requires valid doctor ID)</li>
+     * </ol>
+     *
+     * @param clientEmail Email of the client submitting feedback (must be valid registered client)
+     * @param feedbackDtoCreate DTO containing feedback details (type, content, optional doctor ID)
+     * @return FeedBackDtoGet Complete feedback record with generated ID and timestamps
+     * @throws UserNotFoundException If client email or doctor ID don't match existing users
+     * @throws IllegalArgumentException If feedback content fails validation
+     *
+     * @security Client must be authenticated (email verified)
+     * @feedbackType GENERAL feedback ignores writtenToId, other types require valid doctor
+     */
+    FeedBackDtoGet sendFeedback(String clientEmail, FeedbackDtoCreate feedbackDtoCreate);
+
+    /**
+     * Permanently deletes a feedback record.
+     * <p>
+     * <b>Warning:</b> This operation is irreversible. Consider soft-delete for production systems.
+     *
+     * @param id Unique identifier of the feedback to delete
+     * @throws FeedbackNotFoundException If no feedback exists with the specified ID
+     *
+     * @security Typically should require admin privileges (not implemented here)
+     * @audit Should be accompanied by audit logging in production
+     */
     void deleteFeedback(Long id);
 
 }

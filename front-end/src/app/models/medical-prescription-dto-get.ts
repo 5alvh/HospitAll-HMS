@@ -1,3 +1,5 @@
+import { PrescriptionStatus } from "./enums/prescription-status";
+
 export interface MedicalPrescriptionDtoGet {
   id: number;
   medicationName: string;
@@ -10,5 +12,5 @@ export interface MedicalPrescriptionDtoGet {
   createdAt: string;  
   prescribedTo: string;
   clientEmail: string;
-  isPublished: boolean;     
+  status: string;     
 }

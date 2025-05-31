@@ -6,10 +6,7 @@ import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.DoctorMapper;
 import com.tfg.back.model.*;
-import com.tfg.back.model.dtos.doctor.AvailableDoctorGet;
-import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
-import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
-import com.tfg.back.model.dtos.doctor.VisitedDoctorGet;
+import com.tfg.back.model.dtos.doctor.*;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.DepartmentRepository;
 import com.tfg.back.repository.DoctorRepository;
@@ -47,27 +44,15 @@ public class DoctorServiceImpl implements DoctorService {
         this.appointmentRepository = appointmentRepository;
     }
 
+
+    //NOTE: Public Crud methods
     @Override
-    public DoctorDtoGet createDoctor(DoctorDtoCreate doctor) {
-        String email = doctor.getEmail();
-        Long id = doctor.getDepartmentId();
-        boolean exists = doctorRepository.existsByEmail(email);
-
-        if (exists){
-            throw new UserAlreadyExistsException(email);
-        }
-
-        Department department = departmentRepository.findById(doctor.getDepartmentId())
-                .orElseThrow(() ->  new DepartmentNotFoundException("department with ID: "+id+" is not found"));
-
-        Doctor newDoctor = doctorMapper.toEntity(doctor, department);
-
-        Doctor savedDoctor = doctorRepository.save(newDoctor);
-        return doctorMapper.toDtoGet(savedDoctor);
+    public List<DoctorDtoGet> getAllDoctors() {
+        return doctorMapper.toDtoGetList(doctorRepository.findAll());
     }
 
     @Override
-    public DoctorDtoGet getDoctor(Long id) {
+    public DoctorDtoGet getDoctorById(Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
         return doctorMapper.toDtoGet(doctor);
@@ -80,9 +65,20 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DoctorDtoGet> getAllDoctors() {
-        return doctorMapper.toDtoGetList(doctorRepository.findAll());
+    public DoctorDtoGet createDoctor(DoctorDtoCreate doctor) {
+
+        checkEmailUniqueness(doctor.email());
+        Long id = doctor.departmentId();
+
+        Department department = departmentRepository.findById(doctor.departmentId())
+                .orElseThrow(() ->  new DepartmentNotFoundException("department with ID: "+id+" is not found"));
+
+        Doctor newDoctor = doctorMapper.toEntity(doctor, department);
+
+        Doctor savedDoctor = doctorRepository.save(newDoctor);
+        return doctorMapper.toDtoGet(savedDoctor);
     }
+
 
     @Override
     public void deleteDoctor(Long id) {
@@ -92,11 +88,16 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor findDoctorByEmail(String email) {
-        return doctorRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+    public DoctorDtoGet updateDoctor(Long id, DoctorDtoUpdate dto) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
+
+        Doctor updatedDoctor = doctorMapper.toEntity(doctor, dto);
+        Doctor savedDoctor = doctorRepository.save(updatedDoctor);
+        return doctorMapper.toDtoGet(savedDoctor);
     }
 
+    //NOTE: APPOINTMENT RELATED FUNCTIONS
     @Override
     public List<AvailableDoctorGet> getAvailableDoctors(Long departmentId, LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
@@ -104,14 +105,14 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(()-> new DepartmentNotFoundException("department with name: "+departmentId+" is not found"));
         List<Doctor> doctors = doctorRepository.findByDepartmentAndWorkingHoursDay(dept, day);
         return doctors.stream().map(
-                doctor -> new AvailableDoctorGet(doctor.getFullName(), doctor.getId()))
-        .toList();
+                        doctor -> new AvailableDoctorGet(doctor.getFullName(), doctor.getId()))
+                .toList();
     }
 
     @Override
     public List<TimeInterval> getAvailableSlots(Long doctorId, LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                .orElseThrow(() -> new UserNotFoundException(doctorId, SearchType.ID));
 
         DayOfWeek day = date.getDayOfWeek();
 
@@ -155,22 +156,24 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toList());
     }
 
+    //NOTE: Methods for internal service-to-service use
+    @Override
+    public Doctor findDoctorByEmail(String email) {
+        return doctorRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
+    }
+
+    //NOTE: Doctors Client Visited
     @Override
     public List<VisitedDoctorGet> getDoctorsClientVisited(Long id) {
-        return toVisitedDoctorGetList(doctorRepository.findDistinctDoctorsByClientId(id));
+        List<Doctor> doctors = doctorRepository.findDistinctDoctorsByClientId(id);
+        return doctorMapper.toVisitedDoctorGetList(doctors);
     }
 
-    private VisitedDoctorGet toVisitedDoctorGet(Doctor doctor) {
-        VisitedDoctorGet visitedDoctorGet = new VisitedDoctorGet();
-        visitedDoctorGet.setId(doctor.getId());
-        visitedDoctorGet.setFullName(doctor.getFullName());
-        return visitedDoctorGet;
+    //NOTE: Private methods
+    private void checkEmailUniqueness(String email) {
+        if (doctorRepository.existsByEmail(email)) {
+            throw new UserAlreadyExistsException(email);
+        }
     }
-
-    private List<VisitedDoctorGet> toVisitedDoctorGetList(List<Doctor> doctors) {
-        return doctors.stream()
-                .map(this::toVisitedDoctorGet)
-                .collect(Collectors.toList());
-    }
-
 }

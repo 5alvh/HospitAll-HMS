@@ -4,57 +4,67 @@ import com.tfg.back.enums.UserStatus;
 import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.doctor.DoctorDtoCreate;
 import com.tfg.back.model.dtos.doctor.DoctorDtoGet;
-import com.tfg.back.model.dtos.feedBack.FeedBackDtoGetDoc;
+import com.tfg.back.model.dtos.doctor.DoctorDtoUpdate;
+import com.tfg.back.model.dtos.doctor.VisitedDoctorGet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class DoctorMapper {
 
     private final PasswordEncoder passwordEncoder;
     private final AppointmentMapper appointmentMapper;
-    private final MedicalPrescriptionMapper medicalPrescriptionMapper;
 
     @Autowired
-    public DoctorMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper, MedicalPrescriptionMapper medicalPrescriptionMapper) {
+    public DoctorMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper) {
         this.passwordEncoder = passwordEncoder;
         this.appointmentMapper = appointmentMapper;
-        this.medicalPrescriptionMapper = medicalPrescriptionMapper;
     }
 
-
-    public Doctor toEntity(DoctorDtoCreate dto, Department department) {
-        if (dto == null) {
-            return null;
-        }
-
-        Doctor doctor = new Doctor();
-
+    public Doctor toEntity(Doctor doctor,DoctorDtoUpdate dto) {
+        Objects.requireNonNull(dto, "Doctor DTO cannot be null");
+        Objects.requireNonNull(doctor, "Doctor cannot be null");
         doctor.setFullName(dto.getFullName());
         doctor.setEmail(dto.getEmail());
         doctor.setAddress(dto.getAddress());
-        doctor.setHashedPassword(passwordEncoder.encode(dto.getHashedPassword()));
         doctor.setPhoneNumber(dto.getPhoneNumber());
         doctor.setDateOfBirth(dto.getDateOfBirth());
+        doctor.setAddress(dto.getAddress());
+        doctor.setMedicalLicenseNumber(dto.getMedicalLicenseNumber());
+        doctor.setSpecialization(dto.getSpecialization());
+        return doctor;
+    }
+
+    public Doctor toEntity(DoctorDtoCreate dto, Department department) {
+        Objects.requireNonNull(dto, "Doctor DTO cannot be null");
+
+        Doctor doctor = new Doctor();
+
+        doctor.setFullName(dto.fullName());
+        doctor.setEmail(dto.email());
+        doctor.setAddress(dto.address());
+        doctor.setHashedPassword(passwordEncoder.encode(dto.hashedPassword()));
+        doctor.setPhoneNumber(dto.phoneNumber());
+        doctor.setDateOfBirth(dto.dateOfBirth());
         doctor.setStatus(UserStatus.ACTIVE);
 
-        doctor.setMedicalLicenseNumber(dto.getMedicalLicenseNumber());
+        doctor.setMedicalLicenseNumber(dto.medicalLicenseNumber());
         doctor.setDepartment(department);
-        doctor.setSpecialization(dto.getSpecialization());
+        doctor.setSpecialization(dto.specialization());
 
         Set<WorkingHours> workingHoursSet = new HashSet<>();
-        for (WorkingHours wh : dto.getWorkingHours()) {
-            wh.setDoctor(doctor);  // Set reverse reference
-
+        for (WorkingHours wh : dto.workingHours()) {
+            wh.setDoctor(doctor);
             for (TimeInterval ti : wh.getTimeIntervals()) {
-                ti.setWorkingHours(wh);  // Set reverse reference
+                ti.setWorkingHours(wh);
             }
-
             workingHoursSet.add(wh);
         }
 
@@ -64,9 +74,7 @@ public class DoctorMapper {
     }
 
     public DoctorDtoGet toDtoGet(Doctor doctor) {
-        if (doctor == null) {
-            return null;
-        }
+        Objects.requireNonNull(doctor, "Doctor cannot be null");
         return DoctorDtoGet.builder()
                 .id(doctor.getId())
                 .fullName(doctor.getFullName())
@@ -79,9 +87,9 @@ public class DoctorMapper {
                 .specialization(doctor.getSpecialization())
                 .address(doctor.getAddress())
                 .appointments(appointmentMapper.toDtoGetList(doctor.getAppointments()))
-                .prescriptionsGiven(medicalPrescriptionMapper.toDtoGetList(doctor.getPrescriptionsGiven()))
+                .prescriptionsGiven(MedicalPrescriptionMapper.toDtoGetList(doctor.getPrescriptionsGiven()))
                 .workingHours(doctor.getWorkingHours())
-                .feedbacksReceived(toFeedBackDtoGetDoc(doctor.getFeedbacksReceived()))
+                .feedbacksReceived(FeedbackMapper.toFeedBackDtoGetList(doctor.getFeedbacksReceived()))
                 .build();
     }
 
@@ -89,18 +97,16 @@ public class DoctorMapper {
         return doctors.stream().map(this::toDtoGet).toList();
     }
 
-    private FeedBackDtoGetDoc toFeedBackDtoGetDoc(FeedBack feedBack) {
-        return FeedBackDtoGetDoc.builder()
-                .id(feedBack.getId())
-                .comment(feedBack.getComment())
-                .rating(feedBack.getRating())
-                .createdAt(feedBack.getCreatedAt())
-                .patientName(feedBack.getAuthor().getFullName())
-                .build();
+
+    public static VisitedDoctorGet toVisitedDoctorGet(Doctor doctor) {
+        VisitedDoctorGet visitedDoctorGet = new VisitedDoctorGet(doctor.getId(), doctor.getFullName());
+        return visitedDoctorGet;
     }
-    
-    private List<FeedBackDtoGetDoc> toFeedBackDtoGetDoc(List<FeedBack> feedBacks) {
-        return feedBacks.stream().map(this::toFeedBackDtoGetDoc).toList();
+
+    public static List<VisitedDoctorGet> toVisitedDoctorGetList(List<Doctor> doctors) {
+        return doctors.stream()
+                .map(DoctorMapper::toVisitedDoctorGet)
+                .collect(Collectors.toList());
     }
 }
 

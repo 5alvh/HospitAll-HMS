@@ -1,0 +1,5 @@
+package com.tfg.back.model.dtos.medicalPrescription;
+
+public record Medication(String medicationName,  String dosage,
+         String frequency, int duration, String notes) {
+}

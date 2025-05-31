@@ -53,6 +53,18 @@ export const routes: Routes = [
     data: { expectedRole: Roles.ROLE_DOCTOR }
   },
   {
+    path: 'edit-profile-doctor',
+    loadComponent: () =>
+      import('./doctor/doctor-update/doctor-update.component').then((c) => c.DoctorUpdateComponent),
+    canActivate: [RoleGuard],
+    data: { expectedRole: Roles.ROLE_DOCTOR }
+  },
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./admin/admin-dashboard/admin-dashboard.component').then((c) => c.AdminDashboardComponent)
+  },
+  {
     path: 'unauthorized',
     loadComponent: () =>
       import('./shared/unauthorized/unauthorized.component').then((c) => c.UnauthorizedComponent),

@@ -162,9 +162,9 @@ export class ClientAppointmentComponent {
     if (this.appointmentForm.invalid) {
       return;
     }
-
+    
+    this.submitting = true;
     setTimeout(() => {
-      this.submitting = true;
       const doctorId = this.appointmentForm.get('doctor')!.value;
       const type = AppointmentType.IN_PERSON;
       const reason = this.appointmentForm.get('reasonForVisit')!.value;

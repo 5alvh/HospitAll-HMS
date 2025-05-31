@@ -1,18 +1,14 @@
 package com.tfg.back.service.serviceImpl;
 
-import com.tfg.back.enums.SearchType;
 import com.tfg.back.exceptions.labResult.LabResultNotFoundException;
 import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
-import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.LabResultMapper;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.LabResult;
 import com.tfg.back.model.Notification;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoCreate;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoGet;
-import com.tfg.back.model.dtos.client.ClientDtoGet;
-import com.tfg.back.repository.ClientRepository;
+import com.tfg.back.model.dtos.labResults.LabResultDtoCreate;
+import com.tfg.back.model.dtos.labResults.LabResultDtoGet;
 import com.tfg.back.repository.LabResultsRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientService;
@@ -30,22 +26,21 @@ public class LabResultsServiceImpl implements LabResultsService {
     private final LabResultsRepository labResultRepository;
     private final NotificationRepository notificationRepository;
     private final DoctorService doctorService;
-    private final ClientRepository clientRepository;
+    private final ClientService clientService;
     private final LabResultMapper labResultMapper;
 
     @Autowired
-    public LabResultsServiceImpl(LabResultsRepository labResultRepository, NotificationRepository notificationRepository, DoctorService doctorService, ClientRepository clientRepository, LabResultMapper labResultMapper) {
+    public LabResultsServiceImpl(LabResultsRepository labResultRepository, NotificationRepository notificationRepository, DoctorService doctorService, ClientService clientService, LabResultMapper labResultMapper) {
         this.labResultRepository = labResultRepository;
         this.notificationRepository = notificationRepository;
         this.doctorService = doctorService;
-        this.clientRepository = clientRepository;
+        this.clientService = clientService;
         this.labResultMapper = labResultMapper;
     }
 
     @Override
     public LabResultDtoGet sendLabResult(LabResultDtoCreate labResult, String doctorEmail) {
-        Client client = clientRepository.findByEmail(labResult.getPatientEmail())
-                .orElseThrow(() -> new UserNotFoundException(labResult.getPatientEmail(), SearchType.EMAIL));
+        Client client = clientService.findClientByEmail(labResult.getPatientEmail());
         Doctor doctor = doctorService.findDoctorByEmail(doctorEmail);
         LabResult labResultEntity = labResultMapper.toEntity(labResult, doctor, client);
         createNotification(client);
@@ -55,11 +50,6 @@ public class LabResultsServiceImpl implements LabResultsService {
     @Override
     public LabResultDtoGet getLabResultById(Long id) {
         return labResultMapper.toDtoGet(findLabResultById(id));
-    }
-
-    @Override
-    public LabResult updateLabResult(Long id, LabResultDtoCreate updatedResult) {
-        return null;
     }
 
     @Override
@@ -74,6 +64,7 @@ public class LabResultsServiceImpl implements LabResultsService {
                 .orElseThrow(()-> new LabResultNotFoundException("Lab Result with ID: "+id+" is not found"));
     }
 
+    //TODO: add notification service
     private void createNotification(Client client) {
         Notification notification = new Notification();
         notification.setTitle("New Lab Result");
@@ -85,5 +76,8 @@ public class LabResultsServiceImpl implements LabResultsService {
         notificationRepository.save(notification);
     }
 
-
+    @Override
+    public LabResult updateLabResult(Long id, LabResultDtoCreate updatedResult) {
+        return null;
+    }
 }

@@ -1,19 +1,21 @@
 package com.tfg.back.mappers;
 
+import com.tfg.back.enums.PrescriptionStatus;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.MedicalPrescription;
-import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoCreate;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
+import com.tfg.back.model.dtos.medicalPrescription.Medication;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 public class MedicalPrescriptionMapper {
 
-    public MedicalPrescriptionDtoGet toDtoGet(MedicalPrescription prescription) {
+    public static MedicalPrescriptionDtoGet toDtoGet(MedicalPrescription prescription) {
         return MedicalPrescriptionDtoGet.builder()
                 .id(prescription.getId())
                 .medicationName(prescription.getMedicationName())
@@ -26,26 +28,27 @@ public class MedicalPrescriptionMapper {
                 .createdAt(prescription.getCreatedAt())
                 .prescribedTo(prescription.getPrescribedTo().getFullName())
                 .clientEmail(prescription.getPrescribedTo().getEmail())
-                .isPublished(false)
+                .status(prescription.getStatus())
                 .build();
 
     }
 
-    public List<MedicalPrescriptionDtoGet> toDtoGetList(List<MedicalPrescription> prescriptions) {
-        return prescriptions.stream().map(this::toDtoGet).toList();
+    public static List<MedicalPrescriptionDtoGet> toDtoGetList(List<MedicalPrescription> prescriptions) {
+        return prescriptions.stream().map(MedicalPrescriptionMapper::toDtoGet).toList();
     }
 
-    public MedicalPrescription toEntity(MedicalPrescriptionDtoCreate dto, Doctor doctor, Client client) {
+    public MedicalPrescription toEntity(PrescriptionStatus status, Medication dto, Doctor doctor, Client client) {
         return MedicalPrescription.builder()
-                .medicationName(dto.getMedicationName())
-                .dosage(dto.getDosage())
-                .frequency(dto.getFrequency())
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .notes(dto.getNotes())
+                .medicationName(dto.medicationName())
+                .dosage(dto.dosage())
+                .frequency(dto.frequency())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(dto.duration()))
+                .notes(dto.notes())
                 .prescribedBy(doctor)
                 .prescribedTo(client)
                 .createdAt(LocalDateTime.now())
+                .status(status)
                 .build();
     }
 }

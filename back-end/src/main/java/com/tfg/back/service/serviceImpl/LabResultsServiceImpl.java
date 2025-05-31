@@ -7,9 +7,8 @@ import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.LabResult;
 import com.tfg.back.model.Notification;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoCreate;
-import com.tfg.back.model.dtos.LabResults.LabResultDtoGet;
-import com.tfg.back.model.dtos.client.ClientDtoGet;
+import com.tfg.back.model.dtos.labResults.LabResultDtoCreate;
+import com.tfg.back.model.dtos.labResults.LabResultDtoGet;
 import com.tfg.back.repository.LabResultsRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientService;
@@ -54,22 +53,18 @@ public class LabResultsServiceImpl implements LabResultsService {
     }
 
     @Override
-    public LabResult updateLabResult(Long id, LabResultDtoCreate updatedResult) {
-        return null;
-    }
-
-    @Override
     public void deleteLabResult(Long id, String email) {
         LabResult result = findLabResultById(id);
         if (!Objects.equals(result.getOrderedBy().getEmail(), email)) throw new UnauthorizedToPerformThisAction("Client with email: "+email+" is not authorized to perform this action");
         labResultRepository.delete(result);
     }
 
-    public LabResult findLabResultById(Long id) {
+    private LabResult findLabResultById(Long id) {
         return  labResultRepository.findById(id)
                 .orElseThrow(()-> new LabResultNotFoundException("Lab Result with ID: "+id+" is not found"));
     }
 
+    //TODO: add notification service
     private void createNotification(Client client) {
         Notification notification = new Notification();
         notification.setTitle("New Lab Result");
@@ -81,5 +76,8 @@ public class LabResultsServiceImpl implements LabResultsService {
         notificationRepository.save(notification);
     }
 
-
+    @Override
+    public LabResult updateLabResult(Long id, LabResultDtoCreate updatedResult) {
+        return null;
+    }
 }

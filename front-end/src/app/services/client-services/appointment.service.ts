@@ -41,4 +41,8 @@ export class AppointmentService {
     return this.httpClient.post<any>(`${this.baseUrl}/book-appointment-doctor/client-id`, appointment);
   }
 
+  giveDiagnosis(appointmentId: number, diagnosis: string) : Observable<any> {
+    return this.httpClient.put(`${this.baseUrl}/diagnosis`, { diagnosis, appointmentId });
+  }
+
 }

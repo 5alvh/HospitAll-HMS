@@ -1,6 +1,7 @@
 package com.tfg.back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tfg.back.enums.PrescriptionStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -68,8 +69,7 @@ public class MedicalPrescription {
     @Version
     private Long version;
 
-    public boolean isActive() {
-        LocalDate today = LocalDate.now();
-        return (today.isEqual(startDate) || today.isAfter(startDate)) && today.isBefore(endDate.plusDays(1));
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PrescriptionStatus status;
 }

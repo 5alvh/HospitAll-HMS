@@ -32,12 +32,22 @@ export interface VisitedDoctorDto {
 
 })
 export class DashboardClientComponent implements OnInit {
-editFeedback(arg0: number) {
-throw new Error('Method not implemented.');
-}
-deleteFeedback(arg0: number) {
-throw new Error('Method not implemented.');
-}
+  rescheduleAppointment() {
+    Swal.fire({
+      title: "Sorry!",
+      text: "Sorry we still didn't implement this feature yet",
+      imageUrl: "./cat.jpg",
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: "Custom image"
+    });
+  }
+  editFeedback(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
+  deleteFeedback(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
 
   selectedRating: number = 0;
   hoveredRating: number = 0;
@@ -223,6 +233,11 @@ throw new Error('Method not implemented.');
 
   toBookAppointment() {
     this.router.navigate(['/book-appointment']);
+  }
+
+  canBeCancelled(appointmentStatus: AppointmentStatus): boolean {
+    return appointmentStatus === AppointmentStatus.SCHEDULED
+      || appointmentStatus === AppointmentStatus.CONFIRMED;
   }
   formatDate(dateString: string): string {
     const date = new Date(dateString);
