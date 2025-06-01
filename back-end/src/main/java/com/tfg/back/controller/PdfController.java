@@ -1,6 +1,10 @@
 package com.tfg.back.controller;
 
 import com.itextpdf.layout.properties.TextAlignment;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +21,19 @@ import java.io.ByteArrayOutputStream;
 
 @RestController
 @RequestMapping("/api/pdf")
+@Tag(name = "Apis to generate pdfs",
+    description = "Apis to generate pdfs and return them to the user for download")
 public class PdfController {
 
+    @Operation(
+            summary = "Generates an appointment pdf",
+            description = "Generates an appointment pdf and returns it to the user for download"
+    )
+
+    @ApiResponse(
+            responseCode = "200",
+            description = "Returns the generated pdf"
+    )
     @GetMapping("/appointment")
     public ResponseEntity<byte[]> generateAppointmentPdf() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

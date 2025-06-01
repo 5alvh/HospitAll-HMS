@@ -9,7 +9,6 @@ import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
-import com.tfg.back.repository.NotificationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -9,7 +9,6 @@ import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
 import com.tfg.back.model.*;
-import com.tfg.back.model.dtos.appointment.AppointmentCreateDto;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.appointment.BookAppointmentByDoctorRequest;
 import com.tfg.back.repository.AppointmentRepository;
