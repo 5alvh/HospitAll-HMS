@@ -1,7 +1,9 @@
 package com.tfg.back.service.serviceImpl;
 
+import static com.tfg.back.constants.ResponseMessages.*;
 import com.tfg.back.enums.SearchType;
 import com.tfg.back.enums.UserStatus;
+import com.tfg.back.exceptions.user.IncorrectPasswordException;
 import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
@@ -32,16 +34,17 @@ public class ClientServiceImpl implements ClientService {
     private final AppointmentMapper appointmentMapper;
     private final NotificationRepository notificationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
         this.appointmentMapper = appointmentMapper;
         this.notificationRepository = notificationRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
-
 
     //NOTE: Public Crud methods
     @Override
@@ -72,6 +75,10 @@ public class ClientServiceImpl implements ClientService {
         Client savedClient = clientRepository.save(clientEntity);
 
         createNotifications(savedClient);
+
+
+        emailService.sendWelcomeEmail(savedClient.getEmail(), savedClient.getFullName(), "client");
+
         return clientMapper.toGetDto(savedClient);
     }
 
@@ -81,17 +88,22 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientMapper.updateEntity(clientToUpdate, dto);
         Client updatedClient = clientRepository.save(client);
         Client savedUpdatedClient = clientRepository.save(updatedClient);
-        updateNotifications(savedUpdatedClient,"Your profile has been updated successfully!");
+        updateNotifications(savedUpdatedClient, PROFILE_UPDATED_SUCCESSFULLY);
         return clientMapper.toGetDto(savedUpdatedClient);
     }
 
     @Override
     public void changePassword(String email, ChangePasswordRequest newPassword) {
         Client client = findClientByEmail(email);
-        validatePasswords(newPassword.getCurrentPassword(), newPassword.getNewPassword());
-        client.setHashedPassword(passwordEncoder.encode(newPassword.getNewPassword()));
-        updateNotifications(client, "Your password has been changed successfully!");
 
+        if (!passwordEncoder.matches(newPassword.getCurrentPassword(), client.getHashedPassword())) {
+            throw new IncorrectPasswordException(INCORRECT_PASSWORD);
+        }
+
+        client.setHashedPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+        clientRepository.save(client);
+
+        updateNotifications(client, PASSWORD_CHANGED_SUCCESSFULLY);
     }
 
     @Override
@@ -137,25 +149,19 @@ public class ClientServiceImpl implements ClientService {
     //NOTE: Methods for internal service-to-service use
     @Override
     public Client findClientByEmail(String email) {
-        if (email == null || email.isBlank()){
-            throw new IllegalArgumentException("Client email mustn't be null");
-        }
         return clientRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email, SearchType.EMAIL));
     }
 
     // NOTE: Private methods
     private Client findClientById(Long id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("Client ID must be a positive number");
-        }
         return clientRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id, SearchType.ID));
     }
 
     private void validatePasswords(String password, String confirmation) {
         if (!Objects.equals(password, confirmation)) {
-            throw new IllegalArgumentException("Passwords do not match");
+            throw new IllegalArgumentException(PASSWORD_DOES_NOT_MATCH);
         }
     }
 

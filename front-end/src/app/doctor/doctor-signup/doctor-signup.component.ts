@@ -1,4 +1,4 @@
-import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -8,14 +8,15 @@ import { DepartmentDto } from '../../models/department';
 import { AuthService } from '../../services/auth/auth.service';
 import { DepartmentService } from '../../services/shared-services/department.service';
 import { DoctorDtoCreate } from '../../models/doctor-dto-create';
+import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 
 
 @Component({
   selector: 'app-doctor-signup',
-  imports: [NgIf, ReactiveFormsModule, NgClass, DatePipe, TitleCasePipe, RouterLink, NgFor],
+  imports: [NgIf, ReactiveFormsModule, NgClass, DatePipe, RouterLink, NgFor],
   templateUrl: './doctor-signup.component.html',
   styleUrl: './doctor-signup.component.scss',
-  providers: [DatePipe, TitleCasePipe]
+  providers: [DatePipe]
 })
 export class DoctorSignupComponent {
   signupForm!: FormGroup;
@@ -32,7 +33,8 @@ export class DoctorSignupComponent {
     private authService: AuthService,
     private departmentService: DepartmentService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private localStorageManager: LocalStorageManagerService
   ) { }
 
   ngOnInit(): void {
@@ -75,7 +77,7 @@ export class DoctorSignupComponent {
       dateOfBirth: [null],
       medicalLicenseNumber: ['', [Validators.required]],
       departmentId: [null, [Validators.required]],
-      specialization: [null],
+      adress: [null],
       workingHours: this.fb.array(this.initWorkingHours())
     }, {
       validators: this.passwordMatchValidator
@@ -182,8 +184,9 @@ export class DoctorSignupComponent {
       dateOfBirth: formValue.dateOfBirth,
       medicalLicenseNumber: formValue.medicalLicenseNumber,
       departmentId: formValue.departmentId,
-      specialization: formValue.specialization,
-      workingHours: filteredWorkingHours
+      specialization: 'CARDIOLOGY',
+      workingHours: filteredWorkingHours,
+      address: formValue.adress
     };
 
     this.authService.registerDoctor(doctorData).subscribe({
@@ -192,7 +195,9 @@ export class DoctorSignupComponent {
           console.log('Doctor signup data:', doctorData);
           this.processing = false;
           this.signupSuccess = true;
-
+          const role = response.role;
+          this.localStorageManager.setToken(response.token);
+          this.localStorageManager.setUserData(role);
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 3000);

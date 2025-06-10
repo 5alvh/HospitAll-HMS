@@ -12,16 +12,35 @@ import { ClientDtoGet } from '../../models/client-dto-get';
 })
 export class DoctorService {
   
+  
 
   baseUrl = 'http://localhost:8080/doctors';
   baseUrlForAppointments = 'http://localhost:8080/appointment';
   baseUrlMedicalPrescriptions = 'http://localhost:8080/medical-prescription';
   constructor(private httpClient: HttpClient, private router: Router) { }
 
+  updatePrescription(doctor: any){
+    return this.httpClient.put(`${this.baseUrlMedicalPrescriptions}/update`, doctor).pipe(
+      catchError((error) => {
+        console.error('Error updating prescription:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   getAllDoctors() {
     return this.httpClient.get<any[]>(this.baseUrl);
   }
 
+  changePassword(passwords: { currentPassword: string, newPassword: string }): Observable<any> {
+    return this.httpClient.put(`${this.baseUrl}/change-password`, passwords).pipe(
+      catchError((error) => {
+        console.error('Error changing password:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+  
   getProfile(): Observable<DoctorDtoGet> {
     return this.httpClient.get<DoctorDtoGet>(`${this.baseUrl}/profile`).pipe(
       tap((response) => {
@@ -98,6 +117,15 @@ export class DoctorService {
     return this.httpClient.put<ClientDtoGet>(`${this.baseUrl}/${id}`, client).pipe(
       catchError((error) => {
         console.error('Error updating profile:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  deletePrescription(prescriptionId: number) {
+    return this.httpClient.delete(`${this.baseUrlMedicalPrescriptions}/delete/${prescriptionId}`).pipe(
+      catchError((error) => {
+        console.error('Error deleting prescription:', error);
         return throwError(() => error);
       })
     );

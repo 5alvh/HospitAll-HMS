@@ -1,4 +1,4 @@
-<div class="appointment-container">
+<div class="appointment-container" *ngIf="!isLoading">
   <div class="appointment-header">
     <h1>Book an Appointment</h1>
     <p class="subtitle">Schedule a consultation with our specialists</p>
@@ -8,17 +8,8 @@
   </div>
 
   <div class="appointment-content">
-    <!-- Success Message -->
-    <div *ngIf="appointmentSuccess" class="success-message">
-      <div class="success-icon">
-        <i class="fas fa-check-circle"></i>
-      </div>
-      <h3>Appointment Booked Successfully!</h3>
-      <p>We have sent a confirmation email with all details.</p>
-    </div>
-
     <!-- Appointment Form -->
-    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" *ngIf="!appointmentSuccess">
+    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" >
       <div class="form-section">
         <h3>Patient Information</h3>
         <div class="form-row">
@@ -57,7 +48,7 @@
 
           <div class="form-group checkbox-container">
             <label class="checkbox-label">
-              <input type="checkbox" (click)="copyInfos()">
+              <input type="checkbox" checked disabled>
               <span>Same account information</span>
             </label>
           </div>
@@ -160,10 +151,10 @@
 
 
       <div class="form-footer">
-        <button type="button" class="btn-reset">
+        <button type="button" class="btn-reset" (click)="resetForm()">
           <i class="fas fa-undo-alt"></i> Reset
         </button>
-        <button type="submit" class="btn-submit" [disabled]="submitting">
+        <button type="submit" class="btn-submit" [disabled]="submitting || appointmentForm.invalid" >
           <span *ngIf="!submitting"><i class="fas fa-calendar-check"></i> Book Appointment</span>
           <span *ngIf="submitting" class="loading-spinner">
             <i class="fas fa-circle-notch fa-spin"></i> Processing...
@@ -172,4 +163,8 @@
       </div>
     </form>
   </div>
+</div>
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner-pulse"></div>
+  <span class="loading-text">Loading profile information...</span>
 </div>

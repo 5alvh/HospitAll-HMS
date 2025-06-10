@@ -26,6 +26,7 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
+
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
@@ -34,14 +35,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final DoctorRepository doctorRepository;
     private final NotificationRepository notificationRepository;
     private final ClientRepository clientRepository;
+    public final EmailService emailService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, DoctorRepository doctorRepository, NotificationRepository notificationRepository, ClientRepository clientRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, DoctorRepository doctorRepository, NotificationRepository notificationRepository, ClientRepository clientRepository, EmailService emailService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.doctorRepository = doctorRepository;
         this.notificationRepository = notificationRepository;
         this.clientRepository = clientRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -136,7 +139,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         createAppointmentNotification(appointment.getClient(), "New Appointment!!", "You have a new appointment, check your appointments");
-        return appointmentMapper.toDtoGet(appointmentRepository.save(appointment));
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        emailService.sendAppointmentBookedEmail(email, client.getFullName(), "CLIENT", doctor.getFullName(), date.toString(), startTime.toString(), savedAppointment.getId().toString());
+        return appointmentMapper.toDtoGet(savedAppointment);
     }
 
     @Override
@@ -171,14 +176,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Long getTotalPatients(Long id) {
+    public Long getTotalPatientsThatVisitedDoctor(Long id) {
         return appointmentRepository.countDistinctClientsByDoctorId(id);
     }
 
-
-
-
-    private Appointment getAppointment(Long id) {
+    public Appointment getAppointment(Long id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(()-> new AppointmentNotFoundException(id));
     }

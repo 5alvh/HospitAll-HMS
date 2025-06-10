@@ -1,31 +1,27 @@
 package com.tfg.back.service.serviceImpl;
 
+import static com.tfg.back.constants.ResponseMessages.*;
 import com.tfg.back.enums.SearchType;
 import com.tfg.back.exceptions.department.DepartmentNotFoundException;
+import com.tfg.back.exceptions.user.IncorrectPasswordException;
 import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.DoctorMapper;
 import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.doctor.*;
+import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.DepartmentRepository;
 import com.tfg.back.repository.DoctorRepository;
-import com.tfg.back.service.DepartmentService;
 import com.tfg.back.service.DoctorService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,13 +31,17 @@ public class DoctorServiceImpl implements DoctorService {
     private final DepartmentRepository departmentRepository;
     private final DoctorMapper doctorMapper;
     private final AppointmentRepository appointmentRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper, AppointmentRepository appointmentRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper, AppointmentRepository appointmentRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.doctorRepository = doctorRepository;
         this.departmentRepository = departmentRepository;
         this.doctorMapper = doctorMapper;
         this.appointmentRepository = appointmentRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
 
@@ -71,11 +71,16 @@ public class DoctorServiceImpl implements DoctorService {
         Long id = doctor.departmentId();
 
         Department department = departmentRepository.findById(doctor.departmentId())
-                .orElseThrow(() ->  new DepartmentNotFoundException("department with ID: "+id+" is not found"));
+                .orElseThrow(() ->  new DepartmentNotFoundException(DEPARTMENT_NOT_FOUND));
 
         Doctor newDoctor = doctorMapper.toEntity(doctor, department);
 
         Doctor savedDoctor = doctorRepository.save(newDoctor);
+
+        String subject = "Welcome to Our App!";
+        String body = "Hi " + savedDoctor.getFullName() + ",\n\nThanks for registering.";
+        emailService.sendWelcomeEmail(savedDoctor.getEmail(), savedDoctor.getFullName(), "doctor");
+
         return doctorMapper.toDtoGet(savedDoctor);
     }
 
@@ -102,7 +107,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<AvailableDoctorGet> getAvailableDoctors(Long departmentId, LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
         Department dept = departmentRepository.findById(departmentId)
-                .orElseThrow(()-> new DepartmentNotFoundException("department with name: "+departmentId+" is not found"));
+                .orElseThrow(()-> new DepartmentNotFoundException(DEPARTMENT_NOT_FOUND));
         List<Doctor> doctors = doctorRepository.findByDepartmentAndWorkingHoursDay(dept, day);
         return doctors.stream().map(
                         doctor -> new AvailableDoctorGet(doctor.getFullName(), doctor.getId()))
@@ -168,6 +173,16 @@ public class DoctorServiceImpl implements DoctorService {
     public List<VisitedDoctorGet> getDoctorsClientVisited(Long id) {
         List<Doctor> doctors = doctorRepository.findDistinctDoctorsByClientId(id);
         return doctorMapper.toVisitedDoctorGetList(doctors);
+    }
+
+    @Override
+    public void changePassword(String email, ChangePasswordRequest newPassword) {
+        Doctor doctor = findDoctorByEmail(email);
+        if (!passwordEncoder.matches(newPassword.getCurrentPassword(), doctor.getHashedPassword())) {
+            throw new IncorrectPasswordException(INCORRECT_PASSWORD);
+        }
+        doctor.setHashedPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+        doctorRepository.save(doctor);
     }
 
     //NOTE: Private methods

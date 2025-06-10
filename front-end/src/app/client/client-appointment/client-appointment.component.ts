@@ -8,6 +8,7 @@ import { ClientService } from '../../services/client-services/client.service';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { AppointmentService } from '../../services/client-services/appointment.service';
 import { AppointmentType } from '../../models/enums/appointment-type';
+import Swal from 'sweetalert2';
 interface Doctor {
   id: number;
   name: string;
@@ -49,9 +50,9 @@ export class ClientAppointmentComponent {
   maxDate = new Date(this.minDate.getTime() + 30 * 24 * 60 * 60 * 1000);
   submitting = false;
   submitted = false;
-  appointmentSuccess = false;
-  sameInfos: boolean = false;
+  sameInfos: boolean = true;
   date!: Date;
+  isLoading = true;
 
   constructor(
     private fb: FormBuilder,
@@ -112,10 +113,11 @@ export class ClientAppointmentComponent {
     this.initForm();
     this.loadDepartments();
     this.getProfile();
+    this.isLoading = false;
   }
 
   copyInfos(): void {
-    this.sameInfos = !this.sameInfos;
+    //this.sameInfos = !this.sameInfos;
     if (this.sameInfos) {
       this.appointmentForm.patchValue({
         patientName: this.patient.fullName,
@@ -157,40 +159,36 @@ export class ClientAppointmentComponent {
   }
 
   onSubmit(): void {
-    this.submitted = true;
-
     if (this.appointmentForm.invalid) {
       return;
     }
-    
+
     this.submitting = true;
+    const doctorId = this.appointmentForm.get('doctor')!.value;
+    const type = AppointmentType.IN_PERSON;
+    const reason = this.appointmentForm.get('reasonForVisit')!.value;
+    const timeSlot = this.appointmentForm.get('timeSlot')!.value;
     setTimeout(() => {
-      const doctorId = this.appointmentForm.get('doctor')!.value;
-      const type = AppointmentType.IN_PERSON;
-      const reason = this.appointmentForm.get('reasonForVisit')!.value;
-      const timeSlot = this.appointmentForm.get('timeSlot')!.value;
-      setTimeout(() => {
-        this.appointmentService.bookAppointment({
-          doctorId: doctorId,
-          date: this.date,
-          startTime: timeSlot,
-          type: type,
-          reason: reason
-        }).subscribe({
-          next: (appointment) => {
+      this.appointmentService.bookAppointment({
+        doctorId: doctorId,
+        date: this.date,
+        startTime: timeSlot,
+        type: type,
+        reason: reason
+      }).subscribe({
+        next: (appointment) => {
+          setTimeout(() => {
             this.submitting = false;
-            this.appointmentSuccess = true;
-            console.log('Appointment booked successfully:', appointment);
+            Swal.fire('Appointment booked successfully.');
             this.router.navigate(['/dashboard-client']);
-          },
-          error: (error) => {
-            this.submitting = false;
-            console.error('Error booking appointment:', error);
-            this.appointmentSuccess = false;
-          }
+          }, 2000);
+        },
+        error: (error) => {
+          Swal.fire('Error updating profile.');
+          this.submitting = false;
         }
-        );
-      }, 3000);
+      }
+      );
     }, 1500);
   }
 
@@ -198,6 +196,8 @@ export class ClientAppointmentComponent {
     this.clientService.getProfile().subscribe({
       next: (response) => {
         this.patient = response;
+        this.copyInfos();
+
       },
       error: (error) => {
         this.router.navigate(['/login']);
@@ -205,7 +205,22 @@ export class ClientAppointmentComponent {
       }
     });
   }
+  resetForm() {
+    this.initForm();
 
+    // Reset state variables
+    this.submitting = false;
+    this.submitted = false;
+    this.departmentSelected = false;
+    this.prefferedDateChosen = false;
+    this.doctorsSearched = false;
+    this.slotsSearched = false;
+    this.timeSlots = [];
+    this.doctors = [];
+    this.date = new Date();
+
+    this.copyInfos();
+  }
   get f() { return this.appointmentForm.controls; }
 
 }

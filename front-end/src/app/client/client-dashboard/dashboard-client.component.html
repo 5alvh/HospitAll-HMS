@@ -17,24 +17,45 @@
         <li><strong>Status:</strong> {{ selectedAppointment.status }}</li>
         <li><strong>Type:</strong> {{ selectedAppointment.type }}</li>
       </ul>
-      <button class="btn-outline btn-sm download-btn" (click)="downloadAppointment(selectedAppointment)">
+      <button class="btn-outline btn-sm download-btn" (click)="downloadAppointment(selectedAppointment.id)">
         <i class="fas fa-download"></i> Download Summary
       </button>
     </div>
   </div>
 </div>
 
-<div *ngIf="isLoading" class="loading-container">
-  <i class="fas fa-circle-notch fa-spin"></i>
-  <span class="loading-text">Loading profile information...</span>
+<div class="modal-backdrop" *ngIf="selectedPrescription">
+  <div class="summary-card appointment-modal">
+    <div class="card-header">
+      <h3>Appointment Details</h3>
+      <button class="close-btn" (click)="closeDetails()">×</button>
+    </div>
+    <div class="card-body">
+      <ul class="details-list">
+        <li><strong>Prescription ID:</strong> {{ selectedPrescription.id }}</li>
+        <li><strong>Medication:</strong> {{ selectedPrescription.medicationName }}</li>
+        <li><strong>Dosage:</strong> {{ selectedPrescription.dosage }}</li>
+        <li><strong>Frequency:</strong> {{ selectedPrescription.frequency }}</li>
+        <li><strong>Start Date:</strong> {{ selectedPrescription.startDate }}</li>
+        <li><strong>End Date:</strong> {{ selectedPrescription.endDate }}</li>
+        <li><strong>Notes:</strong> {{ selectedPrescription.notes }}</li>
+        <li><strong>Doctor:</strong> {{ selectedPrescription.prescribedBy }}</li>
+      </ul>
+      <button class="btn-outline btn-sm download-btn" (click)="downloadPrescription(selectedPrescription.id)">
+        <i class="fas fa-download"></i> Download Summary
+      </button>
+    </div>
+  </div>
 </div>
+
+
 
 <!-- app.component.html -->
 <div class="app-container" *ngIf="!isLoading && patient">
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <img src="./logo.png" alt="MediCare Logo">
+      <img src="./logo.png" alt="HospitAll Logo">
       <h2>HospitAll</h2>
     </div>
     <div class="menu">
@@ -57,7 +78,7 @@
       </div>
       <div class="menu-item" [class.active]="activeSection === 'billing'" (click)="setActiveSection('billing')">
         <i class="fas fa-file-invoice-dollar"></i>
-        <span>Billing</span>
+        <span>Notifications</span>
       </div>
       <div class="menu-item" [class.active]="activeSection === 'documents'" (click)="setActiveSection('documents')">
         <i class="fas fa-file-download"></i>
@@ -209,12 +230,12 @@
             <p>Access your latest test results and diagnostics</p>
             <button class="btn-primary" (click)="setActiveSection('records')">View Results</button>
           </div>
-          <div class="action-card">
+          <!-- <div class="action-card">
             <i class="fas fa-credit-card"></i>
-            <h3>Pay Bills</h3>
-            <p>Make payments for your outstanding invoices</p>
+            <h3>Notifications</h3>
+            <p>Notifications and reminders for your appointments</p>
             <button class="btn-primary" (click)="setActiveSection('billing')">Pay Now</button>
-          </div>
+          </div>-->
 
         </div>
       </div>
@@ -305,7 +326,11 @@
             <div class="tab">Book New</div>
           </div>
         </div>
-
+        <div class="appointment-booking">
+          <div class="form-actions">
+            <button class="btn-primary" [routerLink]="['/book-appointment']">Book an Appointment</button>
+          </div>
+        </div>
         <div class="appointments-section">
           <div class="appointments-upcoming">
             <h3>Upcoming Appointments</h3>
@@ -344,11 +369,11 @@
                       </span>
                     </td>
                     <td>
-                      <button class="btn-icon" title="Reschedule" (click)="rescheduleAppointment()"
+                      <button class="btn-icon" title="Reschedule" (click)="sorryMessage()"
                         *ngIf="appointment.status !== 'COMPLETED'"><i class="fas fa-clock"></i></button>
                       <button class="btn-icon" title="Cancel" *ngIf="canBeCancelled(appointment.status)"><i
                           class="fas fa-times" (click)="cancelAppointment(appointment.id)"></i></button>
-                      <button class="btn-icon" title="View Details" (click)="showDetails(appointment)"><i
+                      <button class="btn-icon" title="View Details" (click)="showDetailsAppointment(appointment)"><i
                           class="fas fa-eye"></i></button>
                     </td>
                   </tr>
@@ -380,9 +405,10 @@
                     <td>{{appointment.departmentName}}</td>
                     <td>{{appointment.diagnosis}}</td>
                     <td>
-                      <button class="btn-icon" title="View Details" (click)="showDetails(appointment)"><i
+                      <button class="btn-icon" title="View Details" (click)="showDetailsAppointment(appointment)"><i
                           class="fas fa-eye"></i></button>
-                      <button class="btn-icon" title="Download Summary"><i class="fas fa-download"></i></button>
+                      <button class="btn-icon" title="Download Summary" (click)="downloadAppointment(appointment.id)"><i
+                          class="fas fa-download"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -390,12 +416,7 @@
             </div>
           </div>
 
-          <div class="appointment-booking">
-            <h3>Book New Appointment</h3>
-            <div class="form-actions">
-              <button class="btn-primary" [routerLink]="['/book-appointment']">Book an Appointment</button>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -429,18 +450,22 @@
                   <div *ngIf="medications.length === 0" class="no-data">
                     No prescriptions found.
                   </div>
-                  <tr *ngFor="let medication of medications">
-                    <td>{{medication.medicationName}}</td>
-                    <td>{{medication.dosage}}</td>
-                    <td>{{medication.frequency}}</td>
-                    <td>{{medication.startDate}}</td>
-                    <td>{{medication.endDate}}</td>
-                    <td>{{medication.prescribedBy}}</td>
-                    <td>
-                      <button class="btn-icon" title="Request Refill"><i class="fas fa-sync-alt"></i></button>
-                      <button class="btn-icon" title="View Details"><i class="fas fa-eye"></i></button>
-                    </td>
-                  </tr>
+                  <ng-container *ngFor="let medication of medications">
+                    <tr *ngIf="medication.status === 'PUBLISHED'">
+                      <td>{{medication.medicationName}}</td>
+                      <td>{{medication.dosage}}</td>
+                      <td>{{medication.frequency}}</td>
+                      <td>{{medication.startDate}}</td>
+                      <td>{{medication.endDate}}</td>
+                      <td>{{medication.prescribedBy}}</td>
+                      <td>
+                        <button class="btn-icon" title="Request Refill" (click)="sorryMessage()"><i
+                            class="fas fa-sync-alt"></i></button>
+                        <button class="btn-icon" title="View Details" (click)="showDetailsPrescription(medication)"><i
+                            class="fas fa-eye"></i></button>
+                      </td>
+                    </tr>
+                  </ng-container>
                 </tbody>
               </table>
             </div>
@@ -487,85 +512,44 @@
         </div>
       </div>
 
-      <!-- Billing Section -->
+
       <div *ngIf="activeSection === 'billing'">
         <div class="section-header">
-          <h2>Billing & Payments</h2>
-          <div class="section-tabs">
-            <div class="tab active">Invoices</div>
-            <div class="tab">Payment History</div>
-            <div class="tab">Insurance Claims</div>
-          </div>
-        </div>
+          <h2>Notifications</h2>
 
-        <div class="billing-section">
-          <div class="invoices">
-            <h3>Current Invoices</h3>
+        </div>
+        <div class="appointments-section">
+          <div class="appointments-upcoming">
+            <h3>Lastest Notifications</h3>
             <div class="data-table">
               <table>
                 <thead>
                   <tr>
-                    <th>Invoice #</th>
+                    <th>Title</th>
+                    <th>Message</th>
                     <th>Date</th>
-                    <th>Description</th>
-                    <th>Total Amount</th>
-                    <th>Insurance Covered</th>
-                    <th>Your Balance</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Seen</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let invoice of invoices">
-                    <td>{{invoice.id}}</td>
-                    <td>{{invoice.date}}</td>
-                    <td>{{invoice.description}}</td>
-                    <td>${{invoice.amount.toFixed(2)}}</td>
-                    <td>${{invoice.insurance.toFixed(2)}}</td>
-                    <td>${{invoice.balance.toFixed(2)}}</td>
+
+                  <tr *ngFor="let notification of notifications">
+                    <td>{{notification.title}}</td>
+                    <td>{{notification.message}}</td>
+                    <td>{{notification.date | date: 'mediumDate'}}</td>
                     <td>
-                      <span class="status-badge" [class.status-paid]="invoice.status === 'Paid'"
-                        [class.status-unpaid]="invoice.status === 'Unpaid'">
-                        {{invoice.status}}
-                      </span>
-                    </td>
-                    <td>
-                      <button class="btn-icon" title="View Details"><i class="fas fa-eye"></i></button>
-                      <button class="btn-primary btn-sm" *ngIf="invoice.status === 'Unpaid'"
-                        (click)="payInvoice(invoice.id)">
-                        Pay Now
+                      <button class="mark-read" *ngIf="!notification.seen" (click)="markAsRead(notification.id)">
+                        <i class="fas fa-check"></i>
                       </button>
-                      <button class="btn-icon" title="Download Invoice"><i class="fas fa-download"></i></button>
                     </td>
+
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-
-          <div class="payment-summary">
-            <div class="balance-card">
-              <h3>Payment Summary</h3>
-              <div class="balance-info">
-                <div class="balance-item">
-                  <span class="balance-label">Total Outstanding</span>
-                  <span class="balance-value">$72.00</span>
-                </div>
-                <div class="balance-item">
-                  <span class="balance-label">Due This Month</span>
-                  <span class="balance-value">$72.00</span>
-                </div>
-                <div class="balance-item">
-                  <span class="balance-label">Last Payment</span>
-                  <span class="balance-value">$20.00 (March 18, 2025)</span>
-                </div>
-              </div>
-              <button class="btn-primary">Pay All Outstanding</button>
-            </div>
-          </div>
         </div>
       </div>
-
 
       <!-- Support Section -->
       <div *ngIf="activeSection === 'support'">
@@ -607,7 +591,7 @@
                 <div class="contact-details">
                   <h4>Technical Support</h4>
                   <p><strong>Portal Help:</strong> +1 (555) 123-0099</p>
-                  <p><strong>Email:</strong> supportAmedicare.example.com</p>
+                  <p><strong>Email:</strong> HospitAll.example.com</p>
                 </div>
               </div>
             </div>
@@ -683,7 +667,6 @@
 
           <div class="surveys">
             <h3>Past Feedback</h3>
-            <!-- TO DO: give me a feedback representation with rating with stars -->
             <div class="feedback-list">
               <div *ngFor="let feedback of feedbacks" class="feedback-card">
                 <p class="feedback-comment">"{{ feedback.comment }}"</p>
@@ -752,58 +735,13 @@
             </div>
           </div>
 
-          <div class="recent-documents">
-            <div class="section-header-small">
-              <h3>Recently Accessed Documents</h3>
-              <button class="btn-outline btn-sm">View All</button>
-            </div>
 
-            <div class="document-list">
-              <div class="document-item">
-                <div class="document-icon">
-                  <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="document-details">
-                  <h4>Cardiology Visit Summary</h4>
-                  <p>Last accessed: May 1, 2025</p>
-                </div>
-                <div class="document-actions">
-                  <button class="btn-icon"><i class="fas fa-download"></i></button>
-                  <button class="btn-icon"><i class="fas fa-print"></i></button>
-                </div>
-              </div>
-
-              <div class="document-item">
-                <div class="document-icon">
-                  <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="document-details">
-                  <h4>Insurance Claim Form</h4>
-                  <p>Last accessed: April 28, 2025</p>
-                </div>
-                <div class="document-actions">
-                  <button class="btn-icon"><i class="fas fa-download"></i></button>
-                  <button class="btn-icon"><i class="fas fa-print"></i></button>
-                </div>
-              </div>
-
-              <div class="document-item">
-                <div class="document-icon">
-                  <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="document-details">
-                  <h4>Lab Results - Lipid Profile</h4>
-                  <p>Last accessed: April 5, 2025</p>
-                </div>
-                <div class="document-actions">
-                  <button class="btn-icon"><i class="fas fa-download"></i></button>
-                  <button class="btn-icon"><i class="fas fa-print"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner-pulse"></div>
+  <span class="loading-text">Loading profile information...</span>
 </div>

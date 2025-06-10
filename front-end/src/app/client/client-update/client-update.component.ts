@@ -8,6 +8,7 @@ import { LocalStorageManagerService } from '../../services/auth/local-storage-ma
 import { BloodType } from '../../models/enums/blood-type';
 import { ClientDtoUpdate } from '../../models/client-dto-update';
 import { MembershipLevel } from '../../models/enums/membership-level';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-client-update',
@@ -74,14 +75,15 @@ export class ClientUpdateComponent {
     this.clientService.updateProfile(updatedClient, this.patient.id).subscribe({
       next: (response) => {
         setTimeout(() => {
-          console.log('Profile updated successfully:', response);
           this.clientService.setPatient(response);
-          this.router.navigate(['/dashboard-client']);
           this.processing = false;
+          Swal.fire('Profile updated successfully.');
+          this.router.navigate(['/dashboard-client']);
         }, 2000);
       },
       error: (error) => {
         console.error('Error updating profile:', error);
+        Swal.fire('Error updating profile.');
         this.processing = false;
       }
     });
@@ -89,7 +91,7 @@ export class ClientUpdateComponent {
 
   onChangePassword() {
     if (this.passwords.new !== this.passwords.confirm) {
-      alert('New passwords do not match.');
+      Swal.fire('New passwords do not match.');
       return;
     }
 
@@ -100,13 +102,12 @@ export class ClientUpdateComponent {
       newPassword: this.passwords.new
     }).subscribe({
       next: () => {
-        alert('Password changed successfully!');
+        Swal.fire('Password changed successfully!');
         this.router.navigate(['/dashboard-client']);
         this.updatePassprocessing = false;
       },
       error: (error) => {
-        console.error('Error changing password:', error);
-        alert('Failed to change password.');
+        Swal.fire('Error changing password, please try again.');
         this.updatePassprocessing = false;
       }
     });

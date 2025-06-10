@@ -98,41 +98,17 @@ export class DoctorUpdateComponent {
         this.processing = false;
       }
     })
-    /*const updatedClient: ClientDtoUpdate = {
-      fullName: this.patient.fullName,
-      email: this.patient.email,
-      phoneNumber: this.patient.phoneNumber,
-      dateOfBirth: this.patient.dateOfBirth,
-      membershipLevel: this.patient.membershipLevel,
-      emergencyContact: this.patient.emergencyContact,
-      address: this.patient.address,
-      bloodType: this.patient.bloodType,
-    };
-    this.clientService.updateProfile(updatedClient, this.patient.id).subscribe({
-      next: (response) => {
-        setTimeout(() => {
-          console.log('Profile updated successfully:', response);
-          this.clientService.setPatient(response);
-          this.router.navigate(['/dashboard-client']);
-          this.processing = false;
-        }, 2000);
-      },
-      error: (error) => {
-        console.error('Error updating profile:', error);
-        this.processing = false;
-      }
-    });*/
   }
 
   onChangePassword() {
     if (this.passwords.new !== this.passwords.confirm) {
-      alert('New passwords do not match.');
+      Swal.fire('New passwords do not match.');
       return;
     }
 
     this.updatePassprocessing = true;
 
-    this.clientService.changePassword({
+    this.docService.changePassword({
       currentPassword: this.passwords.current,
       newPassword: this.passwords.new
     }).subscribe({

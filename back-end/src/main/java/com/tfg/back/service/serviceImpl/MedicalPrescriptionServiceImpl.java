@@ -12,6 +12,7 @@ import com.tfg.back.model.MedicalPrescription;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoCreate;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
+import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoUpdate;
 import com.tfg.back.model.dtos.medicalPrescription.Medication;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
@@ -91,6 +92,20 @@ public class MedicalPrescriptionServiceImpl implements MedicalPrescriptionServic
         prescription.setStatus(PrescriptionStatus.PUBLISHED);
         MedicalPrescription prescriptionSaved = medicalPrescriptionRepository.save(prescription);
         return prescriptionSaved != null;
+    }
+
+    @Override
+    public MedicalPrescriptionDtoGet updatePrescription(MedicalPrescriptionDtoUpdate dto, String email) {
+        MedicalPrescription prescription = findByIdAndCheckDoctor(dto.id(), email);
+        prescription.setFrequency(dto.frequency());
+        prescription.setMedicationName(dto.medicationName());
+        prescription.setDosage(dto.dosage());
+        prescription.setStartDate(dto.startDate());
+        prescription.setEndDate(dto.startDate().plusDays(dto.duration()));
+        prescription.setPrescribedTo(clientRepository.findByEmail(dto.prescribedEmail()).orElseThrow(()-> new UserNotFoundException(dto.prescribedEmail(), SearchType.EMAIL)));
+        prescription.setNotes(dto.notes());
+        MedicalPrescription prescriptionSaved = medicalPrescriptionRepository.save(prescription);
+        return medicalPrescriptionmapper.toDtoGet(prescriptionSaved);
     }
 
     private MedicalPrescription findByIdAndCheckDoctor(Long id, String creatorEmail) {

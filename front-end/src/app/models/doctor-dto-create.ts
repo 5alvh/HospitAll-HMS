@@ -10,8 +10,9 @@ export class DoctorDtoCreate {
     dateOfBirth?: Date;
     medicalLicenseNumber: string;
     departmentId: number;
-    specialization?: Specialization;
+    specialization?: string;
     workingHours?: WorkingHours[];
+    address?: string;
 
     constructor(
         fullName: string,
@@ -23,7 +24,8 @@ export class DoctorDtoCreate {
         phoneNumber?: string,
         dateOfBirth?: Date,
         specialization?: Specialization,
-        workingHours?: WorkingHours[]
+        workingHours?: WorkingHours[],
+        address?: string
     ) {
         this.fullName = fullName;
         this.email = email;
@@ -35,5 +37,6 @@ export class DoctorDtoCreate {
         this.departmentId = departmentId;
         this.specialization = specialization;
         this.workingHours = workingHours;
+        this.address = address;
     }
 }

@@ -3,9 +3,12 @@ package com.tfg.back.controller;
 import static com.tfg.back.constants.BaseRoutes.*;
 
 import com.tfg.back.model.TimeInterval;
+import com.tfg.back.model.dtos.auth.AuthRequest;
+import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.model.dtos.users.EmailRequest;
 import com.tfg.back.model.dtos.doctor.*;
 import com.tfg.back.service.DoctorService;
+import com.tfg.back.service.serviceImpl.LoginService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +22,27 @@ import java.util.List;
 public class DoctorController {
 
     private final DoctorService doctorService;
+    private final LoginService loginService;
 
     @Autowired
-    public DoctorController(DoctorService doctorService) {
+    public DoctorController(DoctorService doctorService, LoginService loginService) {
         this.doctorService = doctorService;
+        this.loginService = loginService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<DoctorDtoGet> registerDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
+    public ResponseEntity<?> registerDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
         DoctorDtoGet createdDoctor = doctorService.createDoctor(doctor);
-        return ResponseEntity.ok(createdDoctor);
+        AuthRequest request = new AuthRequest(createdDoctor.getEmail(), doctor.hashedPassword(), false);
+        return loginService.login(request);
     }
 
+    @PutMapping("/change-password")
+    public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest newPassword) {
+        String email = authentication.getName();
+        doctorService.changePassword(email, newPassword);
+        return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<DoctorDtoGet> updateClient(@PathVariable Long id,@Valid @RequestBody DoctorDtoUpdate dto){

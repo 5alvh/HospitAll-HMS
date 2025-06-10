@@ -59,13 +59,11 @@
           </div>
 
           <div class="form-group">
-            <label for="medicalLicenseNumber">Medical License Number *</label>
-            <input type="text" id="medicalLicenseNumber" formControlName="medicalLicenseNumber"
-              [ngClass]="{'is-invalid': submitted && f['medicalLicenseNumber'].errors}">
-            <div *ngIf="submitted && f['medicalLicenseNumber'].errors" class="invalid-feedback">
-              <div *ngIf="f['medicalLicenseNumber'].errors['required']">Medical license number is required</div>
-            </div>
+            <label for="specialization">Adress</label>
+            <input type="text" id="adress" formControlName="adress" placeholder="Enter address"
+              class="form-control" />
           </div>
+
         </div>
       </div>
 
@@ -87,13 +85,12 @@
           </div>
 
           <div class="form-group">
-            <label for="specialization">Specialization</label>
-            <select id="specialization" formControlName="specialization">
-              <option [ngValue]="null">None</option>
-              <option *ngFor="let spec of specializations" [value]="spec">
-                {{spec.replace('_', ' ') | titlecase}}
-              </option>
-            </select>
+            <label for="medicalLicenseNumber">Medical License Number *</label>
+            <input type="text" id="medicalLicenseNumber" formControlName="medicalLicenseNumber"
+              [ngClass]="{'is-invalid': submitted && f['medicalLicenseNumber'].errors}">
+            <div *ngIf="submitted && f['medicalLicenseNumber'].errors" class="invalid-feedback">
+              <div *ngIf="f['medicalLicenseNumber'].errors['required']">Medical license number is required</div>
+            </div>
           </div>
         </div>
       </div>

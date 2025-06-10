@@ -60,6 +60,16 @@ export const routes: Routes = [
     data: { expectedRole: Roles.ROLE_DOCTOR }
   },
   {
+    path: 'forget-password',
+    loadComponent: () =>
+      import('./shared/password-recover/password-recover.component').then((c) => c.PasswordRecoverComponent)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./shared/reset-password/reset-password.component').then((c) => c.ResetPasswordComponent)
+  },
+  {
     path: 'admin',
     loadComponent: () =>
       import('./admin/admin-dashboard/admin-dashboard.component').then((c) => c.AdminDashboardComponent)

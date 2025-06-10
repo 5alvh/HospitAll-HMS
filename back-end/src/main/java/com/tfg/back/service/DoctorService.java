@@ -6,6 +6,8 @@ import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.TimeInterval;
 import com.tfg.back.model.dtos.doctor.*;
+import com.tfg.back.model.dtos.users.ChangePasswordRequest;
+import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -111,4 +113,6 @@ public interface DoctorService {
      * @throws UserNotFoundException if no client exists with the given ID
      */
     List<VisitedDoctorGet> getDoctorsClientVisited(Long id);
+
+    void changePassword(String email, ChangePasswordRequest newPassword);
 }

@@ -16,6 +16,7 @@ import { AppointmentStatus } from '../../models/enums/appointment-status';
 import { DoctorService } from '../../services/doctor-services/doctor.service';
 import { FeedbackService } from '../../services/feedback-service/feedback.service';
 import { Feedback } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
+import { FilesGeneratorService } from '../../services/shared-services/files-generator.service';
 
 export interface VisitedDoctorDto {
   id: number;
@@ -32,7 +33,7 @@ export interface VisitedDoctorDto {
 
 })
 export class DashboardClientComponent implements OnInit {
-  rescheduleAppointment() {
+  sorryMessage() {
     Swal.fire({
       title: "Sorry!",
       text: "Sorry we still didn't implement this feature yet",
@@ -72,9 +73,14 @@ export class DashboardClientComponent implements OnInit {
   selectedAppointment: AppointmentDtoGet | null = null;
   feedbackMessage: string = '';
   feedbacks: Feedback[] = [];
+  selectedPrescription: MedicalPrescriptionDtoGet | null = null;
 
-  showDetails(appointment: AppointmentDtoGet) {
+  showDetailsAppointment(appointment: AppointmentDtoGet) {
     this.selectedAppointment = appointment;
+  }
+
+  showDetailsPrescription(prescription: MedicalPrescriptionDtoGet) {
+    this.selectedPrescription = prescription;
   }
   get filteredUpcomingAppointments() {
     return this.hideCancelled
@@ -83,6 +89,7 @@ export class DashboardClientComponent implements OnInit {
   }
   closeDetails() {
     this.selectedAppointment = null;
+    this.selectedPrescription = null;
   }
   onFeedbackTypeChange() {
     this.isGeneralFeedback = !(this.selectedFeedbackType === 'doctor');
@@ -97,24 +104,41 @@ export class DashboardClientComponent implements OnInit {
       });
     }
   }
-  downloadAppointment(appointment: AppointmentDtoGet) {
-    const summary = `
-    Appointment Summary
-    -------------------
-    Client: ${appointment.clientFullName}
-    Doctor: ${appointment.doctorFullName}
-    Department: ${appointment.departmentName}
-    Date & Time: ${appointment.appointmentDateTime}
-    Reason: ${appointment.reason}
-    Status: ${appointment.status}
-    Type: ${appointment.type}
-  `;
+  downloadAppointment(appointmentId: number) {
+    this.filesGenerator.getAppointmentPdf(appointmentId).subscribe({
+      next: (pdfBlob: Blob) => {
+        const blob = new Blob([pdfBlob], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
 
-    const blob = new Blob([summary], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `appointment_${appointment.id}.txt`;
-    link.click();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `appointment_${appointmentId}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('PDF download failed:', err);
+      }
+    });
+  }
+  downloadPrescription(prescriptionId: number) {
+    this.filesGenerator.getMedicalPrescriptionPdf(prescriptionId).subscribe({
+      next: (pdfBlob: Blob) => {
+        const blob = new Blob([pdfBlob], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `appointment_${prescriptionId}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('PDF download failed:', err);
+      }
+    });
   }
 
   constructor(private datePipe: DatePipe,
@@ -123,7 +147,8 @@ export class DashboardClientComponent implements OnInit {
     private notificationsService: NotificationService,
     private appointmentService: AppointmentService,
     private doctorService: DoctorService,
-    private feedbackService: FeedbackService) { }
+    private feedbackService: FeedbackService,
+    private filesGenerator: FilesGeneratorService) { }
 
   ngOnInit(): void {
     this.getProfile();
@@ -134,7 +159,6 @@ export class DashboardClientComponent implements OnInit {
   }
   markAsRead(id: number) {
     const notifInArray = this.notifications.find(n => n.id === id)!;
-    console.log('Marking notification as read:', notifInArray);
     notifInArray.seen = true;
     this.notificationsService.markAsRead(id).subscribe({
       next: () => {
@@ -168,8 +192,7 @@ export class DashboardClientComponent implements OnInit {
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
-        console.log('User:', response);
-
+        console.log(response);
         response.createdAt = response.createdAt.split('T')[0];
         const now = new Date();
 
@@ -177,7 +200,6 @@ export class DashboardClientComponent implements OnInit {
         this.notifications = this.patient.notifications;
         this.labResults = this.patient.labResults;
         this.feedbacks = this.patient.feedbacksWritten;
-        console.log('Feedbacks:', this.feedbacks);
         this.refreshTopUnseenNotifications();
 
         this.medications = this.patient.prescriptions;
@@ -199,11 +221,6 @@ export class DashboardClientComponent implements OnInit {
             }
           });
         }
-        console.log('Top unseen notifications:', this.topUnseenNotifications);
-        console.log('All prescriptions:', this.patient.prescriptions);
-        console.log('Upcoming Appointments:', this.upcomingAppointments);
-        console.log('Past Appointments:', this.pastAppointments);
-        console.log('Patient:', this.patient.notifications);
         this.isLoading = false;
 
       },
@@ -227,7 +244,6 @@ export class DashboardClientComponent implements OnInit {
           alert('An error occurred while inactivating your account. Please try again later.');
         }
       });
-      console.log('Account inactivated.');
     }
   }
 
@@ -292,38 +308,6 @@ export class DashboardClientComponent implements OnInit {
   }
 
 
-  // Invoices
-  invoices = [
-    {
-      id: 'INV-2025-789',
-      date: '3 April 2025',
-      description: 'Cardiology consultation',
-      amount: 150.00,
-      insurance: 120.00,
-      balance: 30.00,
-      status: 'Unpaid'
-    },
-    {
-      id: 'INV-2025-790',
-      date: '3 April 2025',
-      description: 'Laboratory tests',
-      amount: 210.00,
-      insurance: 168.00,
-      balance: 42.00,
-      status: 'Unpaid'
-    },
-    {
-      id: 'INV-2025-730',
-      date: '15 March 2025',
-      description: 'General consultation',
-      amount: 100.00,
-      insurance: 80.00,
-      balance: 20.00,
-      status: 'Paid'
-    }
-  ];
-
-
   // Departments for booking
   departments = [
     'Cardiology',
@@ -374,7 +358,6 @@ export class DashboardClientComponent implements OnInit {
   }
   setRating(rating: number): void {
     this.selectedRating = rating;
-    console.log('Selected rating:', this.selectedRating);
   }
 
   setHover(rating: number): void {
@@ -401,10 +384,17 @@ export class DashboardClientComponent implements OnInit {
       writtenToId: this.isGeneralFeedback ? null : this.doctorFeedbackId,
       type: this.isGeneralFeedback ? 'GENERAL' : 'DOCTOR'
     };
-    console.log('Submitting feedback:', feedback);
     this.feedbackService.submitFeedback(feedback).subscribe({
       next: () => {
         Swal.fire('Thank you for your feedback!');
+        this.feedbacks.push({
+          id: 0,
+          patientName: '',
+          rating: feedback.rating,
+          createdAt: new Date(),
+          comment: this.feedbackMessage
+        });
+        this.feedbackMessage = '';
       },
       error: () => {
         Swal.fire('There was an error submitting your feedback. Please try again later.');

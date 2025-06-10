@@ -3,13 +3,16 @@ package com.tfg.back.controller;
 import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
+import com.tfg.back.model.dtos.auth.AuthRequest;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
 import com.tfg.back.service.ClientService;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
+import com.tfg.back.service.serviceImpl.LoginService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,51 +22,64 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(CLIENT)
 @Validated
 public class ClientController {
 
+
     /**
      *TODO:
      *Consistent Naming & REST Semantics
-     *Add JavaDoc to Public Methods
      * Validation
      * Logging
      * Constants
      */
     private final ClientService clientService;
+    private final LoginService loginService;
 
     @Autowired
-    public ClientController(ClientService clientService){
+    public ClientController(ClientService clientService, LoginService loginService){
         this.clientService = clientService;
+        this.loginService = loginService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ClientDtoGet> registerClient(@Valid @RequestBody ClientDtoCreate client) {
+    public ResponseEntity<?> registerClient(@Valid @RequestBody ClientDtoCreate client) {
+        log.info("Received request to register client: {}", client);
         ClientDtoGet createdClient = clientService.createClient(client);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
+        log.info("Client registered successfully with id: {}", createdClient.getId());
+        AuthRequest request = new AuthRequest(client.email(), client.password(), false);
+        return loginService.login(request);
     }
 
     @GetMapping("/by-id/{id}")
     public ResponseEntity<ClientDtoGet> getClientById(@NotNull @PathVariable Long id) {
+        log.info("Fetching client by id: {}", id);
         ClientDtoGet client = clientService.getClientById(id);
+        log.debug("Client retrieved: {}", client);
         return ResponseEntity.ok(client);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<ClientDtoGet> getClientByEmail(Authentication authentication) {
         String email = authentication.getName();
+        log.info("Fetching client profile for email: {}", email);
         ClientDtoGet client = clientService.getClientByEmail(email);
+        log.debug("Found client: {}", client);
         return ResponseEntity.ok(client);
     }
 
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest newPassword) {
         String email = authentication.getName();
+        log.info("Changing password for email: {}", email);
         clientService.changePassword(email, newPassword);
+        log.info("Password changed successfully for email: {}", email);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<ClientDtoGet>> getAllClients() {
         List<ClientDtoGet> clients = clientService.getAllClients();

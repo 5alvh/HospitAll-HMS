@@ -36,8 +36,8 @@ public class FeedBack {
     @JsonIgnore
     private Client author;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "written_to_id")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "written_to_id", nullable = true)
     @JsonIgnore
     private Doctor writtenTo;
 

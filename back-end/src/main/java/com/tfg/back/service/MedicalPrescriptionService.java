@@ -4,6 +4,7 @@ import com.tfg.back.exceptions.medicalPrescription.PrescriptionNotFoundException
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoCreate;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
+import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoUpdate;
 
 public interface MedicalPrescriptionService {
     /**
@@ -49,4 +50,6 @@ public interface MedicalPrescriptionService {
      * @throws PrescriptionNotFoundException if no prescription exists with the given ID
      */
     Boolean publishPrescription(Long id, String creatorEmail);
+
+    MedicalPrescriptionDtoGet updatePrescription(MedicalPrescriptionDtoUpdate dto, String name);
 }

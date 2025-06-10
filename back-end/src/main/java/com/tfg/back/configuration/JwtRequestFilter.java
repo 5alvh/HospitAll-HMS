@@ -1,5 +1,6 @@
 package com.tfg.back.configuration;
 
+import static com.tfg.back.constants.JwtClaims.*;
 import com.tfg.back.service.serviceImpl.MyUserDetailsService;
 import com.tfg.back.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -29,7 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(AUTHORIZATION);
 
         String email = null;
         String jwt = null;

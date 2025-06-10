@@ -1,5 +1,7 @@
 package com.tfg.back.utils;
 
+import static com.tfg.back.constants.JwtClaims.*;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +21,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         String role = authorities.iterator().next().getAuthority();
-        claims.put("role", role);
+        claims.put(ROLE, role);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -37,5 +39,21 @@ public class JwtUtil {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         return extractUsername(token).equals(userDetails.getUsername());
+    }
+
+    public String generatePasswordResetToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim(TYPE, PWD_RESET)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
+    public boolean isPasswordResetToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token).getBody();
+        return PWD_RESET.equals(claims.get(TYPE));
     }
 }

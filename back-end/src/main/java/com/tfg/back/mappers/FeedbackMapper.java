@@ -15,7 +15,6 @@ public class FeedbackMapper {
     public static FeedBack toEntity(FeedbackDtoCreate feedbackDtoCreate, Client author, Doctor writtenTo) {
         Objects.requireNonNull(feedbackDtoCreate, "Feedback DTO cannot be null");
         Objects.requireNonNull(author, "Client cannot be null");
-        Objects.requireNonNull(writtenTo, "Doctor cannot be null");
         return FeedBack.builder()
                 .comment(feedbackDtoCreate.comment())
                 .rating(feedbackDtoCreate.rating())

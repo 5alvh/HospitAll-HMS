@@ -447,21 +447,42 @@
 .btn-action i {
   font-size: 16px;
 }
+
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background-color: #f8fafc;
+  height: 300px;
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #e5e7eb;
-  border-top: 4px solid #2563eb;
+.spinner-pulse {
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
+  background-color: #4361ee;
+  animation: pulse 1.2s ease-in-out infinite;
 }
+
+.loading-text {
+  margin-top: 20px;
+  color: #8d99ae;
+  font-size: 16px;
+  font-weight: 500;
+}
+@keyframes pulse {
+   0% {
+     transform: scale(0.8);
+     opacity: 0.8;
+   }
+
+   50% {
+     transform: scale(1);
+     opacity: 0.4;
+   }
+
+   100% {
+     transform: scale(0.8);
+     opacity: 0.8;
+   }
+ }

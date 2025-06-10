@@ -10,6 +10,4 @@ public record FeedbackDtoCreate(String comment,
         int rating,
         Long writtenToId,
         FeedBackType type) {
-
-
 }

@@ -12,6 +12,75 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.sidebar {
+  width: 250px;
+  /* or whatever width you use */
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logo img {
+  width: 100%;
+  /* or set a fixed width like 120px */
+  min-width: 150px;
+  height: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.logo h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.spinner-pulse {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4361ee;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.loading-text {
+  margin-top: 20px;
+  color: #8d99ae;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}
+
 body {
   background-color: #f5f7fa;
   color: #334155;
@@ -54,20 +123,7 @@ body {
   font-size: 18px;
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-}
 
-.loading-text {
-  margin-top: 20px;
-  color: var(--gray);
-  font-size: 16px;
-  font-weight: 500;
-}
 
 .menu {
   margin-top: 20px;

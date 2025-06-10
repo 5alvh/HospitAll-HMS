@@ -8,6 +8,7 @@ import com.tfg.back.exceptions.feedback.FeedbackNotFoundException;
 import com.tfg.back.exceptions.labResult.LabResultNotFoundException;
 import com.tfg.back.exceptions.medicalPrescription.PrescriptionNotFoundException;
 import com.tfg.back.exceptions.notification.NotificationNotFoundException;
+import com.tfg.back.exceptions.user.IncorrectPasswordException;
 import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
@@ -41,7 +42,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false)
         );
-        errorResponse.addDetail("USER_NOT_FOUND: ","This may occur if the user ID or email is incorrect or no longer exists.");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -52,7 +52,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false)
         );
-        errorResponse.addDetail("USER_NOT_FOUND: ","This may occur if the user ID or email is incorrect or no longer exists.");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -178,7 +177,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false)
         );
 
-        errorResponse.addDetail("USER_NOT_FOUND: ","This may occur if the user ID or email is incorrect or no longer exists.");
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
@@ -200,7 +198,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false)
         );
-        errorResponse.addDetail("ACCOUNT_LOCKED: ","Your account has been locked, please contact support.");
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
@@ -222,5 +219,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleIncorrectPasswordException(IncorrectPasswordException ex, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.FORBIDDEN,
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }

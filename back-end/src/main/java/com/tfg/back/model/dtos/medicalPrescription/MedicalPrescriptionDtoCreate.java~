@@ -11,20 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 
-public record MedicalPrescriptionDtoCreate
+public record MedicalPrescriptionDtoCreate(Medication[] medications, String clientEmail, String clientEmail,
 
-   (  Medication[] medications,
-    /*
-    private LocalDate startDate;
-    private LocalDate endDate;
-    */
-
-     String clientEmail,
-
-     Long clientId,
-
-     SearchType searchType,
-
-     String appointmentId,
-     PrescriptionStatus status)
+     SearchType searchType, String appointmentId, PrescriptionStatus status)
 {}

@@ -36,6 +36,17 @@ export interface prescriptionRequest {
   appointmentId: number,
   status: string
 }
+
+export interface MedicalPrescriptionDtoUpdate {
+  id: number,
+  medicationName: string,
+  dosage: string,
+  frequency: string,
+  startDate: string,
+  duration: number,
+  notes: string,
+  prescribedEmail: string
+}
 @Component({
   selector: 'app-doctor-dashboard',
   imports: [FormsModule, NgIf, NgFor, NgClass, DatePipe, CommonModule, RouterLink],
@@ -46,62 +57,10 @@ export interface prescriptionRequest {
 })
 export class DoctorDashboardComponent {
 
-
+  selectedPrescription: MedicalPrescriptionDtoUpdate | null = null;
+  isEditModalOpen: boolean = false;
   showDiagnosisForm: { [key: string]: boolean } = {};
   diagnosisInputs: { [key: string]: string } = {};
-
-  toggleDiagnosisForm(appointment: any): void {
-    this.showDiagnosisForm[appointment.id] = !this.showDiagnosisForm[appointment.id];
-    this.diagnosisInputs[appointment.id] = appointment.diagnosis === 'UNAVAILABLE' ? '' : appointment.diagnosis;
-  }
-
-  submitDiagnosis(appointmentId: number): void {
-    var diagnosis = this.diagnosisInputs[appointmentId];
-
-    if ( !appointmentId) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Please enter a diagnosis.',
-        icon: 'error',
-        confirmButtonText: 'OK'
-      })
-      return;
-    }
-    if (diagnosis === '') {
-      diagnosis = 'UNAVAILABLE';
-    }
-
-    // Handle submission logic here
-    console.log(`Publishing diagnosis for appointment ${appointmentId}: ${diagnosis}`);
-    this.appService.giveDiagnosis(appointmentId, diagnosis).subscribe({
-      next: (res) => {
-        console.log('Diagnosis published successfully.');
-        this.appointments.find(a => a.id === appointmentId)!.diagnosis = diagnosis;
-        Swal.fire({
-          title: 'Success',
-          text: 'Diagnosis published successfully.',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        })
-      },
-      error: (err) => {
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to publish diagnosis. Please try again later.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        })
-      }
-    })
-    // Optionally reset form
-    this.diagnosisInputs[appointmentId] = '';
-    this.showDiagnosisForm[appointmentId] = false;
-  }
-  cancelBookAppointment() {
-    this.refreshAppointmentsForm();
-    this.changeSection('dashboard');
-  }
-
   showCancelledAppointments: boolean = true;
   filteredAppointments: any[] = [];
   appointmentsWithoutCancelled: any[] = [];
@@ -139,34 +98,6 @@ export class DoctorDashboardComponent {
     status: ''
   };
 
-  applyFilter() {
-    this.filteredAppointments = this.appointments.filter(appointment => {
-      if (this.filterStatus === 'all' && this.showCancelledAppointments) {
-        return appointment.status.toLocaleLowerCase() !== 'cancelled';
-      } else if (this.filterStatus === 'all') {
-        return true;
-      }
-      return appointment.status.toLocaleLowerCase() === this.filterStatus.toLocaleLowerCase();
-    });
-  }
-  filterFromCancelledAppointments() {
-    if (this.filterStatus !== 'all') {
-      this.applyFilter();
-      return;
-    }
-    if (this.showCancelledAppointments) {
-      this.filteredAppointments = this.appointments.filter(appointment => {
-        if (appointment.status !== "CANCELLED") {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      this.filteredAppointments = this.appointments;
-    }
-  }
-
   constructor(private docService: DoctorService,
     private localStorageService: LocalStorageManagerService,
     private router: Router,
@@ -197,12 +128,138 @@ export class DoctorDashboardComponent {
         this.filteredAppointments = this.appointments;
         this.filterFromCancelledAppointments();
         this.calculateDashboardStats()
+        console.log(this.prescriptions);
       },
       error: (error) => {
         console.error('Error fetching doctor profile:', error);
       }
     });
 
+  }
+
+  openEditModal(prescription: MedicalPrescriptionDtoGet): void {
+    this.selectedPrescription = {
+      id: prescription.id,
+      medicationName: prescription.medicationName,
+      dosage: prescription.dosage,
+      frequency: prescription.frequency,
+      startDate: prescription.startDate,
+      duration: this.getDateDifferenceInDays(prescription.startDate, prescription.endDate),
+      notes: prescription.notes,
+      prescribedEmail: prescription.clientEmail
+    };
+    this.isEditModalOpen = true;
+    console.log(prescription.startDate + " " + prescription.endDate)
+  }
+
+  closeModal(): void {
+    this.selectedPrescription = null;
+    this.isEditModalOpen = false;
+  }
+
+  updatePrescription(): void {
+    if (this.selectedPrescription) {
+      this.docService.updatePrescription(this.selectedPrescription).subscribe({
+        next: (res) => {
+          console.log('Prescription updated successfully.');
+          Swal.fire({
+            title: 'Success',
+            text: 'Prescription updated successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          })
+        },
+        error: (error) => {
+          console.error('Error updating prescription:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to update prescription.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          })
+        }
+      })
+    }
+    this.closeModal();
+  }
+
+  toggleDiagnosisForm(appointment: any): void {
+    this.showDiagnosisForm[appointment.id] = !this.showDiagnosisForm[appointment.id];
+    this.diagnosisInputs[appointment.id] = appointment.diagnosis === 'UNAVAILABLE' ? '' : appointment.diagnosis;
+  }
+
+  submitDiagnosis(appointmentId: number): void {
+    var diagnosis = this.diagnosisInputs[appointmentId];
+
+    if (!appointmentId) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Please enter a diagnosis.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+      return;
+    }
+    if (diagnosis === '') {
+      diagnosis = 'UNAVAILABLE';
+    }
+
+    console.log(`Publishing diagnosis for appointment ${appointmentId}: ${diagnosis}`);
+    this.appService.giveDiagnosis(appointmentId, diagnosis).subscribe({
+      next: (res) => {
+        console.log('Diagnosis published successfully.');
+        this.appointments.find(a => a.id === appointmentId)!.diagnosis = diagnosis;
+        Swal.fire({
+          title: 'Success',
+          text: 'Diagnosis published successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        })
+      },
+      error: (err) => {
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to publish diagnosis. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+      }
+    })
+    this.diagnosisInputs[appointmentId] = '';
+    this.showDiagnosisForm[appointmentId] = false;
+  }
+  cancelBookAppointment() {
+    this.refreshAppointmentsForm();
+    this.changeSection('dashboard');
+  }
+
+  applyFilter() {
+    this.filteredAppointments = this.appointments.filter(appointment => {
+      if (this.filterStatus === 'all' && this.showCancelledAppointments) {
+        return appointment.status.toLocaleLowerCase() !== 'cancelled';
+      } else if (this.filterStatus === 'all') {
+        return true;
+      }
+      return appointment.status.toLocaleLowerCase() === this.filterStatus.toLocaleLowerCase();
+    });
+  }
+
+  filterFromCancelledAppointments() {
+    if (this.filterStatus !== 'all') {
+      this.applyFilter();
+      return;
+    }
+    if (this.showCancelledAppointments) {
+      this.filteredAppointments = this.appointments.filter(appointment => {
+        if (appointment.status !== "CANCELLED") {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      this.filteredAppointments = this.appointments;
+    }
   }
 
   confirmAppointment(appId: any) {
@@ -244,12 +301,10 @@ export class DoctorDashboardComponent {
       });
     }
   }
-  // Change active section
   changeSection(section: string): void {
     this.activeSection = section;
   }
 
-  // Calculate dashboard statistics
   calculateDashboardStats(): void {
     const today = new Date();
     const todayYear = today.getFullYear();
@@ -285,7 +340,7 @@ export class DoctorDashboardComponent {
       }
     });
   }
-  // Book a new appointment
+
   bookAppointment(): void {
 
     if (!this.newAppointment.searchType || !this.newAppointment.patientIdentifier || !this.newAppointment.date || !this.newAppointment.time || !this.newAppointment.reason) {
@@ -367,13 +422,7 @@ export class DoctorDashboardComponent {
       });
       return;
     }
-
-
-
-
     this.calculateDashboardStats();
-
-    // In a real app, you would submit this to your backend API
   }
 
   refreshAppointmentsForm(): void {
@@ -386,10 +435,42 @@ export class DoctorDashboardComponent {
     };
   }
 
-  // Create a new prescription
-  createPrescription(): void {
-    const id = this.prescriptions.length + 1;
-
+  deletePrescription(prescriptionId: number): void {
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Are you sure you want to delete this prescription?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.docService.deletePrescription(prescriptionId).subscribe({
+          next: () => {
+            this.prescriptions = this.prescriptions.filter(prescription => prescription.id !== prescriptionId);
+            this.calculateDashboardStats();
+            Swal.fire({
+              title: 'Success',
+              text: 'Prescription deleted successfully.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+          },
+          error: (error) => {
+            console.error('Error deleting prescription:', error);
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to delete prescription. Please try again later.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+    })
+    
+  }
+  createPrescription(status: string): void {
     console.log(this.newPrescription);
 
     const prescriptionRequest = {
@@ -399,12 +480,11 @@ export class DoctorDashboardComponent {
         : { clientId: this.newPrescription.patientIdentifier }),
       medications: this.newPrescription.medications,
       appointmentId: this.newPrescription.appointmentId,
-      status: 'published'.toUpperCase()
+      status: status.toUpperCase()
     };
 
     this.docService.createPrescription(prescriptionRequest).subscribe({
       next: (response) => {
-        this.prescriptions.push(response);
         this.calculateDashboardStats();
         this.refreshPrescriptionsForm();
         Swal.fire({
@@ -435,7 +515,7 @@ export class DoctorDashboardComponent {
       status: ''
     };
   }
-  // Add medication field to prescription form
+
   addMedication(): void {
     this.newPrescription.medications.push({
       medicationName: '',
@@ -446,14 +526,12 @@ export class DoctorDashboardComponent {
     });
   }
 
-  // Remove medication field from prescription form
   removeMedication(index: number): void {
     if (this.newPrescription.medications.length > 1) {
       this.newPrescription.medications.splice(index, 1);
     }
   }
 
-  // Publish a prescription
   publishPrescription(id: number): void {
 
     if (id !== null) {
@@ -602,9 +680,8 @@ export class DoctorDashboardComponent {
   }
 
   createPrescriptionForAppointment(appointment: any) {
-    /*this.newPrescription.patientName = appointment.clientFullName;
-    this.newPrescription.appointmentId = appointment.id;*/
     this.changeSection('create-prescription');
+    this.newPrescription.appointmentId = appointment.id;
   }
 
   getConnectedAppointment(prescriptionId: number): any {
@@ -644,5 +721,20 @@ export class DoctorDashboardComponent {
     this.router.navigate(['/']);
     console.log('Logging out...');
 
+  }
+  private getDateDifferenceInDays(startDateStr: string, endDateStr: string): number {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    // Aseguramos que ambas fechas sean válidas
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error("Invalid date format");
+    }
+
+    const msInOneDay = 1000 * 60 * 60 * 24;
+    const diffInMs = endDate.getTime() - startDate.getTime();
+    const diffInDays = Math.floor(diffInMs / msInOneDay);
+
+    return diffInDays;
   }
 }

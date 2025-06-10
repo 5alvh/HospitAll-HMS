@@ -3,6 +3,7 @@ package com.tfg.back.controller;
 import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoCreate;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
+import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoUpdate;
 import com.tfg.back.service.MedicalPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,11 @@ public class MedicalPrescriptionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<MedicalPrescriptionDtoGet> updateMedicalPrescription(@RequestBody MedicalPrescriptionDtoUpdate dto, Authentication authentication) {
+        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.updatePrescription(dto, authentication.getName());
+        return ResponseEntity.ok(prescription);
+    }
 
 
 

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.tfg.back.constants.ResponseMessages.*;
+
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
@@ -43,13 +45,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Department getDepartmentByName(String name) {
         return departmentRepository.findByName(name)
-                .orElseThrow(()-> new DepartmentNotFoundException("department with name: "+name+" is not found"));
+                .orElseThrow(()-> new DepartmentNotFoundException(DEPARTMENT_NOT_FOUND_WITH_NAME));
     }
 
     @Override
     public Department getDepartmentById(Long id) {
         return departmentRepository.findById(id)
-                .orElseThrow(()-> new DepartmentNotFoundException("department with ID: "+id+" is not found"));
+                .orElseThrow(()-> new DepartmentNotFoundException(DEPARTMENT_NOT_FOUND_WITH_ID));
     }
 
     @Override

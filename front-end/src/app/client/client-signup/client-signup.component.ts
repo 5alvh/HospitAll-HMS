@@ -38,7 +38,7 @@ export class ClientSignupComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private localStorageManager: LocalStorageManagerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
 
@@ -49,16 +49,16 @@ export class ClientSignupComponent implements OnInit {
     }
 
     this.initForm();
-    
+
     // Watch for includeEmergencyContact changes
     this.signupForm.get('includeEmergencyContact')?.valueChanges.subscribe(include => {
       const emergencyContactGroup = this.signupForm.get('emergencyContact');
-      
+
       if (include) {
         emergencyContactGroup?.setValidators([Validators.required]);
         emergencyContactGroup?.get('contactName')?.setValidators([Validators.required, Validators.maxLength(100)]);
         emergencyContactGroup?.get('contactPhone')?.setValidators([
-          Validators.required, 
+          Validators.required,
           Validators.pattern('^\\+?[0-9\\-\\s()]*$')
         ]);
       } else {
@@ -67,7 +67,7 @@ export class ClientSignupComponent implements OnInit {
         emergencyContactGroup?.get('contactPhone')?.clearValidators();
         emergencyContactGroup?.get('relationship')?.clearValidators();
       }
-      
+
       emergencyContactGroup?.updateValueAndValidity();
       emergencyContactGroup?.get('contactName')?.updateValueAndValidity();
       emergencyContactGroup?.get('contactPhone')?.updateValueAndValidity();
@@ -84,7 +84,7 @@ export class ClientSignupComponent implements OnInit {
       phoneNumber: ['', [Validators.pattern('^\\+?[0-9\\-\\s()]*$')]],
       dateOfBirth: [null, [Validators.required]],
       address: ['', [Validators.maxLength(200)]], // NEW
-      bloodType: [null, Validators.required], 
+      bloodType: [null, Validators.required],
       membershipLevel: [MembershipLevel.BASIC],
       includeEmergencyContact: [false],
       emergencyContact: this.fb.group({
@@ -92,8 +92,8 @@ export class ClientSignupComponent implements OnInit {
         contactPhone: [''],
         relationship: ['', [Validators.maxLength(50)]]
       })
-    }, { 
-      validators: this.passwordMatchValidator 
+    }, {
+      validators: this.passwordMatchValidator
     });
   }
 
@@ -101,18 +101,18 @@ export class ClientSignupComponent implements OnInit {
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
     const confirmPassword = control.get('passwordConfirmation');
-    
+
     if (password && confirmPassword && password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ ...confirmPassword.errors, passwordMismatch: true });
       return { passwordMismatch: true };
     }
-    
+
     if (confirmPassword?.hasError('passwordMismatch')) {
       const errors = { ...confirmPassword.errors };
       delete errors['passwordMismatch'];
       confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
     }
-    
+
     return null;
   }
 
@@ -126,7 +126,7 @@ export class ClientSignupComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    
+
     if (this.signupForm.invalid) {
       const firstElementWithError = document.querySelector('.ng-invalid');
       if (firstElementWithError) {
@@ -134,9 +134,9 @@ export class ClientSignupComponent implements OnInit {
       }
       return;
     }
-    
+
     this.processing = true;
-    
+
     const formValue = this.signupForm.value;
     const clientData: ClientDtoCreate = {
       fullName: formValue.fullName,
@@ -150,14 +150,16 @@ export class ClientSignupComponent implements OnInit {
       bloodType: formValue.bloodType,
       emergencyContact: formValue.includeEmergencyContact ? formValue.emergencyContact : null
     };
-    
+
     this.authService.registerClient(clientData).subscribe({
       next: response => {
         setTimeout(() => {
           console.log('Client signup data:', clientData);
           this.processing = false;
           this.signupSuccess = true;
-          
+          const role = response.role;
+          this.localStorageManager.setToken(response.token);
+          this.localStorageManager.setUserData(role);
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 3000);
@@ -167,7 +169,7 @@ export class ClientSignupComponent implements OnInit {
         console.error('Error registering client:', error);
         this.processing = false;
       }
-    })    
+    })
   }
 
   // Helper getters for form controls

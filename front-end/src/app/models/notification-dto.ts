@@ -4,6 +4,5 @@ export interface NotificationDto {
   message: string;
   seen: boolean;
   type: string;
-  date: string; 
-  diagnosis: string
+  date: string
 }

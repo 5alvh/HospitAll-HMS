@@ -93,7 +93,7 @@ public class AppointmentController {
 
     @GetMapping("/total-patients/{id}")
     public ResponseEntity<Long> getTotalPatients(@PathVariable Long id) {
-        return ResponseEntity.ok(appointmentService.getTotalPatients(id));
+        return ResponseEntity.ok(appointmentService.getTotalPatientsThatVisitedDoctor(id));
     }
 
     /*
