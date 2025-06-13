@@ -20,17 +20,18 @@ import Swal from 'sweetalert2';
 
 })
 export class ClientUpdateComponent {
+  passwords = {
+    current: '',
+    new: '',
+    confirm: ''
+  };
+
   patient!: ClientDtoGet;
   processing = false;
   isLoading = true;
   bloodTypes = Object.values(BloodType);
   membershipLevels = Object.values(MembershipLevel);
 
-  passwords = {
-    current: '',
-    new: '',
-    confirm: ''
-  };
 
   updatePassprocessing: boolean = false;
 

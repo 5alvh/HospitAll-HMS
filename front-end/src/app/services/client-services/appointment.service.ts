@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppointmentCreateDto } from '../../models/appointment-dto-create';
 import { Observable } from 'rxjs';
-import { BookAppRequest } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
+import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class AppointmentService {
 
   constructor(private httpClient: HttpClient) { }
 
-  bookAppointment(appointment: AppointmentCreateDto): Observable<any> {
+  bookAppointment(appointment: AppointmentCreateDto): Observable<AppointmentDtoGet> {
     return this.httpClient.post<any>(`${this.baseUrl}/book-appointment`, appointment);
   }
 
@@ -45,4 +45,7 @@ export class AppointmentService {
     return this.httpClient.put(`${this.baseUrl}/diagnosis`, { diagnosis, appointmentId });
   }
 
+  getAllAppointments(): Observable<any>{
+    return this.httpClient.get(`${this.baseUrl}/all-appointments`);
+  }
 }

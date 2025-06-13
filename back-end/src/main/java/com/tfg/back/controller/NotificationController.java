@@ -1,13 +1,14 @@
 package com.tfg.back.controller;
 
 import static com.tfg.back.constants.BaseRoutes.*;
+
+import com.tfg.back.model.Notification;
 import com.tfg.back.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(NOTIFICATION)
@@ -24,5 +25,12 @@ public class NotificationController {
         String email = authentication.getName();
         notificationService.seenNotification(id, email);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/all-notifications")
+    public ResponseEntity<List<Notification>> getNotifications(Authentication authentication) {
+        String email = authentication.getName();
+        List<Notification> notifications = notificationService.getAllClientNotifications(email);
+        return ResponseEntity.ok(notifications);
     }
 }

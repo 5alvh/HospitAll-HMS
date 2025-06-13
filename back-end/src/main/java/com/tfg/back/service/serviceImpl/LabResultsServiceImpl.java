@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -36,6 +37,12 @@ public class LabResultsServiceImpl implements LabResultsService {
         this.doctorService = doctorService;
         this.clientService = clientService;
         this.labResultMapper = labResultMapper;
+    }
+
+    @Override
+    public List<LabResultDtoGet> getLabResultsByEmail(String email) {
+        List<LabResult> labresults = labResultRepository.findByPatientEmail(email);
+        return labResultMapper.toDtoGetList(labresults);
     }
 
     @Override

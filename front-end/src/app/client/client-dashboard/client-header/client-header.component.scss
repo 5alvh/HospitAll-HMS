@@ -1,0 +1,84 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.page-title h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.user-profile {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 2px solid #93c5fd;
+}
+
+.user-profile span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+}
+
+/* Notification Item */
+
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+}
+
+.notification-icon i {
+  font-size: 16px;
+  color: #1e40af;
+}
+

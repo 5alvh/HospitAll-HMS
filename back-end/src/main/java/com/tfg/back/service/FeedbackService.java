@@ -5,8 +5,10 @@ import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.feedBack.FeedbackDtoCreate;
 
-public interface FeedbackService {
+import java.util.List;
 
+public interface FeedbackService {
+    List<FeedBackDtoGet>  getAllFeedbacksByEmail(String email);
     /**
      * Submits feedback from a client, either general or directed to a specific doctor.
      * <p>

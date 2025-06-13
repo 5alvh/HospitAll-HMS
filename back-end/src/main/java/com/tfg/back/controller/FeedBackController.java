@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(FEEDBACK)
 @AllArgsConstructor
@@ -16,6 +18,13 @@ public class FeedBackController {
 
     private final FeedbackService feedbackService;
 
+
+    @GetMapping("/all-feedbacks")
+    public ResponseEntity<List<FeedBackDtoGet>> getAllFeedBacksByAuthentication(Authentication authentication){
+        String email = authentication.getName();
+        List<FeedBackDtoGet> feedbacks = feedbackService.getAllFeedbacksByEmail(email);
+        return ResponseEntity.ok(feedbacks);
+    }
     @PostMapping("/create")
     public ResponseEntity<FeedBackDtoGet> sendFeedback(@RequestBody FeedbackDtoCreate feedbackDtoCreate, Authentication authentication) {
         String clientEmail = authentication.getName();

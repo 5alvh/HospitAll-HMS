@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -48,6 +49,12 @@ public class MedicalPrescriptionServiceImpl implements MedicalPrescriptionServic
         MedicalPrescription prescription = findByIdAndCheckDoctor(id, getterEmail);
         if(!Objects.equals(prescription.getPrescribedBy().getEmail(), getterEmail) && !Objects.equals(prescription.getPrescribedTo().getEmail(), getterEmail)) throw new UnauthorizedToPerformThisAction("You are not authorized to delete this prescription");
         return medicalPrescriptionmapper.toDtoGet(prescription);
+    }
+
+    @Override
+    public List<MedicalPrescriptionDtoGet> getAllPrescriptionsByEmail(String email) {
+        List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findByPrescribedToEmail(email);
+        return medicalPrescriptionmapper.toDtoGetList(prescriptions);
     }
 
     @Override

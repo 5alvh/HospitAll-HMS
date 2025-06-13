@@ -7,7 +7,7 @@ import { ClientService } from '../../services/client-services/client.service';
 import { Router, RouterLink } from '@angular/router';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import { NotificationDto } from '../../models/notification-dto';
-import { NotificationService } from '../../services/notifications-service/notification.service';
+import { NotificationService } from '../../services/client-services/notification.service';
 import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
 import { LabResultDtoGet } from '../../models/lab-result-dto-get';
 import { AppointmentService } from '../../services/client-services/appointment.service';
@@ -17,6 +17,17 @@ import { DoctorService } from '../../services/doctor-services/doctor.service';
 import { FeedbackService } from '../../services/feedback-service/feedback.service';
 import { Feedback } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
 import { FilesGeneratorService } from '../../services/shared-services/files-generator.service';
+import { ClientProfileComponent } from "./client-profile/client-profile.component";
+import { ClientAppointmentsComponent } from "./client-appointments/client-appointments.component";
+import { ClientPrescriptionsComponent } from './client-prescriptions/client-prescriptions.component';
+import { ClientNotificationsComponent } from './client-notifications/client-notifications.component';
+import { ClientSupportComponent } from "./client-support/client-support.component";
+import { ClientDocumentsComponent } from "./client-documents/client-documents.component";
+import { ClientFeedbackComponent } from "./client-feedback/client-feedback.component";
+import { ClientDashboardSummaryComponent } from "./client-dashboard-summary/client-dashboard-summary.component";
+import { ClientLoadingWrapperComponent } from "./client-loading-wrapper/client-loading-wrapper.component";
+import { ClientHeaderComponent } from "./client-header/client-header.component";
+import { ClientSidebarComponent } from "./client-sidebar/client-sidebar.component";
 
 export interface VisitedDoctorDto {
   id: number;
@@ -25,7 +36,7 @@ export interface VisitedDoctorDto {
 
 @Component({
   selector: 'app-dashboard-client',
-  imports: [NgIf, NgFor, FormsModule, RouterLink, TitleCasePipe, DatePipe, NgClass],
+  imports: [NgIf, FormsModule, ClientProfileComponent, ClientAppointmentsComponent, ClientPrescriptionsComponent, ClientNotificationsComponent, ClientSupportComponent, ClientDocumentsComponent, ClientFeedbackComponent, ClientDashboardSummaryComponent, ClientDashboardSummaryComponent, ClientLoadingWrapperComponent, ClientHeaderComponent, ClientSidebarComponent],
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
   providers: [DatePipe, TitleCasePipe],
@@ -33,29 +44,8 @@ export interface VisitedDoctorDto {
 
 })
 export class DashboardClientComponent implements OnInit {
-  sorryMessage() {
-    Swal.fire({
-      title: "Sorry!",
-      text: "Sorry we still didn't implement this feature yet",
-      imageUrl: "./cat.jpg",
-      imageWidth: 400,
-      imageHeight: 200,
-      imageAlt: "Custom image"
-    });
-  }
-  editFeedback(arg0: number) {
-    throw new Error('Method not implemented.');
-  }
-  deleteFeedback(arg0: number) {
-    throw new Error('Method not implemented.');
-  }
 
-  selectedRating: number = 0;
-  hoveredRating: number = 0;
-  doctorFeedbackId: number | null = null;
-  selectedFeedbackType: string = '';
-  isGeneralFeedback: boolean = true;
-  activeIndex: number | null = null;
+  appointments!: AppointmentDtoGet[];
   hideCancelled = true;
   showOptions = false;
   title = 'Your Hospital Dashboard';
@@ -65,110 +55,65 @@ export class DashboardClientComponent implements OnInit {
   notifications!: NotificationDto[];
   medications: MedicalPrescriptionDtoGet[] = [];
   upcomingAppointments: AppointmentDtoGet[] = [];
-  clientService = inject(ClientService);
   pastAppointments: AppointmentDtoGet[] = [];
   topUnseenNotifications: NotificationDto[] = [];
   labResults: LabResultDtoGet[] = [];
   feedbackDoctors: VisitedDoctorDto[] = [];
   selectedAppointment: AppointmentDtoGet | null = null;
-  feedbackMessage: string = '';
   feedbacks: Feedback[] = [];
-  selectedPrescription: MedicalPrescriptionDtoGet | null = null;
 
-  showDetailsAppointment(appointment: AppointmentDtoGet) {
-    this.selectedAppointment = appointment;
-  }
-
-  showDetailsPrescription(prescription: MedicalPrescriptionDtoGet) {
-    this.selectedPrescription = prescription;
-  }
-  get filteredUpcomingAppointments() {
-    return this.hideCancelled
-      ? this.upcomingAppointments.filter(a => a.status !== 'CANCELLED')
-      : this.upcomingAppointments;
-  }
-  closeDetails() {
-    this.selectedAppointment = null;
-    this.selectedPrescription = null;
-  }
-  onFeedbackTypeChange() {
-    this.isGeneralFeedback = !(this.selectedFeedbackType === 'doctor');
-    if (this.selectedFeedbackType === 'doctor') {
-      this.doctorService.getVisitedDoctorByClientId(this.patient.id).subscribe({
-        next: (doctors) => {
-          this.feedbackDoctors = doctors;
-        },
-        error: (error) => {
-          console.error('Error fetching visited doctors:', error);
-        }
-      });
+  sections=[
+    {
+    section:'dashboard',
+    icon:'fas fa-home'
+    },
+    {
+    section:'profile',
+    icon:'fas fa-user'
+    },
+    {
+    section:'appointments',
+    icon:'fas fa-calendar-alt'
+    },
+    {
+    section:'records',
+    icon:'fas fa-file-medical'
+    },
+    {
+    section:'notifications',
+    icon:'fas fa-file-invoice-dollar'
+    },
+    {
+    section:'documents',
+    icon:'fas fa-file-download'
+    },
+    {
+    section:'feedback',
+    icon:'fas fa-comment-dots'
+    },
+    {
+    section:'support',
+    icon:'fas fa-question-circle'
     }
-  }
-  downloadAppointment(appointmentId: number) {
-    this.filesGenerator.getAppointmentPdf(appointmentId).subscribe({
-      next: (pdfBlob: Blob) => {
-        const blob = new Blob([pdfBlob], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `appointment_${appointmentId}.pdf`;
-        a.click();
-
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('PDF download failed:', err);
-      }
-    });
-  }
-  downloadPrescription(prescriptionId: number) {
-    this.filesGenerator.getMedicalPrescriptionPdf(prescriptionId).subscribe({
-      next: (pdfBlob: Blob) => {
-        const blob = new Blob([pdfBlob], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `appointment_${prescriptionId}.pdf`;
-        a.click();
-
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('PDF download failed:', err);
-      }
-    });
-  }
-
-  constructor(private datePipe: DatePipe,
+  ]
+  constructor(
     private router: Router,
     private localS: LocalStorageManagerService,
-    private notificationsService: NotificationService,
-    private appointmentService: AppointmentService,
-    private doctorService: DoctorService,
-    private feedbackService: FeedbackService,
-    private filesGenerator: FilesGeneratorService) { }
+    private clientService: ClientService
+  ) { }
 
   ngOnInit(): void {
     this.getProfile();
   }
 
+  get filteredUpcomingAppointments() {
+    return this.hideCancelled
+      ? this.upcomingAppointments.filter(a => a.status !== 'CANCELLED')
+      : this.upcomingAppointments;
+  }
+
   refreshTopUnseenNotifications() {
     this.topUnseenNotifications = this.notifications.filter(n => !n.seen).slice(0, 3);
-  }
-  markAsRead(id: number) {
-    const notifInArray = this.notifications.find(n => n.id === id)!;
-    notifInArray.seen = true;
-    this.notificationsService.markAsRead(id).subscribe({
-      next: () => {
-        console.log('Notification marked as read successfully.');
-      },
-      error: (error) => {
-        console.error('Error marking notification as read:', error);
-      }
-    });
-    this.refreshTopUnseenNotifications();
   }
 
   getUnreadCount() {
@@ -179,16 +124,12 @@ export class DashboardClientComponent implements OnInit {
     this.showOptions = !this.showOptions;
   }
 
-  goToProfile() {
-    this.setActiveSection('profile');
-    console.log('Navigating to profile...');
-  }
-
   logout() {
     this.localS.clearAuth();
     this.router.navigate(['/']);
     console.log('Logging out...');
   }
+
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
@@ -200,6 +141,7 @@ export class DashboardClientComponent implements OnInit {
         this.notifications = this.patient.notifications;
         this.labResults = this.patient.labResults;
         this.feedbacks = this.patient.feedbacksWritten;
+        this.appointments = this.patient.appointments;
         this.refreshTopUnseenNotifications();
 
         this.medications = this.patient.prescriptions;
@@ -232,29 +174,6 @@ export class DashboardClientComponent implements OnInit {
     });
   }
 
-  onDeleteAccount() {
-    if (confirm('Are you sure you want to inactivate your account? This action cannot be undone.')) {
-      this.clientService.inactivateAccount().subscribe({
-        next: () => {
-          alert('Your account has been inactivated successfully.');
-          this.router.navigate(['/']);
-        },
-        error: (error) => {
-          console.error('Error inactivating account:', error);
-          alert('An error occurred while inactivating your account. Please try again later.');
-        }
-      });
-    }
-  }
-
-  toBookAppointment() {
-    this.router.navigate(['/book-appointment']);
-  }
-
-  canBeCancelled(appointmentStatus: AppointmentStatus): boolean {
-    return appointmentStatus === AppointmentStatus.SCHEDULED
-      || appointmentStatus === AppointmentStatus.CONFIRMED;
-  }
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     const formattedDate = new Intl.DateTimeFormat('en-GB', {
@@ -271,139 +190,8 @@ export class DashboardClientComponent implements OnInit {
 
     return `${formattedDate} ${formattedTime}`;
   }
-
-
-  cancelAppointment(appId: number) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "Know that if you cancel your appointment, you can't undo it and must request a new one.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, cancel it!',
-      cancelButtonText: 'No, keep it'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.appointmentService.cancelAppointment(appId).subscribe({
-          next: () => {
-            const index = this.upcomingAppointments.findIndex(appointment => appointment.id === appId);
-            this.upcomingAppointments[index].status = AppointmentStatus.CANCELLED;
-            Swal.fire(
-              'Cancelled!',
-              'Your appointment has been cancelled.',
-              'success'
-            );
-          },
-          error: () => {
-            Swal.fire(
-              'Error!',
-              'There was an issue cancelling your appointment.',
-              'error'
-            );
-          }
-        });
-      }
-    });
-  }
-
-
-  // Departments for booking
-  departments = [
-    'Cardiology',
-    'Dermatology',
-    'Endocrinology',
-    'Gastroenterology',
-    'General Medicine',
-    'Neurology',
-    'Obstetrics & Gynecology',
-    'Ophthalmology',
-    'Orthopedics',
-    'Pediatrics',
-    'Psychiatry',
-    'Urology'
-  ];
-
-
-  // Function to change active section
   setActiveSection(section: string) {
     this.activeSection = section;
   }
 
-  payInvoice(id: string) {
-    alert(`Redirecting to payment gateway for invoice ${id}`);
-  }
-
-  faqs = [
-    {
-      question: 'How do I schedule an appointment?',
-      answer: 'You can schedule an appointment through the "Appointments" section. Select "Book New", choose your department, doctor, and preferred date, then check available slots and book your appointment.'
-    },
-    {
-      question: 'How can I access my medical records?',
-      answer: 'Your medical records can be accessed in the "Medical Records" section. You can view your prescriptions, lab results, medical history, and vaccination records.'
-    },
-    {
-      question: 'How do I pay my bills online?',
-      answer: 'You can pay your bills through the "Billing" section. Select the invoice you wish to pay and click "Pay Now" to be directed to our secure payment gateway.'
-    },
-    {
-      question: 'How do I start a telemedicine consultation?',
-      answer: 'Navigate to the "Telemedicine" section, where you can schedule a video consultation or start a chat with healthcare providers.'
-    }
-  ];
-
-  toggleAnswer(index: number) {
-    this.activeIndex = this.activeIndex === index ? null : index;
-  }
-  setRating(rating: number): void {
-    this.selectedRating = rating;
-  }
-
-  setHover(rating: number): void {
-    this.hoveredRating = rating;
-  }
-
-  clearHover(): void {
-    this.hoveredRating = 0;
-  }
-
-  submitFeedback(): void {
-    if (this.selectedRating === 0) {
-      Swal.fire('Please select a rating before submitting.');
-      return;
-    }
-
-    if (this.feedbackMessage.trim() === '' || this.feedbackMessage.length < 5) {
-      Swal.fire('Please enter a feedback message before submitting.');
-      return;
-    }
-    const feedback = {
-      comment: this.feedbackMessage.trim(),
-      rating: this.selectedRating,
-      writtenToId: this.isGeneralFeedback ? null : this.doctorFeedbackId,
-      type: this.isGeneralFeedback ? 'GENERAL' : 'DOCTOR'
-    };
-    this.feedbackService.submitFeedback(feedback).subscribe({
-      next: () => {
-        Swal.fire('Thank you for your feedback!');
-        this.feedbacks.push({
-          id: 0,
-          patientName: '',
-          rating: feedback.rating,
-          createdAt: new Date(),
-          comment: this.feedbackMessage
-        });
-        this.feedbackMessage = '';
-      },
-      error: () => {
-        Swal.fire('There was an error submitting your feedback. Please try again later.');
-      }
-    });
-
-
-    this.selectedRating = 0;
-    this.hoveredRating = 0;
-    this.selectedFeedbackType = '';
-  }
 }

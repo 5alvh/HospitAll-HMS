@@ -23,7 +23,7 @@ public class PasswordController {
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
         accountService.initiatePasswordReset(req.email());
-        return ResponseEntity.ok().build();           // 200 even if e-mail unknown (no user enumeration)
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/reset-password")
@@ -32,7 +32,7 @@ public class PasswordController {
             throw new IllegalArgumentException("Passwords do not match");
 
         accountService.resetPassword(req.token(), req.newPassword());
-        return ResponseEntity.noContent().build();    // 204 on success
+        return ResponseEntity.noContent().build();
     }
 }
 

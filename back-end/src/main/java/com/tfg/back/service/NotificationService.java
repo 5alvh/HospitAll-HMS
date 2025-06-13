@@ -3,9 +3,12 @@ package com.tfg.back.service;
 import com.tfg.back.exceptions.notification.NotificationNotFoundException;
 import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserNotFoundException;
+import com.tfg.back.model.Notification;
+
+import java.util.List;
 
 public interface NotificationService {
-
+    List<Notification> getAllClientNotifications(String email);
     /**
      * Marks a specific notification as "seen" for an authorized client.
      * <p>

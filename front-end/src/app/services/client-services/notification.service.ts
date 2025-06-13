@@ -14,5 +14,7 @@ export class NotificationService {
     return this.httpClient.put(`${this.baseUrl}/mark-as-read/${notificationId}`, null);
   }
 
-  
+  getAllNotifications(): Observable<any>{
+    return this.httpClient.get(`${this.baseUrl}/all-notifications`);
+  }
 }

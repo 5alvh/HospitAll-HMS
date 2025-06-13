@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(MEDICAL_PRESCRIPTION)
 public class MedicalPrescriptionController {
@@ -22,10 +24,18 @@ public class MedicalPrescriptionController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<MedicalPrescriptionDtoGet> getMedicalPrescription(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<MedicalPrescriptionDtoGet> getMedicalPrescriptionById(@PathVariable Long id, Authentication authentication) {
         MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.getPrescriptionById(id, authentication.getName());
         return ResponseEntity.ok(prescription);
     }
+
+    @GetMapping("/all-prescriptions")
+    public ResponseEntity<List<MedicalPrescriptionDtoGet>> getAllMedicalPrescriptionByAuthentication(Authentication authentication) {
+        String email = authentication.getName();
+        List<MedicalPrescriptionDtoGet> prescriptions = medicalPrescriptionService.getAllPrescriptionsByEmail(email);
+        return ResponseEntity.ok(prescriptions);
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<Boolean> createMedicalPrescription(@RequestBody  MedicalPrescriptionDtoCreate dto, Authentication authentication) {

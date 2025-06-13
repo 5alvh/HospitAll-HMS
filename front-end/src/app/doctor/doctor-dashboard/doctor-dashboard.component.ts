@@ -11,6 +11,7 @@ import { LocalStorageManagerService } from '../../services/auth/local-storage-ma
 import Swal from 'sweetalert2';
 import { AppointmentService } from '../../services/client-services/appointment.service';
 import { PrescriptionStatus } from '../../models/enums/prescription-status';
+import { FilesGeneratorService } from '../../services/shared-services/files-generator.service';
 
 
 export interface Feedback {
@@ -101,7 +102,8 @@ export class DoctorDashboardComponent {
   constructor(private docService: DoctorService,
     private localStorageService: LocalStorageManagerService,
     private router: Router,
-    private appService: AppointmentService) { }
+    private appService: AppointmentService,
+    private filesGenerator: FilesGeneratorService) { }
 
   ngOnInit(): void {
     this.docService.getProfile().subscribe({
@@ -341,6 +343,45 @@ export class DoctorDashboardComponent {
     });
   }
 
+  downloadAppointment(appointmentId: number) {
+    console.log('Downloading appointment PDF for ID:', appointmentId);
+    this.filesGenerator.getAppointmentPdf(appointmentId).subscribe({
+      next: (pdfBlob: Blob) => {
+        const blob = new Blob([pdfBlob], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `appointment_${appointmentId}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('PDF download failed:', err);
+      }
+    });
+  }
+
+  downloadPrescription(prescriptionId: number) {
+    this.filesGenerator.getMedicalPrescriptionPdf(prescriptionId).subscribe({
+      next: (pdfBlob: Blob) => {
+        const blob = new Blob([pdfBlob], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `appointment_${prescriptionId}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('PDF download failed:', err);
+      }
+    });
+  }
+
   bookAppointment(): void {
 
     if (!this.newAppointment.searchType || !this.newAppointment.patientIdentifier || !this.newAppointment.date || !this.newAppointment.time || !this.newAppointment.reason) {
@@ -468,7 +509,7 @@ export class DoctorDashboardComponent {
         });
       }
     })
-    
+
   }
   createPrescription(status: string): void {
     console.log(this.newPrescription);
@@ -686,7 +727,7 @@ export class DoctorDashboardComponent {
 
   getConnectedAppointment(prescriptionId: number): any {
     const prescription = this.prescriptions.find(p => p.id === prescriptionId);
-    return prescription ? this.appointments.find(a => a.id === prescription.id) : null;
+    return null;
   }
 
   getPublishedPrescriptions(): any[] {

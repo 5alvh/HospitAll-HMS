@@ -13,7 +13,7 @@
         <li><strong>Status:</strong> {{ selectedAppointment.status }}</li>
         <li><strong>Type:</strong> {{ selectedAppointment.type }}</li>
       </ul>
-      <button class="btn-outline btn-sm download-btn">
+      <button class="btn-outline btn-sm download-btn"  (click)="downloadAppointment(selectedAppointment.id)">
         <i class="fas fa-download"></i> Download Summary
       </button>
     </div>
@@ -79,11 +79,11 @@
       <h3>{{ doctor.fullName }}</h3>
       <p>{{ doctor.specialization }}</p>
       <div class="doctor-stats">
-        <div class="stat-item">
+        <div class="stat-item" *ngIf="dashboardStats.totalPatients> 0">
           <span class="stat-number">{{ dashboardStats.totalPatients }}</span>
-          <span class="stat-label">Patients</span>
+          <span class="stat-label">Patient(s)</span>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" *ngIf="dashboardStats.averageRating> 0">
           <span class="stat-number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
           <span class="stat-label">Rating</span>
         </div>
@@ -257,7 +257,7 @@
             </div>
           </div>
 
-          <div class="summary-card recent-activity">
+          <div class="summary-card recent-activity disabled-overlay">
             <div class="card-header">
               <h3>Recent Activity</h3>
               <button class="btn-outline btn-sm" (click)="changeSection('prescriptions')">View All</button>
@@ -312,12 +312,6 @@
             <h3>Create Prescription</h3>
             <p>Write and manage medical prescriptions</p>
             <button class="btn-primary" (click)="changeSection('create-prescription')">Create Now</button>
-          </div>
-          <div class="action-card">
-            <i class="fas fa-chart-line"></i>
-            <h3>View Reports</h3>
-            <p>Access patient reports and analytics</p>
-            <button class="btn-primary" (click)="changeSection('reports')">View Reports</button>
           </div>
         </div>
       </div>
@@ -564,8 +558,8 @@
           <h2>Medical Prescriptions</h2>
           <div class="section-tabs">
             <div class="tab active">All Prescriptions</div>
-            <div class="tab">Published</div>
-            <div class="tab">Drafts</div>
+            <!--<div class="tab">Published</div>
+            <div class="tab">Drafts</div>-->
           </div>
         </div>
 
@@ -638,7 +632,7 @@
                     <button class="btn-outline btn-sm" (click)="openEditModal(prescription)">
                       <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn-outline btn-sm">
+                    <button class="btn-outline btn-sm" (click)="downloadPrescription(prescription.id)">
                       <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-outline btn-sm" (click)="deletePrescription(prescription.id)">
@@ -797,7 +791,7 @@
                   <span class="number">{{ dashboardStats.totalPatients }}</span>
                   <span class="label">Patients</span>
                 </div>
-                <div class="stat">
+                <div class="stat" *ngIf="dashboardStats.averageRating>0">
                   <span class="number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
                   <span class="label">Rating</span>
                 </div>

@@ -1917,3 +1917,8 @@ textarea.form-control {
   text-align: center;
   margin: 0;
 }
+.disabled-overlay {
+  pointer-events: none;
+  opacity: 0.6; /* Optional: dim it to show it's inactive */
+  cursor: not-allowed;
+}

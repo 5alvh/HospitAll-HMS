@@ -1,0 +1,16 @@
+<div class="sidebar">
+    <div class="logo">
+        <img src="./logo.png" alt="HospitAll Logo">
+        <h2>HospitAll</h2>
+    </div>
+
+    <div class="menu">
+        @for (section of sections; track $index) {
+        <div class="menu-item" [class.active]="activeSection === section.section"
+            (click)="setActiveSection(section.section)">
+            <i [class]="section.icon"></i>
+            <span>{{section.section}}</span>
+        </div>
+        }
+    </div>
+</div>

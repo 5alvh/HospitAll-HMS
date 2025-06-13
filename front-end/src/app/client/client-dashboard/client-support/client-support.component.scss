@@ -1,0 +1,94 @@
+.appointments-section,
+.records-section,
+.billing-section,
+.telemedicine-section,
+.monitoring-section,
+.support-section,
+.feedback-section,
+.documents-section {
+  margin-top: 20px;
+}
+
+.appointments-upcoming,
+.appointments-history,
+.prescriptions,
+.lab-results,
+.invoices,
+.payment-summary,
+.video-consultation,
+.chat-consultation,
+.monitoring-overview,
+.device-integration,
+.contact-info,
+.faq-section,
+.feedback-form,
+.surveys,
+.document-categories,
+.recent-documents {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.appointments-section h3,
+.records-section h3,
+.billing-section h3,
+.telemedicine-section h3,
+.monitoring-section h3,
+.support-section h3,
+.feedback-section h3,
+.documents-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 15px;
+}
+/* FAQ Section */
+.faq-list {
+  margin-top: 20px;
+}
+
+.faq-item {
+  margin-bottom: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  padding: 15px;
+  background-color: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-question h4 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.faq-question i {
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.faq-answer {
+  padding: 0 15px;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+  padding: 15px;
+  max-height: 200px;
+}
+
+.faq-item.active .faq-question i {
+  transform: rotate(180deg);
+}

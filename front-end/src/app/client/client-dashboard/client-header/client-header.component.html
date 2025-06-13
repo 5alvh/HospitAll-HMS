@@ -1,0 +1,20 @@
+<div class="header">
+    <div class="page-title">
+        <h1>{{title}}</h1>
+    </div>
+    <div class="header-actions">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="badge" *ngIf="unreadNotificationsCount > 0">{{unreadNotificationsCount}}</span>
+        </div>
+        <div (click)="onShowOptions()" class="user-profile">
+            <img src="./user-profile.jpg" alt="User Profile">
+            <span>{{patientName}}</span>
+
+            <div class="dropdown-menu" *ngIf="showOptions">
+                <button (click)="setActiveSection('profile')">Go to Profile</button>
+                <button (click)="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+</div>

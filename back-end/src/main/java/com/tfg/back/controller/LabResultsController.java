@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(LAB_RESULT)
 public class LabResultsController {
@@ -31,6 +33,13 @@ public class LabResultsController {
     public ResponseEntity<LabResultDtoGet> getLabResultById(@PathVariable Long id) {
         LabResultDtoGet labResultDtoGet = labResultService.getLabResultById(id);
         return ResponseEntity.ok(labResultService.getLabResultById(id));
+    }
+
+    @GetMapping("/all-lab-results")
+    public ResponseEntity<List<LabResultDtoGet>> getLabResultByEmail(Authentication authentication) {
+        String email = authentication.getName();
+        List<LabResultDtoGet> labResults = labResultService.getLabResultsByEmail(email);
+        return ResponseEntity.ok(labResults);
     }
 
     @DeleteMapping("/delete/{id}")

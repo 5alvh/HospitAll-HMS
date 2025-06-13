@@ -17,6 +17,8 @@ import com.tfg.back.service.FeedbackService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -25,6 +27,12 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final ClientRepository clientRepository;
     private final DoctorRepository doctorRepository;
+
+    @Override
+    public List<FeedBackDtoGet> getAllFeedbacksByEmail(String email) {
+        List<FeedBack> feedbacks = feedbackRepository.findByAuthorEmail(email);
+        return FeedbackMapper.toFeedBackDtoGetList(feedbacks);
+    }
 
     @Override
     public FeedBackDtoGet sendFeedback(String clientEmail, FeedbackDtoCreate feedbackDtoCreate) {

@@ -11,6 +11,7 @@ import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.NotificationService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,6 +24,12 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationServiceImpl(NotificationRepository notificationRepository, ClientRepository clientRepository) {
         this.notificationRepository = notificationRepository;
         this.clientRepository = clientRepository;
+    }
+
+    @Override
+    public List<Notification> getAllClientNotifications(String email) {
+        List<Notification> notifications = notificationRepository.findByUserEmail(email);
+        return notifications;
     }
 
     @Override

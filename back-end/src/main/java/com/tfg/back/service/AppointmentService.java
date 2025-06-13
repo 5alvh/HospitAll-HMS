@@ -25,6 +25,8 @@ import java.util.List;
  * to perform CRUD operations and enforce business rules.
  */
 public interface AppointmentService {
+
+    List<AppointmentDtoGet> getAppointmentsByClientEmail(String email);
     /**
      * Retrieves all appointments in the system.
      *

@@ -1,0 +1,168 @@
+.appointments-section,
+.records-section,
+.billing-section,
+.telemedicine-section,
+.monitoring-section,
+.support-section,
+.feedback-section,
+.documents-section {
+  margin-top: 20px;
+}
+
+.appointments-upcoming,
+.appointments-history,
+.prescriptions,
+.lab-results,
+.invoices,
+.payment-summary,
+.video-consultation,
+.chat-consultation,
+.monitoring-overview,
+.device-integration,
+.contact-info,
+.faq-section,
+.feedback-form,
+.surveys,
+.document-categories,
+.recent-documents {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.appointments-section h3,
+.records-section h3,
+.billing-section h3,
+.telemedicine-section h3,
+.monitoring-section h3,
+.support-section h3,
+.feedback-section h3,
+.documents-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 15px;
+}
+
+/* Data Tables */
+.data-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  background-color: #f1f5f9;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.data-table td {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover {
+  background-color: #f8fafc;
+}
+
+/*checkbox styles*/
+.checkbox-wrapper {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.checkbox-wrapper input {
+  margin-right: 6px;
+}
+
+/* Booking Form */
+.appointment-booking {
+  margin-top: 20px;
+}
+
+.booking-form {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.3);
+}
+
+.form-actions {
+  margin-top: 20px;
+}
+
+/* Available Slots */
+.available-slots {
+  margin-top: 20px;
+}
+
+.slots-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.slot-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.slot-item span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 8px;
+}
