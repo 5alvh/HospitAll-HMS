@@ -32327,3 +32327,3198 @@ io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-05-22T06:33:55Z. Curren
        modify column status enum ('ACTIVE','INACTIVE','SUSPENDED') not null
 2025-06-13T03:09:27.860+02:00  WARN 12336 --- [back] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 2025-06-13T03:09:27.878+02:00  WARN 12336 --- [back] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-06-13T03:11:35.535+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:11:35.610+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        fb1_0.id,
+        fb1_0.author_id,
+        fb1_0.comment,
+        fb1_0.created_at,
+        fb1_0.rating,
+        fb1_0.type,
+        fb1_0.written_to_id 
+    from
+        feedbacks fb1_0 
+    join
+        clients a1_0 
+            on a1_0.client_id=fb1_0.author_id 
+    join
+        users a1_1 
+            on a1_0.client_id=a1_1.id 
+    where
+        a1_1.email=?
+2025-06-13T03:11:35.620+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:11:35.625+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:11:36.770+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:11:36.780+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        fb1_0.id,
+        fb1_0.author_id,
+        fb1_0.comment,
+        fb1_0.created_at,
+        fb1_0.rating,
+        fb1_0.type,
+        fb1_0.written_to_id 
+    from
+        feedbacks fb1_0 
+    join
+        clients a1_0 
+            on a1_0.client_id=fb1_0.author_id 
+    join
+        users a1_1 
+            on a1_0.client_id=a1_1.id 
+    where
+        a1_1.email=?
+2025-06-13T03:11:36.787+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:11:36.793+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:11:38.806+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:11:38.807+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:11:38.819+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        lr1_0.id,
+        lr1_0.created_at,
+        lr1_0.notes,
+        lr1_0.ordered_by_id,
+        lr1_0.patient_id,
+        lr1_0.reference_range,
+        lr1_0.result_date,
+        lr1_0.result_value,
+        lr1_0.status,
+        lr1_0.test_name,
+        lr1_0.unit,
+        lr1_0.updated_at,
+        lr1_0.version 
+    from
+        lab_results lr1_0 
+    left join
+        clients p1_0 
+            on p1_0.client_id=lr1_0.patient_id 
+    left join
+        users p1_1 
+            on p1_0.client_id=p1_1.id 
+    where
+        p1_1.email=?
+2025-06-13T03:11:38.819+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        mp1_0.id,
+        mp1_0.created_at,
+        mp1_0.dosage,
+        mp1_0.end_date,
+        mp1_0.frequency,
+        mp1_0.medication_name,
+        mp1_0.notes,
+        mp1_0.prescribed_by_id,
+        mp1_0.prescribed_to_id,
+        mp1_0.start_date,
+        mp1_0.status,
+        mp1_0.updated_at,
+        mp1_0.version 
+    from
+        medical_prescriptions mp1_0 
+    left join
+        clients pt1_0 
+            on pt1_0.client_id=mp1_0.prescribed_to_id 
+    left join
+        users pt1_1 
+            on pt1_0.client_id=pt1_1.id 
+    where
+        pt1_1.email=?
+2025-06-13T03:11:38.833+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:11:38.834+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:11:38.840+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:11:38.840+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:11:40.398+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:11:40.409+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.client_id,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    left join
+        clients c1_0 
+            on c1_0.client_id=a1_0.client_id 
+    left join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:11:40.419+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:11:40.425+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:11:40.432+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:22.782+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:22.846+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:12:22.859+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        a1_0.client_id,
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    where
+        a1_0.client_id=?
+2025-06-13T03:12:22.875+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:22.884+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:22.893+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        pr1_0.prescribed_to_id,
+        pr1_0.id,
+        pr1_0.created_at,
+        pr1_0.dosage,
+        pr1_0.end_date,
+        pr1_0.frequency,
+        pr1_0.medication_name,
+        pr1_0.notes,
+        pr1_0.prescribed_by_id,
+        pr1_0.start_date,
+        pr1_0.status,
+        pr1_0.updated_at,
+        pr1_0.version 
+    from
+        medical_prescriptions pr1_0 
+    where
+        pr1_0.prescribed_to_id=?
+2025-06-13T03:12:22.900+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        lrr1_0.patient_id,
+        lrr1_0.id,
+        lrr1_0.created_at,
+        lrr1_0.notes,
+        lrr1_0.ordered_by_id,
+        lrr1_0.reference_range,
+        lrr1_0.result_date,
+        lrr1_0.result_value,
+        lrr1_0.status,
+        lrr1_0.test_name,
+        lrr1_0.unit,
+        lrr1_0.updated_at,
+        lrr1_0.version 
+    from
+        lab_results lrr1_0 
+    where
+        lrr1_0.patient_id=?
+2025-06-13T03:12:22.903+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        fw1_0.author_id,
+        fw1_0.id,
+        fw1_0.comment,
+        fw1_0.created_at,
+        fw1_0.rating,
+        fw1_0.type,
+        wt1_0.doctor_id,
+        wt1_1.address,
+        wt1_1.created_at,
+        wt1_1.date_of_birth,
+        wt1_1.email,
+        wt1_1.full_name,
+        wt1_1.hashed_password,
+        wt1_1.phone_number,
+        wt1_1.status,
+        wt1_1.updated_at,
+        wt1_1.version,
+        d1_0.id,
+        d1_0.contact_number,
+        d1_0.created_at,
+        d1_0.description,
+        d1_0.head_doctor_id,
+        d1_0.location,
+        d1_0.name,
+        d1_0.updated_at,
+        d1_0.version,
+        wt1_0.medical_license_number,
+        wt1_0.specialization 
+    from
+        feedbacks fw1_0 
+    left join
+        doctors wt1_0 
+            on wt1_0.doctor_id=fw1_0.written_to_id 
+    left join
+        users wt1_1 
+            on wt1_0.doctor_id=wt1_1.id 
+    left join
+        departments d1_0 
+            on d1_0.id=wt1_0.department_id 
+    where
+        fw1_0.author_id=?
+2025-06-13T03:12:22.931+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        n1_0.user_id,
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type 
+    from
+        notifications n1_0 
+    where
+        n1_0.user_id=?
+2025-06-13T03:12:24.719+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:24.733+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    left join
+        users u1_0 
+            on u1_0.id=n1_0.user_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:27.885+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:27.886+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:27.900+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        lr1_0.id,
+        lr1_0.created_at,
+        lr1_0.notes,
+        lr1_0.ordered_by_id,
+        lr1_0.patient_id,
+        lr1_0.reference_range,
+        lr1_0.result_date,
+        lr1_0.result_value,
+        lr1_0.status,
+        lr1_0.test_name,
+        lr1_0.unit,
+        lr1_0.updated_at,
+        lr1_0.version 
+    from
+        lab_results lr1_0 
+    left join
+        clients p1_0 
+            on p1_0.client_id=lr1_0.patient_id 
+    left join
+        users p1_1 
+            on p1_0.client_id=p1_1.id 
+    where
+        p1_1.email=?
+2025-06-13T03:12:27.900+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        mp1_0.id,
+        mp1_0.created_at,
+        mp1_0.dosage,
+        mp1_0.end_date,
+        mp1_0.frequency,
+        mp1_0.medication_name,
+        mp1_0.notes,
+        mp1_0.prescribed_by_id,
+        mp1_0.prescribed_to_id,
+        mp1_0.start_date,
+        mp1_0.status,
+        mp1_0.updated_at,
+        mp1_0.version 
+    from
+        medical_prescriptions mp1_0 
+    left join
+        clients pt1_0 
+            on pt1_0.client_id=mp1_0.prescribed_to_id 
+    left join
+        users pt1_1 
+            on pt1_0.client_id=pt1_1.id 
+    where
+        pt1_1.email=?
+2025-06-13T03:12:27.905+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:27.905+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:27.915+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:12:27.915+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:12:28.550+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:28.563+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.client_id,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    left join
+        clients c1_0 
+            on c1_0.client_id=a1_0.client_id 
+    left join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:12:28.569+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:12:28.577+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:28.583+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:30.450+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:30.463+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    left join
+        users u1_0 
+            on u1_0.id=n1_0.user_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:31.947+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:31.964+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:12:31.989+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    where
+        n1_0.id=?
+2025-06-13T03:12:32.035+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        date=?,
+        message=?,
+        seen=?,
+        title=?,
+        type=?,
+        user_id=? 
+    where
+        id=?
+2025-06-13T03:12:35.597+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:35.617+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:12:35.629+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        a1_0.client_id,
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    where
+        a1_0.client_id=?
+2025-06-13T03:12:35.641+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:35.649+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:35.655+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        pr1_0.prescribed_to_id,
+        pr1_0.id,
+        pr1_0.created_at,
+        pr1_0.dosage,
+        pr1_0.end_date,
+        pr1_0.frequency,
+        pr1_0.medication_name,
+        pr1_0.notes,
+        pr1_0.prescribed_by_id,
+        pr1_0.start_date,
+        pr1_0.status,
+        pr1_0.updated_at,
+        pr1_0.version 
+    from
+        medical_prescriptions pr1_0 
+    where
+        pr1_0.prescribed_to_id=?
+2025-06-13T03:12:35.662+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        lrr1_0.patient_id,
+        lrr1_0.id,
+        lrr1_0.created_at,
+        lrr1_0.notes,
+        lrr1_0.ordered_by_id,
+        lrr1_0.reference_range,
+        lrr1_0.result_date,
+        lrr1_0.result_value,
+        lrr1_0.status,
+        lrr1_0.test_name,
+        lrr1_0.unit,
+        lrr1_0.updated_at,
+        lrr1_0.version 
+    from
+        lab_results lrr1_0 
+    where
+        lrr1_0.patient_id=?
+2025-06-13T03:12:35.667+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        fw1_0.author_id,
+        fw1_0.id,
+        fw1_0.comment,
+        fw1_0.created_at,
+        fw1_0.rating,
+        fw1_0.type,
+        wt1_0.doctor_id,
+        wt1_1.address,
+        wt1_1.created_at,
+        wt1_1.date_of_birth,
+        wt1_1.email,
+        wt1_1.full_name,
+        wt1_1.hashed_password,
+        wt1_1.phone_number,
+        wt1_1.status,
+        wt1_1.updated_at,
+        wt1_1.version,
+        d1_0.id,
+        d1_0.contact_number,
+        d1_0.created_at,
+        d1_0.description,
+        d1_0.head_doctor_id,
+        d1_0.location,
+        d1_0.name,
+        d1_0.updated_at,
+        d1_0.version,
+        wt1_0.medical_license_number,
+        wt1_0.specialization 
+    from
+        feedbacks fw1_0 
+    left join
+        doctors wt1_0 
+            on wt1_0.doctor_id=fw1_0.written_to_id 
+    left join
+        users wt1_1 
+            on wt1_0.doctor_id=wt1_1.id 
+    left join
+        departments d1_0 
+            on d1_0.id=wt1_0.department_id 
+    where
+        fw1_0.author_id=?
+2025-06-13T03:12:35.677+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        n1_0.user_id,
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type 
+    from
+        notifications n1_0 
+    where
+        n1_0.user_id=?
+2025-06-13T03:12:39.022+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:39.033+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        fb1_0.id,
+        fb1_0.author_id,
+        fb1_0.comment,
+        fb1_0.created_at,
+        fb1_0.rating,
+        fb1_0.type,
+        fb1_0.written_to_id 
+    from
+        feedbacks fb1_0 
+    join
+        clients a1_0 
+            on a1_0.client_id=fb1_0.author_id 
+    join
+        users a1_1 
+            on a1_0.client_id=a1_1.id 
+    where
+        a1_1.email=?
+2025-06-13T03:12:39.037+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:12:39.044+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:56.862+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:56.883+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:12:56.893+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        a1_0.client_id,
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    where
+        a1_0.client_id=?
+2025-06-13T03:12:56.901+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:56.909+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:56.913+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        pr1_0.prescribed_to_id,
+        pr1_0.id,
+        pr1_0.created_at,
+        pr1_0.dosage,
+        pr1_0.end_date,
+        pr1_0.frequency,
+        pr1_0.medication_name,
+        pr1_0.notes,
+        pr1_0.prescribed_by_id,
+        pr1_0.start_date,
+        pr1_0.status,
+        pr1_0.updated_at,
+        pr1_0.version 
+    from
+        medical_prescriptions pr1_0 
+    where
+        pr1_0.prescribed_to_id=?
+2025-06-13T03:12:56.918+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        lrr1_0.patient_id,
+        lrr1_0.id,
+        lrr1_0.created_at,
+        lrr1_0.notes,
+        lrr1_0.ordered_by_id,
+        lrr1_0.reference_range,
+        lrr1_0.result_date,
+        lrr1_0.result_value,
+        lrr1_0.status,
+        lrr1_0.test_name,
+        lrr1_0.unit,
+        lrr1_0.updated_at,
+        lrr1_0.version 
+    from
+        lab_results lrr1_0 
+    where
+        lrr1_0.patient_id=?
+2025-06-13T03:12:56.924+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        fw1_0.author_id,
+        fw1_0.id,
+        fw1_0.comment,
+        fw1_0.created_at,
+        fw1_0.rating,
+        fw1_0.type,
+        wt1_0.doctor_id,
+        wt1_1.address,
+        wt1_1.created_at,
+        wt1_1.date_of_birth,
+        wt1_1.email,
+        wt1_1.full_name,
+        wt1_1.hashed_password,
+        wt1_1.phone_number,
+        wt1_1.status,
+        wt1_1.updated_at,
+        wt1_1.version,
+        d1_0.id,
+        d1_0.contact_number,
+        d1_0.created_at,
+        d1_0.description,
+        d1_0.head_doctor_id,
+        d1_0.location,
+        d1_0.name,
+        d1_0.updated_at,
+        d1_0.version,
+        wt1_0.medical_license_number,
+        wt1_0.specialization 
+    from
+        feedbacks fw1_0 
+    left join
+        doctors wt1_0 
+            on wt1_0.doctor_id=fw1_0.written_to_id 
+    left join
+        users wt1_1 
+            on wt1_0.doctor_id=wt1_1.id 
+    left join
+        departments d1_0 
+            on d1_0.id=wt1_0.department_id 
+    where
+        fw1_0.author_id=?
+2025-06-13T03:12:56.931+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        n1_0.user_id,
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type 
+    from
+        notifications n1_0 
+    where
+        n1_0.user_id=?
+2025-06-13T03:12:58.600+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:12:58.700+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:12:58.725+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    update
+        users 
+    set
+        address=?,
+        date_of_birth=?,
+        email=?,
+        full_name=?,
+        hashed_password=?,
+        phone_number=?,
+        status=?,
+        updated_at=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+2025-06-13T03:12:58.888+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (date, message, seen, title, type, user_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2025-06-13T03:12:58.988+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        a1_0.client_id,
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    where
+        a1_0.client_id=?
+2025-06-13T03:12:58.993+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:58.998+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:12:59.005+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        pr1_0.prescribed_to_id,
+        pr1_0.id,
+        pr1_0.created_at,
+        pr1_0.dosage,
+        pr1_0.end_date,
+        pr1_0.frequency,
+        pr1_0.medication_name,
+        pr1_0.notes,
+        pr1_0.prescribed_by_id,
+        pr1_0.start_date,
+        pr1_0.status,
+        pr1_0.updated_at,
+        pr1_0.version 
+    from
+        medical_prescriptions pr1_0 
+    where
+        pr1_0.prescribed_to_id=?
+2025-06-13T03:12:59.009+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        lrr1_0.patient_id,
+        lrr1_0.id,
+        lrr1_0.created_at,
+        lrr1_0.notes,
+        lrr1_0.ordered_by_id,
+        lrr1_0.reference_range,
+        lrr1_0.result_date,
+        lrr1_0.result_value,
+        lrr1_0.status,
+        lrr1_0.test_name,
+        lrr1_0.unit,
+        lrr1_0.updated_at,
+        lrr1_0.version 
+    from
+        lab_results lrr1_0 
+    where
+        lrr1_0.patient_id=?
+2025-06-13T03:12:59.014+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        fw1_0.author_id,
+        fw1_0.id,
+        fw1_0.comment,
+        fw1_0.created_at,
+        fw1_0.rating,
+        fw1_0.type,
+        wt1_0.doctor_id,
+        wt1_1.address,
+        wt1_1.created_at,
+        wt1_1.date_of_birth,
+        wt1_1.email,
+        wt1_1.full_name,
+        wt1_1.hashed_password,
+        wt1_1.phone_number,
+        wt1_1.status,
+        wt1_1.updated_at,
+        wt1_1.version,
+        d1_0.id,
+        d1_0.contact_number,
+        d1_0.created_at,
+        d1_0.description,
+        d1_0.head_doctor_id,
+        d1_0.location,
+        d1_0.name,
+        d1_0.updated_at,
+        d1_0.version,
+        wt1_0.medical_license_number,
+        wt1_0.specialization 
+    from
+        feedbacks fw1_0 
+    left join
+        doctors wt1_0 
+            on wt1_0.doctor_id=fw1_0.written_to_id 
+    left join
+        users wt1_1 
+            on wt1_0.doctor_id=wt1_1.id 
+    left join
+        departments d1_0 
+            on d1_0.id=wt1_0.department_id 
+    where
+        fw1_0.author_id=?
+2025-06-13T03:12:59.023+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        n1_0.user_id,
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type 
+    from
+        notifications n1_0 
+    where
+        n1_0.user_id=?
+2025-06-13T03:13:01.059+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:01.077+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:13:01.084+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        a1_0.client_id,
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    where
+        a1_0.client_id=?
+2025-06-13T03:13:01.093+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:13:01.101+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:13:01.111+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        pr1_0.prescribed_to_id,
+        pr1_0.id,
+        pr1_0.created_at,
+        pr1_0.dosage,
+        pr1_0.end_date,
+        pr1_0.frequency,
+        pr1_0.medication_name,
+        pr1_0.notes,
+        pr1_0.prescribed_by_id,
+        pr1_0.start_date,
+        pr1_0.status,
+        pr1_0.updated_at,
+        pr1_0.version 
+    from
+        medical_prescriptions pr1_0 
+    where
+        pr1_0.prescribed_to_id=?
+2025-06-13T03:13:01.116+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        lrr1_0.patient_id,
+        lrr1_0.id,
+        lrr1_0.created_at,
+        lrr1_0.notes,
+        lrr1_0.ordered_by_id,
+        lrr1_0.reference_range,
+        lrr1_0.result_date,
+        lrr1_0.result_value,
+        lrr1_0.status,
+        lrr1_0.test_name,
+        lrr1_0.unit,
+        lrr1_0.updated_at,
+        lrr1_0.version 
+    from
+        lab_results lrr1_0 
+    where
+        lrr1_0.patient_id=?
+2025-06-13T03:13:01.122+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        fw1_0.author_id,
+        fw1_0.id,
+        fw1_0.comment,
+        fw1_0.created_at,
+        fw1_0.rating,
+        fw1_0.type,
+        wt1_0.doctor_id,
+        wt1_1.address,
+        wt1_1.created_at,
+        wt1_1.date_of_birth,
+        wt1_1.email,
+        wt1_1.full_name,
+        wt1_1.hashed_password,
+        wt1_1.phone_number,
+        wt1_1.status,
+        wt1_1.updated_at,
+        wt1_1.version,
+        d1_0.id,
+        d1_0.contact_number,
+        d1_0.created_at,
+        d1_0.description,
+        d1_0.head_doctor_id,
+        d1_0.location,
+        d1_0.name,
+        d1_0.updated_at,
+        d1_0.version,
+        wt1_0.medical_license_number,
+        wt1_0.specialization 
+    from
+        feedbacks fw1_0 
+    left join
+        doctors wt1_0 
+            on wt1_0.doctor_id=fw1_0.written_to_id 
+    left join
+        users wt1_1 
+            on wt1_0.doctor_id=wt1_1.id 
+    left join
+        departments d1_0 
+            on d1_0.id=wt1_0.department_id 
+    where
+        fw1_0.author_id=?
+2025-06-13T03:13:01.131+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        n1_0.user_id,
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type 
+    from
+        notifications n1_0 
+    where
+        n1_0.user_id=?
+2025-06-13T03:13:04.430+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:04.443+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    left join
+        users u1_0 
+            on u1_0.id=n1_0.user_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:09.323+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:09.334+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:13:09.342+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    where
+        n1_0.id=?
+2025-06-13T03:13:09.353+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        date=?,
+        message=?,
+        seen=?,
+        title=?,
+        type=?,
+        user_id=? 
+    where
+        id=?
+2025-06-13T03:13:11.243+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:11.255+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    left join
+        users u1_0 
+            on u1_0.id=n1_0.user_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:19.479+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:19.492+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        a1_0.id,
+        a1_0.appointment_date_time,
+        a1_0.client_id,
+        a1_0.created_at,
+        a1_0.department_id,
+        a1_0.diagnosis,
+        a1_0.doctor_id,
+        a1_0.reason,
+        a1_0.status,
+        a1_0.type,
+        a1_0.updated_at,
+        a1_0.version 
+    from
+        appointments a1_0 
+    left join
+        clients c1_0 
+            on c1_0.client_id=a1_0.client_id 
+    left join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_1.email=?
+2025-06-13T03:13:19.497+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:13:19.504+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:13:19.510+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:13:22.161+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:22.161+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:22.175+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        mp1_0.id,
+        mp1_0.created_at,
+        mp1_0.dosage,
+        mp1_0.end_date,
+        mp1_0.frequency,
+        mp1_0.medication_name,
+        mp1_0.notes,
+        mp1_0.prescribed_by_id,
+        mp1_0.prescribed_to_id,
+        mp1_0.start_date,
+        mp1_0.status,
+        mp1_0.updated_at,
+        mp1_0.version 
+    from
+        medical_prescriptions mp1_0 
+    left join
+        clients pt1_0 
+            on pt1_0.client_id=mp1_0.prescribed_to_id 
+    left join
+        users pt1_1 
+            on pt1_0.client_id=pt1_1.id 
+    where
+        pt1_1.email=?
+2025-06-13T03:13:22.175+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        lr1_0.id,
+        lr1_0.created_at,
+        lr1_0.notes,
+        lr1_0.ordered_by_id,
+        lr1_0.patient_id,
+        lr1_0.reference_range,
+        lr1_0.result_date,
+        lr1_0.result_value,
+        lr1_0.status,
+        lr1_0.test_name,
+        lr1_0.unit,
+        lr1_0.updated_at,
+        lr1_0.version 
+    from
+        lab_results lr1_0 
+    left join
+        clients p1_0 
+            on p1_0.client_id=lr1_0.patient_id 
+    left join
+        users p1_1 
+            on p1_0.client_id=p1_1.id 
+    where
+        p1_1.email=?
+2025-06-13T03:13:22.181+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:13:22.181+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
+2025-06-13T03:13:22.190+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:13:22.190+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:13:23.355+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:23.371+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        n1_0.id,
+        n1_0.date,
+        n1_0.message,
+        n1_0.seen,
+        n1_0.title,
+        n1_0.type,
+        n1_0.user_id 
+    from
+        notifications n1_0 
+    left join
+        users u1_0 
+            on u1_0.id=n1_0.user_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:51.272+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.user_type,
+        u1_0.address,
+        u1_0.created_at,
+        u1_0.date_of_birth,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.hashed_password,
+        u1_0.phone_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version,
+        u1_1.blood_type,
+        u1_1.contact_name,
+        u1_1.contact_phone,
+        u1_1.relationship,
+        u1_1.membership_level,
+        u1_2.department_id,
+        u1_2.medical_license_number,
+        u1_2.specialization 
+    from
+        users u1_0 
+    left join
+        clients u1_1 
+            on u1_0.id=u1_1.client_id 
+    left join
+        doctors u1_2 
+            on u1_0.id=u1_2.doctor_id 
+    where
+        u1_0.email=?
+2025-06-13T03:13:51.286+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        fb1_0.id,
+        fb1_0.author_id,
+        fb1_0.comment,
+        fb1_0.created_at,
+        fb1_0.rating,
+        fb1_0.type,
+        fb1_0.written_to_id 
+    from
+        feedbacks fb1_0 
+    join
+        clients a1_0 
+            on a1_0.client_id=fb1_0.author_id 
+    join
+        users a1_1 
+            on a1_0.client_id=a1_1.id 
+    where
+        a1_1.email=?
+2025-06-13T03:13:51.290+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        c1_0.client_id,
+        c1_1.address,
+        c1_1.created_at,
+        c1_1.date_of_birth,
+        c1_1.email,
+        c1_1.full_name,
+        c1_1.hashed_password,
+        c1_1.phone_number,
+        c1_1.status,
+        c1_1.updated_at,
+        c1_1.version,
+        c1_0.blood_type,
+        c1_0.contact_name,
+        c1_0.contact_phone,
+        c1_0.relationship,
+        c1_0.membership_level 
+    from
+        clients c1_0 
+    join
+        users c1_1 
+            on c1_0.client_id=c1_1.id 
+    where
+        c1_0.client_id=?
+2025-06-13T03:13:51.294+02:00 DEBUG 12336 --- [back] [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        d1_0.doctor_id,
+        d1_1.address,
+        d1_1.created_at,
+        d1_1.date_of_birth,
+        d1_1.email,
+        d1_1.full_name,
+        d1_1.hashed_password,
+        d1_1.phone_number,
+        d1_1.status,
+        d1_1.updated_at,
+        d1_1.version,
+        d2_0.id,
+        d2_0.contact_number,
+        d2_0.created_at,
+        d2_0.description,
+        d2_0.head_doctor_id,
+        d2_0.location,
+        d2_0.name,
+        d2_0.updated_at,
+        d2_0.version,
+        d1_0.medical_license_number,
+        d1_0.specialization 
+    from
+        doctors d1_0 
+    join
+        users d1_1 
+            on d1_0.doctor_id=d1_1.id 
+    left join
+        departments d2_0 
+            on d2_0.id=d1_0.department_id 
+    where
+        d1_0.doctor_id=?
