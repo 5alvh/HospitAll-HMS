@@ -1,94 +1,244 @@
-.appointments-section,
-.records-section,
-.billing-section,
-.telemedicine-section,
-.monitoring-section,
-.support-section,
-.feedback-section,
-.documents-section {
-  margin-top: 20px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.appointments-upcoming,
-.appointments-history,
-.prescriptions,
-.lab-results,
-.invoices,
-.payment-summary,
-.video-consultation,
-.chat-consultation,
-.monitoring-overview,
-.device-integration,
+/* Add this rule to preserve Font Awesome icons */
+.fas, .far, .fab {
+  font-family: 'Font Awesome 6 Free' !important;
+}
+body {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 15px;
+}
+
+.section-header h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 2px;
+}
+
+.support-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .support-section {
+    grid-template-columns: 1fr;
+  }
+}
+
 .contact-info,
-.faq-section,
-.feedback-form,
-.surveys,
-.document-categories,
-.recent-documents {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.faq-section {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 32px rgba(31, 38, 135, 0.1),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
 }
 
-.appointments-section h3,
-.records-section h3,
-.billing-section h3,
-.telemedicine-section h3,
-.monitoring-section h3,
-.support-section h3,
-.feedback-section h3,
-.documents-section h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e3a8a;
-  margin-bottom: 15px;
+.contact-info h3,
+.faq-section h3 {
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
 }
-/* FAQ Section */
+
+.contact-info h3::after,
+.faq-section h3::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #c7d2fe, transparent);
+  margin-left: 20px;
+}
+
+.contact-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.contact-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.03),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.contact-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.07),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
+}
+
+.contact-icon {
+  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.contact-icon i {
+  color: white;
+  font-size: 24px;
+}
+
+.contact-details h4 {
+  font-size: 18px;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.contact-details p {
+  color: #475569;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.contact-details strong {
+  color: #334155;
+  font-weight: 600;
+}
+
 .faq-list {
-  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .faq-item {
-  margin-bottom: 15px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.faq-question {
-  padding: 15px;
-  background-color: #f8fafc;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.03),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
+.faq-item:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.07),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .faq-question h4 {
-  font-size: 16px;
+  font-size: 18px;
+  color: #1e293b;
   font-weight: 500;
-  color: #334155;
 }
 
 .faq-question i {
-  color: #64748b;
-  transition: all 0.3s ease;
+  color: #94a3b8;
+  transition: transform 0.3s ease;
 }
 
 .faq-answer {
-  padding: 0 15px;
   max-height: 0;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: max-height 0.3s ease;
+  padding-top: 0;
 }
 
 .faq-item.active .faq-answer {
-  padding: 15px;
   max-height: 200px;
+  padding-top: 16px;
 }
 
 .faq-item.active .faq-question i {
   transform: rotate(180deg);
+}
+
+.faq-answer p {
+  color: #64748b;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.footer-note {
+  text-align: center;
+  margin-top: 40px;
+  color: #64748b;
+  font-size: 14px;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .contact-info,
+  .faq-section {
+    padding: 20px;
+  }
+
+  .contact-card {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .contact-icon {
+    width: 50px;
+    height: 50px;
+  }
 }

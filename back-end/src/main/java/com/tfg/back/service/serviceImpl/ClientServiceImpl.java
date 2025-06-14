@@ -8,17 +8,25 @@ import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.AppointmentMapper;
 import com.tfg.back.mappers.ClientMapper;
+import com.tfg.back.mappers.MedicalPrescriptionMapper;
+import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.MedicalPrescription;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.model.dtos.client.SummaryResponse;
+import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
+import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.ClientRepository;
+import com.tfg.back.repository.MedicalPrescriptionRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientService;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,15 +43,33 @@ public class ClientServiceImpl implements ClientService {
     private final NotificationRepository notificationRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final AppointmentRepository appointmentRepository;
+    private final MedicalPrescriptionRepository medicalPrescriptionRepository;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder, EmailService emailService, AppointmentRepository appointmentRepository, MedicalPrescriptionRepository medicalPrescriptionRepository) {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
         this.appointmentMapper = appointmentMapper;
         this.notificationRepository = notificationRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.appointmentRepository = appointmentRepository;
+        this.medicalPrescriptionRepository = medicalPrescriptionRepository;
+    }
+    //NAME - 3 LAST APPOINTMENTS THAT ARE NOT CANCELLED - 3 LAST MEDICAL RECORDS  - 3 LAST NOTIFICATIONS
+    @Override
+    public SummaryResponse getClientSummaryByEmail(String email) {
+        String fullName = clientRepository.findFullNameByEmail(email);
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByClientEmail(email, PageRequest.of(0,3));
+        List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findPrescriptionsByClientEmail(email, PageRequest.of(0,3));
+        List<Notification> notifications = notificationRepository.findTop3ByUserEmailAndSeenFalseOrderByDateDesc(email);
+        //Mapping
+        List<AppointmentDtoGet> appointmentDtoGets = appointmentMapper.toDtoGetList(appointments);
+        List<MedicalPrescriptionDtoGet> prescriptonDtoGets = MedicalPrescriptionMapper.toDtoGetList(prescriptions);
+
+        SummaryResponse summary = new SummaryResponse(fullName, appointmentDtoGets, prescriptonDtoGets, notifications);
+        return summary;
     }
 
     //NOTE: Public Crud methods

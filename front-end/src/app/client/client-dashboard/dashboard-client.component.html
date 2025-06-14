@@ -13,9 +13,7 @@
     <div class="content-area">
       <!-- Dashboard Overview -->
       <div *ngIf="activeSection === 'dashboard'">
-        <app-client-dashboard-summary [patient]="patient" [medications]="medications" [notifications]="notifications"
-          [upcomingAppointments]="upcomingAppointments"
-          (sectionChange)="setActiveSection($event)"></app-client-dashboard-summary>
+        <app-client-dashboard-summary (sectionChange)="setActiveSection($event)"></app-client-dashboard-summary>
       </div>
 
       <!-- Profile Section -->

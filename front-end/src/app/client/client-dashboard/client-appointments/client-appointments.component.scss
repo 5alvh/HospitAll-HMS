@@ -1,168 +1,464 @@
-.appointments-section,
-.records-section,
-.billing-section,
-.telemedicine-section,
-.monitoring-section,
-.support-section,
-.feedback-section,
-.documents-section {
+/* ===== APPOINTMENTS SECTION ===== */
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 15px;
+}
+
+.section-header h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 2px;
+}
+
+.section-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
   margin-top: 20px;
+}
+
+.tab {
+  padding: 10px 24px;
+  border-radius: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  background: rgba(241, 245, 249, 0.6);
+  color: #64748b;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+}
+
+.tab:hover:not(.active) {
+  background: rgba(241, 245, 249, 0.9);
+  transform: translateY(-2px);
+}
+
+.appointment-booking {
+  text-align: right;
+  margin-bottom: 24px;
+}
+
+.form-actions .btn-primary {
+  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 6px rgba(99, 102, 241, 0.2),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.form-actions .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 6px 12px rgba(99, 102, 241, 0.3),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
+}
+
+.appointments-section {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(31, 38, 135, 0.1),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
 }
 
 .appointments-upcoming,
-.appointments-history,
-.prescriptions,
-.lab-results,
-.invoices,
-.payment-summary,
-.video-consultation,
-.chat-consultation,
-.monitoring-overview,
-.device-integration,
-.contact-info,
-.faq-section,
-.feedback-form,
-.surveys,
-.document-categories,
-.recent-documents {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
+.appointments-history {
+  margin-bottom: 40px;
+}
+
+.appointments-upcoming h3,
+.appointments-history h3 {
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+}
+
+.appointments-upcoming h3::after,
+.appointments-history h3::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #c7d2fe, transparent);
+  margin-left: 20px;
+}
+
+.checkbox-wrapper {
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
 }
 
-.appointments-section h3,
-.records-section h3,
-.billing-section h3,
-.telemedicine-section h3,
-.monitoring-section h3,
-.support-section h3,
-.feedback-section h3,
-.documents-section h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e3a8a;
-  margin-bottom: 15px;
+.checkbox-wrapper label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  cursor: pointer;
+  font-size: 15px;
 }
 
-/* Data Tables */
+.checkbox-wrapper input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.8);
+  appearance: none;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked {
+  background: #6366f1;
+  border-color: #6366f1;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+/* Table Styles */
 .data-table {
-  width: 100%;
-  overflow-x: auto;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.data-table table {
+table {
   width: 100%;
   border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.6);
 }
 
-.data-table th {
-  background-color: #f1f5f9;
-  padding: 12px 15px;
+th, td {
+  padding: 18px 24px;
   text-align: left;
-  font-size: 14px;
+  font-size: 15px;
+}
+
+thead {
+  background: linear-gradient(120deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-bottom: 2px solid rgba(226, 232, 240, 0.5);
+}
+
+th {
+  color: #6366f1;
   font-weight: 600;
-  color: #334155;
+  font-size: 16px;
 }
 
-.data-table td {
-  padding: 12px 15px;
-  font-size: 14px;
-  color: #64748b;
-  border-bottom: 1px solid #f1f5f9;
+tbody tr {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+  transition: all 0.3s ease;
 }
 
-.data-table tr:last-child td {
+tbody tr:last-child {
   border-bottom: none;
 }
 
-.data-table tr:hover {
-  background-color: #f8fafc;
+tbody tr:hover {
+  background: rgba(241, 245, 249, 0.5);
+  transform: translateX(4px);
 }
 
-/*checkbox styles*/
-.checkbox-wrapper {
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #334155;
+/* Status Badges */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
 }
 
-.checkbox-wrapper input {
-  margin-right: 6px;
+.status-confirmed {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
 }
 
-/* Booking Form */
-.appointment-booking {
-  margin-top: 20px;
+.status-scheduled {
+  background: rgba(56, 189, 248, 0.15);
+  color: #0c4a6e;
 }
 
-.booking-form {
-  background-color: #ffffff;
+.status-cancelled {
+  background: rgba(239, 68, 68, 0.15);
+  color: #b91c1c;
+}
+
+.status-completed {
+  background: rgba(139, 92, 246, 0.15);
+  color: #5b21b6;
+}
+
+/* Buttons */
+.btn-icon {
+  background: rgba(241, 245, 249, 0.6);
+  border: 1px solid rgba(226, 232, 240, 0.5);
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #334155;
-  margin-bottom: 8px;
-}
-
-.form-group select,
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #334155;
-}
-
-.form-group select:focus,
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.3);
-}
-
-.form-actions {
-  margin-top: 20px;
-}
-
-/* Available Slots */
-.available-slots {
-  margin-top: 20px;
-}
-
-.slots-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.slot-item {
-  display: flex;
-  flex-direction: column;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
   align-items: center;
-  background-color: #f1f5f9;
-  border-radius: 8px;
-  padding: 12px;
+  justify-content: center;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #64748b;
 }
 
-.slot-item span {
-  font-size: 14px;
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #6366f1;
+  color: #6366f1;
+  border-radius: 16px;
+  padding: 10px 20px;
   font-weight: 500;
-  color: #334155;
-  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-outline:hover {
+  background: rgba(99, 102, 241, 0.05);
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 20px 50px rgba(31, 38, 135, 0.2),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
+  width: 90%;
+  max-width: 600px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 24px;
+  background: linear-gradient(120deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #1e293b;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  background: rgba(241, 245, 249, 0.6);
+  color: #dc2626;
+  transform: rotate(90deg);
+}
+
+.card-body {
+  padding: 28px;
+}
+
+.details-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 24px;
+}
+
+.details-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+  display: flex;
+}
+
+.details-list li:last-child {
+  border-bottom: none;
+}
+
+.details-list strong {
+  width: 140px;
+  display: inline-block;
+  color: #475569;
+}
+
+.download-btn {
+  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+}
+
+.download-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Empty State */
+.no-data {
+  padding: 24px;
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+  grid-column: 1 / -1;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .section-header h2 {
+    font-size: 2rem;
+  }
+  
+  .appointments-section {
+    padding: 20px;
+  }
+  
+  th, td {
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .appointment-booking {
+    text-align: center;
+  }
+  
+  .data-table {
+    overflow-x: auto;
+  }
+  
+  .details-list li {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .details-list strong {
+    width: 100%;
+  }
+  
+  tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  tbody tr td {
+    flex: 1 1 40%;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .btn-icon {
+    margin-bottom: 8px;
+  }
+  
+  .form-actions .btn-primary {
+    width: 100%;
+  }
 }

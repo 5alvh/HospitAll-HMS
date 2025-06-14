@@ -7,11 +7,15 @@ import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.model.dtos.client.SummaryResponse;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 
 import java.util.List;
 
 public interface ClientService {
+
+    SummaryResponse getClientSummaryByEmail(String email);
+
     /**
      * Get All Clients {@link List<ClientDtoGet>}
      * Returns a list of all clients.

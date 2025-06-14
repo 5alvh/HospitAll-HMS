@@ -5,7 +5,7 @@ import { ClientDtoGet } from '../../models/client-dto-get';
 import { Router } from '@angular/router';
 import { LocalStorageManagerService } from '../auth/local-storage-manager.service';
 import { ClientDtoUpdate } from '../../models/client-dto-update';
-
+import { SummaryResponse } from '../../models/summary-response';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +14,6 @@ export class ClientService {
   private baseUrl = 'http://localhost:8080/clients';
   private patientSource = new BehaviorSubject<ClientDtoGet>({} as ClientDtoGet);
   patient$ = this.patientSource.asObservable();
-
   constructor(private httpClient: HttpClient, private router: Router, private localStorageManager: LocalStorageManagerService) { }
 
   updateProfile(client: ClientDtoUpdate, id: number): Observable<ClientDtoGet> {
@@ -25,6 +24,10 @@ export class ClientService {
         return throwError(() => error);
       })
     );
+  }
+
+  getSummary(): Observable<SummaryResponse>{
+    return this.httpClient.get<SummaryResponse>(`${this.baseUrl}/summary`)
   }
 
   getProfile(): Observable<ClientDtoGet> {

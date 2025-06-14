@@ -1,6 +1,7 @@
 package com.tfg.back.repository;
 
 import com.tfg.back.model.Appointment;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     Long countDistinctClientsByDoctorId(@Param("doctorId") Long doctorId);
 
     List<Appointment> findByClientEmail(String email);
+
+    @Query("""
+        SELECT a FROM Appointment a
+        WHERE a.client.email = :email
+            AND a.status <> 'CANCELLED'
+        ORDER BY a.appointmentDateTime DESC
+        """)
+    List<Appointment> findAppointmentsByClientEmail(@Param("email") String email, Pageable pageable);
 }

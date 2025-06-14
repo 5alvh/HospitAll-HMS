@@ -1,6 +1,8 @@
 <div class="header">
     <div class="page-title">
-        <h1>{{title}}</h1>
+        <h1 [class.fade]="fadeState === 'hidden'" [class.visible]="fadeState === 'visible'">
+      {{ title }}
+    </h1>
     </div>
     <div class="header-actions">
         <div class="notification-icon">
@@ -16,5 +18,6 @@
                 <button (click)="logout()">Logout</button>
             </div>
         </div>
+        <span class="online-indicator" title="Online"></span>
     </div>
 </div>

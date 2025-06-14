@@ -91,16 +91,16 @@
                         <td>{{result.testName}}</td>
                         <td>{{result.createdAt | date: 'mediumDate'}}</td>
                         <td>
-                            <span class="status-badge" [class.status-completed]="result.status === 'COMPLETED'"
+                            <span class="status-badge" [class.status-completed]="result.status === 'Completed'"
                                 [class.status-scheduled]="result.status === 'SCHEDULED'">
                                 {{result.status}}
                             </span>
                         </td>
                         <td>
-                            <button class="btn-icon" title="View Results" [disabled]="result.status !== 'COMPLETED'">
+                            <button class="btn-icon" title="View Results" [disabled]="result.status !== 'Completed'">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn-icon" title="Download Report" [disabled]="result.status !== 'COMPLETED'">
+                            <button class="btn-icon" title="Download Report" [disabled]="result.status !== 'Completed'">
                                 <i class="fas fa-download"></i>
                             </button>
                         </td>

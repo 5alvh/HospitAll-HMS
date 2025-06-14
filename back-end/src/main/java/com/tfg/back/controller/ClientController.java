@@ -7,6 +7,7 @@ import com.tfg.back.model.dtos.auth.AuthRequest;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
+import com.tfg.back.model.dtos.client.SummaryResponse;
 import com.tfg.back.service.ClientService;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.service.serviceImpl.LoginService;
@@ -62,6 +63,12 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
+    @GetMapping("/summary")
+    public ResponseEntity<SummaryResponse> getClientSummaryByEmail(Authentication authentication) {
+        String email = authentication.getName();
+        SummaryResponse summary = clientService.getClientSummaryByEmail(email);
+        return ResponseEntity.ok(summary);
+    }
     @GetMapping("/profile")
     public ResponseEntity<ClientDtoGet> getClientByEmail(Authentication authentication) {
         String email = authentication.getName();
