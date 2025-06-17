@@ -106,65 +106,11 @@ export class DashboardClientComponent implements OnInit {
     this.getProfile();
   }
 
-  get filteredUpcomingAppointments() {
-    return this.hideCancelled
-      ? this.upcomingAppointments.filter(a => a.status !== 'CANCELLED')
-      : this.upcomingAppointments;
-  }
-
-  refreshTopUnseenNotifications() {
-    this.topUnseenNotifications = this.notifications.filter(n => !n.seen).slice(0, 3);
-  }
-
-  getUnreadCount() {
-    return this.notifications.filter(notification => !notification.seen).length;
-  }
-
-  onShowOptions() {
-    this.showOptions = !this.showOptions;
-  }
-
-  logout() {
-    this.localS.clearAuth();
-    this.router.navigate(['/']);
-    console.log('Logging out...');
-  }
-
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
-        console.log(response);
-        response.createdAt = response.createdAt.split('T')[0];
-        const now = new Date();
-
-        this.patient = response;
-        this.notifications = this.patient.notifications;
-        this.labResults = this.patient.labResults;
-        this.feedbacks = this.patient.feedbacksWritten;
-        this.appointments = this.patient.appointments;
-        this.refreshTopUnseenNotifications();
-
-        this.medications = this.patient.prescriptions;
-        if (this.patient && this.patient.appointments) {
-          this.patient.appointments.forEach(appointment => {
-
-            const appointmentDate = new Date(appointment.appointmentDateTime);
-
-            if (appointmentDate >= now) {
-              this.upcomingAppointments.push({
-                ...appointment,
-                appointmentDateTime: this.formatDate(appointment.appointmentDateTime)
-              });
-            } else {
-              this.pastAppointments.push({
-                ...appointment,
-                appointmentDateTime: this.formatDate(appointment.appointmentDateTime)
-              });
-            }
-          });
-        }
-        this.isLoading = false;
-
+        this.patient = response;  
+        this.isLoading = false;  
       },
       error: (error) => {
         this.localS.clearAuth();

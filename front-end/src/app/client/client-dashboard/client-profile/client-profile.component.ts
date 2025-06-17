@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ClientDtoGet } from '../../../models/client-dto-get';
 import { NgIf, TitleCasePipe } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
@@ -11,11 +11,28 @@ import { ClientService } from '../../../services/client-services/client.service'
   styleUrl: './client-profile.component.scss',
   providers: [TitleCasePipe],
 })
-export class ClientProfileComponent {
+export class ClientProfileComponent implements OnInit {
 
-  @Input({ required: true }) patient!: ClientDtoGet;
+  patient!: ClientDtoGet;
+  isLoading = true;
+  constructor(private clientService: ClientService, private router: Router) { }
+  
+  ngOnInit(): void {
+    this.getProfile();
+  }
 
-  constructor(private clientService: ClientService, private router: Router) {}
+  getProfile() {
+    this.clientService.getProfile().subscribe({
+      next: (response) => {
+        this.patient = response;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.router.navigate(['/']);
+        console.error('Error fetching profile:', error);
+      }
+    });
+  }
 
   onInactivateAccount() {
     if (confirm('Are you sure you want to inactivate your account? This action cannot be undone.')) {

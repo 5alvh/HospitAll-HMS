@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -81,7 +82,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDtoGet getClientById(Long id) {
+    public ClientDtoGet getClientById(UUID id) {
         Client client = findClientById(id);
         return clientMapper.toGetDto(client);
     }
@@ -109,7 +110,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDtoGet updateClient(Long id, ClientDtoUpdate dto) {
+    public ClientDtoGet updateClient(UUID id, ClientDtoUpdate dto) {
         Client clientToUpdate = findClientById(id);
         Client client = clientMapper.updateEntity(clientToUpdate, dto);
         Client updatedClient = clientRepository.save(client);
@@ -180,7 +181,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     // NOTE: Private methods
-    private Client findClientById(Long id) {
+    private Client findClientById(UUID id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id, SearchType.ID));
     }

@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/appointment")
@@ -99,7 +100,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/total-patients/{id}")
-    public ResponseEntity<Long> getTotalPatients(@PathVariable Long id) {
+    public ResponseEntity<Long> getTotalPatients(@PathVariable UUID id) {
         return ResponseEntity.ok(appointmentService.getTotalPatientsThatVisitedDoctor(id));
     }
 

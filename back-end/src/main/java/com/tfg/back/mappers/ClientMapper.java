@@ -85,17 +85,11 @@ public class ClientMapper {
                 .address(client.getAddress())
                 .emergencyContact(client.getEmergencyContact())
                 .createdAt(client.getCreatedAt())
-                .appointments(appointmentMapper.toDtoGetList(client.getAppointments()))
-                .prescriptions(medicalPrescriptionMapper.toDtoGetList(client.getPrescriptionsReceived()))
-                .labResults(labResultMapper.toDtoGetList(client.getLabResultsReceived()))
-                .notifications(client.getNotifications())
-                .feedbacksWritten(FeedbackMapper.toFeedBackDtoGetList(client.getFeedbacksWritten()))
                 .build();
     }
 
     public List<ClientDtoGet> toGetDtoList(List<Client> clients) {
         return clients.stream().map(this::toGetDto).toList();
     }
-
 }
 

@@ -1,7 +1,7 @@
 package com.tfg.back.model.dtos.doctor;
 
 
+import java.util.UUID;
 
-
-public record AvailableDoctorGet(String doctorFullName, Long doctorId)
+public record AvailableDoctorGet(String doctorFullName, UUID doctorId)
 {}

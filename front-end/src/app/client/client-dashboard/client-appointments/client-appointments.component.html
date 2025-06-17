@@ -1,4 +1,3 @@
-
 <div class="modal-backdrop" *ngIf="selectedAppointment && !isLoading">
     <div class="summary-card appointment-modal">
         <div class="card-header">
@@ -22,104 +21,105 @@
         </div>
     </div>
 </div>
-
-<div class="section-header">
-    <h2>Appointments</h2>
-    <div class="section-tabs">
-        <div class="tab active">Upcoming</div>
-        <div class="tab">History</div>
-        <div class="tab">Book New</div>
-    </div>
-</div>
-<div class="appointment-booking">
-    <div class="form-actions">
-        <button class="btn-primary" [routerLink]="['/book-appointment']">Book an Appointment</button>
-    </div>
-</div>
-<div class="appointments-section" *ngIf="appointments">
-    <div class="appointments-upcoming">
-        <h3>Upcoming Appointments</h3>
-        <div class="checkbox-wrapper">
-            <label>
-                <input type="checkbox" [(ngModel)]="hideCancelled" />
-                Hide canceled appointments
-            </label>
-        </div>
-        <div class="data-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Doctor</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <div *ngIf="filteredUpcomingAppointments.length === 0" class="no-data">
-                        No upcoming appointments.
-                    </div>
-                    <tr *ngFor="let appointment of filteredUpcomingAppointments">
-                        <td>{{appointment.appointmentDateTime}} - {{ appointment.appointmentDateTime!.split('
-                            ').slice(3).join(' ') }}</td>
-                        <td>{{appointment.doctorFullName}}</td>
-                        <td>{{appointment.departmentName}}</td>
-                        <td>
-                            <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'"
-                                [class.status-scheduled]="appointment.status === 'SCHEDULED'"
-                                [class.status-cancelled]="appointment.status === 'CANCELLED'"
-                                [class.status-completed]="appointment.status === 'COMPLETED'">
-                                {{appointment.status}}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn-icon" title="Reschedule" (click)="sorryMessage()"
-                                *ngIf="appointment.status !== 'COMPLETED'"><i class="fas fa-clock"></i></button>
-                            <button class="btn-icon" title="Cancel" *ngIf="canBeCancelled(appointment.status)"><i
-                                    class="fas fa-times" (click)="cancelAppointment(appointment.id)"></i></button>
-                            <button class="btn-icon" title="View Details"
-                                (click)="showDetailsAppointment(appointment)"><i class="fas fa-eye"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+<div *ngIf="!isLoading">
+    <div class="section-header">
+        <h2>Appointments</h2>
+        <div class="section-tabs">
+            <div class="tab active">Upcoming</div>
+            <div class="tab">History</div>
+            <div class="tab">Book New</div>
         </div>
     </div>
+    <div class="appointment-booking">
+        <div class="form-actions">
+            <button class="btn-primary" [routerLink]="['/book-appointment']">Book an Appointment</button>
+        </div>
+    </div>
+    <div class="appointments-section" *ngIf="appointments">
+        <div class="appointments-upcoming">
+            <h3>Upcoming Appointments</h3>
+            <div class="checkbox-wrapper">
+                <label>
+                    <input type="checkbox" [(ngModel)]="hideCancelled" />
+                    Hide canceled appointments
+                </label>
+            </div>
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div *ngIf="filteredUpcomingAppointments.length === 0" class="no-data">
+                            No upcoming appointments.
+                        </div>
+                        <tr *ngFor="let appointment of filteredUpcomingAppointments">
+                            <td>{{appointment.appointmentDateTime}} - {{ appointment.appointmentDateTime!.split('
+                                ').slice(3).join(' ') }}</td>
+                            <td>{{appointment.doctorFullName}}</td>
+                            <td>{{appointment.departmentName}}</td>
+                            <td>
+                                <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'"
+                                    [class.status-scheduled]="appointment.status === 'SCHEDULED'"
+                                    [class.status-cancelled]="appointment.status === 'CANCELLED'"
+                                    [class.status-completed]="appointment.status === 'COMPLETED'">
+                                    {{appointment.status}}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-icon" title="Reschedule" (click)="sorryMessage()"
+                                    *ngIf="appointment.status !== 'COMPLETED'"><i class="fas fa-clock"></i></button>
+                                <button class="btn-icon" title="Cancel" *ngIf="canBeCancelled(appointment.status)"><i
+                                        class="fas fa-times" (click)="cancelAppointment(appointment.id)"></i></button>
+                                <button class="btn-icon" title="View Details"
+                                    (click)="showDetailsAppointment(appointment)"><i class="fas fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <div class="appointments-history">
-        <h3>Appointment History</h3>
-        <div class="data-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Doctor</th>
-                        <th>Department</th>
-                        <th>Diagnosis</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <div *ngIf="pastAppointments.length === 0" class="no-data">
-                        No past appointments found.
-                    </div>
-                    <tr *ngFor="let appointment of pastAppointments">
-                        <td>{{appointment.appointmentDateTime}}</td>
-                        <td>{{appointment.doctorFullName}}</td>
-                        <td>{{appointment.departmentName}}</td>
-                        <td>{{appointment.diagnosis}}</td>
-                        <td>
-                            <button class="btn-icon" title="View Details"
-                                (click)="showDetailsAppointment(appointment)"><i class="fas fa-eye"></i></button>
-                            <button class="btn-icon" title="Download Summary"
-                                (click)="downloadAppointment(appointment.id)"><i class="fas fa-download"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="appointments-history">
+            <h3>Appointment History</h3>
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Diagnosis</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div *ngIf="pastAppointments.length === 0" class="no-data">
+                            No past appointments found.
+                        </div>
+                        <tr *ngFor="let appointment of pastAppointments">
+                            <td>{{appointment.appointmentDateTime}}</td>
+                            <td>{{appointment.doctorFullName}}</td>
+                            <td>{{appointment.departmentName}}</td>
+                            <td>{{appointment.diagnosis}}</td>
+                            <td>
+                                <button class="btn-icon" title="View Details"
+                                    (click)="showDetailsAppointment(appointment)"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon" title="Download Summary"
+                                    (click)="downloadAppointment(appointment.id)"><i
+                                        class="fas fa-download"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
 <app-client-loading-wrapper [isLoading]="isLoading"></app-client-loading-wrapper>

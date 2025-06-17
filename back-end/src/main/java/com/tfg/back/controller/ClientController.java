@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -56,7 +57,7 @@ public class ClientController {
     }
 
     @GetMapping("/by-id/{id}")
-    public ResponseEntity<ClientDtoGet> getClientById(@NotNull @PathVariable Long id) {
+    public ResponseEntity<ClientDtoGet> getClientById(@NotNull @PathVariable UUID id) {
         log.info("Fetching client by id: {}", id);
         ClientDtoGet client = clientService.getClientById(id);
         log.debug("Client retrieved: {}", client);
@@ -97,7 +98,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDtoGet> updateClient(@PathVariable Long id,@Valid @RequestBody ClientDtoUpdate dto){
+    public ResponseEntity<ClientDtoGet> updateClient(@PathVariable UUID id,@Valid @RequestBody ClientDtoUpdate dto){
         ClientDtoGet client = clientService.updateClient(id, dto);
         return ResponseEntity.ok(client);
     }

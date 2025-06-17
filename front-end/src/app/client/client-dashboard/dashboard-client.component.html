@@ -1,12 +1,12 @@
 <!-- dashboard-client.component.html -->
-<div class="app-container" *ngIf="!isLoading && patient">
+<div class="app-container" *ngIf="!isLoading ">
   <!-- Sidebar -->
   <app-client-sidebar (changeActiveSection)="setActiveSection($event)"></app-client-sidebar>
 
   <!-- Main Content -->
   <div class="main-content">
     <!-- Header -->
-    <app-client-header [patientName]="patient.fullName" [unreadNotificationsCount]="getUnreadCount()"
+    <app-client-header
       (activeSection)="setActiveSection($event)"></app-client-header>
 
     <!-- Dashboard Content -->
@@ -18,7 +18,7 @@
 
       <!-- Profile Section -->
       <div *ngIf="activeSection === 'profile'">
-        <app-client-profile [patient]="patient"></app-client-profile>
+        <app-client-profile ></app-client-profile>
       </div>
 
       <!-- Appointments Section -->

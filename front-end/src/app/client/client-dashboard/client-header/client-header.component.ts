@@ -2,6 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component, Input, OnInit, output } from '@angular/core';
 import { LocalStorageManagerService } from '../../../services/auth/local-storage-manager.service';
 import { Router } from '@angular/router';
+import { ClientStateService } from '../../../services/client-services/client-state.service';
 
 @Component({
   selector: 'app-client-header',
@@ -12,8 +13,8 @@ import { Router } from '@angular/router';
 export class ClientHeaderComponent implements OnInit {
 
 
-  @Input({ required: true }) unreadNotificationsCount!: number;
-  @Input({ required: true }) patientName!: string;
+  unreadNotificationsCount: number=1;
+  patientName!: string;
   activeSection = output<string>();
 
   showOptions = false;
@@ -22,9 +23,14 @@ export class ClientHeaderComponent implements OnInit {
   title = this.titles[this.titleIndex];
   fadeState = 'visible'; // 'visible' or 'hidden'
   intervalId: any;
-  constructor(private localS: LocalStorageManagerService, private router: Router) { }
+  constructor(private localS: LocalStorageManagerService, private router: Router, private clientState: ClientStateService) { }
 
   ngOnInit(): void {
+    this.clientState.fullName$.subscribe(
+      (response)=>{
+        this.patientName = response
+      }
+    )
     this.intervalId = setInterval(() => {
       this.fadeState = 'hidden';
 

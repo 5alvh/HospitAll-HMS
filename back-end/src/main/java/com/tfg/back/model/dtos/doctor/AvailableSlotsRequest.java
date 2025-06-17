@@ -1,6 +1,7 @@
 package com.tfg.back.model.dtos.doctor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-public record AvailableSlotsRequest(Long doctorId, LocalDate date) {
+public record AvailableSlotsRequest(UUID doctorId, LocalDate date) {
 }

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +24,7 @@ import java.util.Set;
 @Builder
 public class DoctorDtoGet {
 
-    private Long id;
+    private UUID id;
     private String fullName;
     private String email;
     private String phoneNumber;

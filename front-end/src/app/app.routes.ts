@@ -78,5 +78,10 @@ export const routes: Routes = [
     path: 'unauthorized',
     loadComponent: () =>
       import('./shared/unauthorized/unauthorized.component').then((c) => c.UnauthorizedComponent),
+  },
+  {
+    path:'hello',
+    loadComponent:()=>
+      import('./interface/interface.component').then((c)=>c.InterfaceComponent)
   }
 ];

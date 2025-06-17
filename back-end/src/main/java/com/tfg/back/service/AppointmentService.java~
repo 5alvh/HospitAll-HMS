@@ -114,7 +114,7 @@ public interface AppointmentService {
      * @param id ID of the doctor
      * @return Number of distinct patients seen by the doctor
      */
-    Long getTotalPatientsThatVisitedDoctor(UUID id);
+    Long getTotalPatientsThatVisitedDoctor(Long id);
 
     /**
      * Books an appointment by a doctor using a client's email.

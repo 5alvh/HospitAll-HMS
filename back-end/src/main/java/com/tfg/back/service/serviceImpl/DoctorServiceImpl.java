@@ -52,7 +52,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public DoctorDtoGet getDoctorById(Long id) {
+    public DoctorDtoGet getDoctorById(UUID id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
         return doctorMapper.toDtoGet(doctor);
@@ -86,14 +86,14 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public void deleteDoctor(Long id) {
+    public void deleteDoctor(UUID id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
         doctorRepository.delete(doctor);
     }
 
     @Override
-    public DoctorDtoGet updateDoctor(Long id, DoctorDtoUpdate dto) {
+    public DoctorDtoGet updateDoctor(UUID id, DoctorDtoUpdate dto) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
 
@@ -115,7 +115,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<TimeInterval> getAvailableSlots(Long doctorId, LocalDate date) {
+    public List<TimeInterval> getAvailableSlots(UUID doctorId, LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new UserNotFoundException(doctorId, SearchType.ID));
 

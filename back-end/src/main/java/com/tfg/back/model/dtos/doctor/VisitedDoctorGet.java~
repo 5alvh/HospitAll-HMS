@@ -4,7 +4,5 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
-public record VisitedDoctorGet (UUID id, String fullName){
+public record VisitedDoctorGet (Long id, String fullName){
 }

@@ -61,4 +61,6 @@ public class MedicalPrescriptionController {
         return ResponseEntity.ok(prescription);
     }
 
+
+
 }

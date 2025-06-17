@@ -17,13 +17,8 @@ export class ClientDtoGet {
   membershipLevel!: MembershipLevel;
   emergencyContact!: EmergencyContact;
   createdAt!: string;
-  appointments!: AppointmentDtoGet[];
   address!: string;
   bloodType!: BloodType;
-  notifications!: NotificationDto[];
-  prescriptions!: MedicalPrescriptionDtoGet[];
-  labResults!: LabResultDtoGet[];
-  feedbacksWritten!: Feedback[];
 
   constructor(init?: Partial<ClientDtoGet>) {
     Object.assign(this, init);

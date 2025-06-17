@@ -11,6 +11,7 @@ import com.tfg.back.model.dtos.client.SummaryResponse;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ClientService {
 
@@ -30,7 +31,7 @@ public interface ClientService {
      * @param id the ID of the client to retrieve
      * @return ClientDtoGet the client with the specified ID
      */
-    ClientDtoGet getClientById(Long id);
+    ClientDtoGet getClientById(UUID id);
 
     /**
      * Get Client by Email {@link ClientDtoGet}
@@ -57,7 +58,7 @@ public interface ClientService {
      * @param clientDto the updated client data
      * @return ClientDtoGet the updated client
      */
-    ClientDtoGet updateClient(Long id, ClientDtoUpdate clientDto);
+    ClientDtoGet updateClient(UUID id, ClientDtoUpdate clientDto);
 
     /**
      * Change Client Password

@@ -5,11 +5,13 @@ import { NotificationService } from '../../../services/client-services/notificat
 import { NotificationDto } from '../../../models/notification-dto';
 import { AppointmentDtoGet } from '../../../models/appointment-dto-get';
 import { ClientService } from '../../../services/client-services/client.service';
+import { ClientLoadingWrapperComponent } from "../client-loading-wrapper/client-loading-wrapper.component";
+import { ClientStateService } from '../../../services/client-services/client-state.service';
 
 @Component({
   selector: 'app-client-dashboard-summary',
   standalone: true,
-  imports: [NgIf, NgFor, DatePipe],
+  imports: [NgIf, NgFor, DatePipe, ClientLoadingWrapperComponent],
   templateUrl: './client-dashboard-summary.component.html',
   styleUrl: './client-dashboard-summary.component.scss',
   providers: [DatePipe]
@@ -30,7 +32,8 @@ export class ClientDashboardSummaryComponent implements OnInit {
   }
 
 
-  constructor(private notificationsService: NotificationService, private clientService: ClientService) { }
+  constructor(private notificationsService: NotificationService, private clientService: ClientService,  private clientState: ClientStateService
+) { }
   ngOnInit(): void {
     this.getSummary();
   }
@@ -39,6 +42,7 @@ export class ClientDashboardSummaryComponent implements OnInit {
     this.clientService.getSummary().subscribe({
       next: (response) => {
         this.fullName = response.fullName
+        this.clientState.setFullName(this.fullName)
         this.medications = response.prescriptions
         this.notifications = response.notifications
         this.upcomingAppointments = response.appointments.map(

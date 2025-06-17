@@ -7,8 +7,8 @@
 <div class="profile-section">
     <div class="profile-card">
         <div class="profile-header">
-            <div class="profile-avatar">
-                <img src="./user-profile.jpg" alt="User Profile">
+            <div class="profile-avatar icon-avatar">
+                <i class="fas fa-user-circle"></i>
             </div>
             <div class="profile-info">
                 <h3>{{patient.fullName}}</h3>
@@ -63,10 +63,10 @@
                 </div>
             </div>
             <div class="delete-account">
-                    <button class="btn-danger" (click)="onInactivateAccount()">
-                        <i class="fas fa-trash-alt"></i> Inactivate Account
-                    </button>
-                </div>
+                <button class="btn-danger" (click)="onInactivateAccount()">
+                    <i class="fas fa-trash-alt"></i> Inactivate Account
+                </button>
+            </div>
         </div>
     </div>
 </div>

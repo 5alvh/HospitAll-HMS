@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public interface DoctorService {
     /**
@@ -40,7 +41,7 @@ public interface DoctorService {
      * @return DoctorDtoGet the doctor's information
      * @throws UserNotFoundException if no doctor exists with the given ID
      */
-    DoctorDtoGet getDoctorById(Long id);
+    DoctorDtoGet getDoctorById(UUID id);
 
     /**
      * Get Doctor by Email {@link DoctorDtoGet}
@@ -59,7 +60,7 @@ public interface DoctorService {
      * @param id the unique ID of the doctor to delete
      * @throws UserNotFoundException if no doctor exists with the given ID
      */
-    void deleteDoctor(Long id);
+    void deleteDoctor(UUID id);
 
     /**
      * Find Doctor by Email {@link Doctor}
@@ -80,7 +81,7 @@ public interface DoctorService {
      * @return DoctorDtoGet the updated doctor information
      * @throws UserNotFoundException if no doctor exists with the given ID
      */
-    DoctorDtoGet updateDoctor(Long id, DoctorDtoUpdate dto);
+    DoctorDtoGet updateDoctor(UUID id, DoctorDtoUpdate dto);
 
     /**
      * Get Available Doctors {@link List<AvailableDoctorGet>}
@@ -102,7 +103,7 @@ public interface DoctorService {
      * @return List<TimeInterval> containing available time slots
      * @throws UserNotFoundException if no doctor exists with the given ID
      */
-    List<TimeInterval> getAvailableSlots(Long doctorId, LocalDate date);
+    List<TimeInterval> getAvailableSlots(UUID doctorId, LocalDate date);
 
     /**
      * Get Visited Doctors {@link List<VisitedDoctorGet>}

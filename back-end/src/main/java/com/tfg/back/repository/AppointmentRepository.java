@@ -11,18 +11,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    List<Appointment> findByDoctorIdAndAppointmentDateTimeBetween(Long doctorId, LocalDateTime start, LocalDateTime end);
-    boolean existsByDoctorIdAndAppointmentDateTime(Long doctorId, LocalDateTime appointmentDateTime);
+
+    boolean existsByDoctorIdAndAppointmentDateTime(UUID doctorId, LocalDateTime appointmentDateTime);
 
     @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId AND DATE(a.appointmentDateTime) = :date")
-    List<Appointment> findByDoctorIdAndAppointmentDate(@Param("doctorId") Long doctorId,
+    List<Appointment> findByDoctorIdAndAppointmentDate(@Param("doctorId") UUID doctorId,
                                                        @Param("date") LocalDate date);
 
     @Query("SELECT COUNT(DISTINCT a.client.id) FROM Appointment a WHERE a.doctor.id = :doctorId")
-    Long countDistinctClientsByDoctorId(@Param("doctorId") Long doctorId);
+    Long countDistinctClientsByDoctorId(@Param("doctorId") UUID doctorId);
 
     List<Appointment> findByClientEmail(String email);
 
