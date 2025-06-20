@@ -67,7 +67,7 @@ public class ClientController {
     @GetMapping("/summary")
     public ResponseEntity<SummaryResponse> getClientSummaryByEmail(Authentication authentication) {
         String email = authentication.getName();
-        SummaryResponse summary = clientService.getClientSummaryById(email);
+        SummaryResponse summary = clientService.getClientSummaryByEmail(email);
         return ResponseEntity.ok(summary);
     }
     @GetMapping("/profile")

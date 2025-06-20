@@ -25,13 +25,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT COUNT(DISTINCT a.client.id) FROM Appointment a WHERE a.doctor.id = :doctorId")
     Long countDistinctClientsByDoctorId(@Param("doctorId") UUID doctorId);
 
-    List<Appointment> findByClientEmail(String email);
+    List<Appointment> findByClientId(UUID id);
 
     @Query("""
         SELECT a FROM Appointment a
-        WHERE a.client.email = :email
+        WHERE a.client.id = :email
             AND a.status <> 'CANCELLED'
         ORDER BY a.appointmentDateTime DESC
         """)
-    List<Appointment> findAppointmentsByClientEmail(@Param("email") String email, Pageable pageable);
+    List<Appointment> findAppointmentsByClientEmail(@Param("email") UUID email, Pageable pageable);
 }

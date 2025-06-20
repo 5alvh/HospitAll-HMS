@@ -6,9 +6,10 @@ import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Notification;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface NotificationService {
-    List<Notification> getAllClientNotifications(String email);
+    List<Notification> getAllClientNotifications(UUID email);
     /**
      * Marks a specific notification as "seen" for an authorized client.
      * <p>
@@ -31,5 +32,5 @@ public interface NotificationService {
      * @stateTransition Changes notification.getSeen from false to true
      * @sideEffects Updates the notification entity in the database
      */
-    void seenNotification(Long id, String email);
+    void seenNotification(Long id, UUID email);
 }

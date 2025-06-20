@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(MEDICAL_PRESCRIPTION)
@@ -32,7 +33,7 @@ public class MedicalPrescriptionController {
     @GetMapping("/all-prescriptions")
     public ResponseEntity<List<MedicalPrescriptionDtoGet>> getAllMedicalPrescriptionByAuthentication(Authentication authentication) {
         String email = authentication.getName();
-        List<MedicalPrescriptionDtoGet> prescriptions = medicalPrescriptionService.getAllPrescriptionsByEmail(email);
+        List<MedicalPrescriptionDtoGet> prescriptions = medicalPrescriptionService.getAllPrescriptionsByEmail(UUID.fromString(email));
         return ResponseEntity.ok(prescriptions);
     }
 

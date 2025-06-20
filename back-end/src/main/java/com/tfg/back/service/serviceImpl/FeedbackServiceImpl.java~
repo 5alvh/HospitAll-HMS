@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -30,14 +31,14 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedBackDtoGet> getAllFeedbacksByEmail(String email) {
-        List<FeedBack> feedbacks = feedbackRepository.findByAuthorEmail(email);
-        return List.of();
+        List<FeedBack> feedbacks = feedbackRepository.findByAuthorId(email);
+        return FeedbackMapper.toFeedBackDtoGetList(feedbacks);
     }
 
     @Override
-    public FeedBackDtoGet sendFeedback(String clientEmail, FeedbackDtoCreate feedbackDtoCreate) {
+    public FeedBackDtoGet sendFeedback(UUID clientEmail, FeedbackDtoCreate feedbackDtoCreate) {
 
-        Client author = clientRepository.findByEmail(clientEmail)
+        Client author = clientRepository.findById(clientEmail)
                 .orElseThrow(()-> new UserNotFoundException(clientEmail, SearchType.EMAIL));
         Doctor writtenTo;
         if (!(feedbackDtoCreate.type() == FeedBackType.GENERAL)) {

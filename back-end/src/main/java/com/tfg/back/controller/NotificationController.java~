@@ -31,7 +31,7 @@ public class NotificationController {
     @GetMapping("/all-notifications")
     public ResponseEntity<List<Notification>> getNotifications(Authentication authentication) {
         String email = authentication.getName();
-        List<Notification> notifications = notificationService.getAllClientNotifications(UUID.fromString(email));
+        List<Notification> notifications = notificationService.getAllClientNotifications(email);
         return ResponseEntity.ok(notifications);
     }
 }

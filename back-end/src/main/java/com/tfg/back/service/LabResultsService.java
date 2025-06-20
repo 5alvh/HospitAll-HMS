@@ -8,10 +8,11 @@ import com.tfg.back.model.dtos.labResults.LabResultDtoCreate;
 import com.tfg.back.model.dtos.labResults.LabResultDtoGet;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface LabResultsService {
 
-    List<LabResultDtoGet> getLabResultsByEmail(String email); // TODO: Add pagination
+    List<LabResultDtoGet> getLabResultsByEmail(UUID email); // TODO: Add pagination
     /**
      * Sends/creates a new lab result for a patient.
      * <p>

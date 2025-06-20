@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -25,8 +26,8 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     //By UUID, for the request filter after extracting the id from the token
-    public User loadUserByUsername(UUID uuid) throws UsernameNotFoundException {
-        User user = userRepository.findById(uuid)
+    public User loadUserByUsername(UUID email) throws UsernameNotFoundException {
+        User user = userRepository.findById(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return user;

@@ -54,7 +54,7 @@ public class MedicalPrescriptionServiceImpl implements MedicalPrescriptionServic
 
     @Override
     public List<MedicalPrescriptionDtoGet> getAllPrescriptionsByEmail(UUID email) {
-        List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findByPrescribedToId(email);
+        List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findByPrescribedToEmail(email);
         return medicalPrescriptionmapper.toDtoGetList(prescriptions);
     }
 

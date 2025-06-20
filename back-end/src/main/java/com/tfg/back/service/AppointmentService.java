@@ -27,7 +27,7 @@ import java.util.UUID;
  */
 public interface AppointmentService {
 
-    List<AppointmentDtoGet> getAppointmentsByClientEmail(String email);
+    List<AppointmentDtoGet> getAppointmentsByClientId(UUID email);
     /**
      * Retrieves all appointments in the system.
      *

@@ -1,433 +1,598 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+/* client-dashboard-summary.component.scss - Classic Professional Style */
 
-body {
-  background: linear-gradient(135deg, #f0f4f8 0%, #e6e9ff 100%);
-  min-height: 100vh;
-  padding: 25px;
-  color: #334155;
-}
+// Classic Color Palette inspired by your primary gradient
+$primary-dark: #0a3d91;
+$primary-medium: #1565c0;
+$primary-light: #1976d2;
+$accent-gold: #b8860b;
+$accent-silver: #708090;
+$text-primary: #2c3e50;
+$text-secondary: #546e7a;
+$background-light: #f8f9fa;
+$background-card: #ffffff;
+$border-light: #e0e6ed;
+$success: #2e7d32;
+$warning: #f57c00;
+$error: #c62828;
+$info: #0277bd;
 
-.fas,
-.far,
-.fab {
-  font-family: 'Font Awesome 6 Free' !important;
-}
-
-.container {
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-
-
-/* Dashboard Welcome */
 .dashboard-welcome {
-  margin-bottom: 25px;
-  padding: 15px 0;
+  margin-bottom: 35px;
+  padding: 25px 0;
+  border-bottom: 2px solid $border-light;
+  
+  h2 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: $primary-dark;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, $primary-medium, $accent-gold);
+      border-radius: 2px;
+    }
+  }
+  
+  p {
+    font-size: 1.2rem;
+    color: $text-secondary;
+    max-width: 650px;
+    line-height: 1.7;
+    font-weight: 400;
+    margin-top: 20px;
+  }
 }
 
-.dashboard-welcome h2 {
-  font-size: 1.8rem;
-  color: #1e293b;
-  margin-bottom: 8px;
-}
-
-.dashboard-welcome p {
-  color: #64748b;
-  font-size: 1rem;
-}
-
-/* Summary Grid */
 .dashboard-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 22px;
-  margin-bottom: 35px;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 30px;
+  margin-bottom: 45px;
 }
 
-/* Summary Cards */
 .summary-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    0 6px 28px rgba(31, 38, 135, 0.1),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: $background-card;
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 25px rgba(10, 61, 145, 0.08),
+    0 3px 10px rgba(10, 61, 145, 0.04);
+  border: 1px solid rgba(224, 230, 237, 0.8);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 
+      0 15px 35px rgba(10, 61, 145, 0.12),
+      0 5px 15px rgba(10, 61, 145, 0.08);
+    border-color: rgba(25, 118, 210, 0.3);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 28px;
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.6), rgba(255, 255, 255, 0.8));
+    border-bottom: 1px solid rgba(224, 230, 237, 0.5);
+    backdrop-filter: blur(5px);
+    
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      letter-spacing: 0.3px;
+      
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 32px;
+        background: linear-gradient(to bottom, $primary-medium, $accent-gold);
+        border-radius: 2px;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+      }
+    }
+    
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid $primary-medium;
+      color: $primary-medium;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(5px);
+      
+      &:hover {
+        background: $primary-medium;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      }
+    }
+  }
+  
+  .card-body {
+    padding: 25px 28px;
+    background: $background-card;
+  }
+  
+  .no-data {
+    text-align: center;
+    padding: 40px 0;
+    color: $text-secondary;
+    font-style: italic;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
 }
 
-.summary-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 10px 35px rgba(31, 38, 135, 0.15),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.8);
+/* Appointments Card Specific */
+.appointments-card {
+  .card-header h3::before {
+    background: $info;
+  }
+  
+  .appointment-item {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(224, 230, 237, 0.6);
+    transition: all 0.3s ease;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 5px;
+    }
+    
+    &:hover {
+      background: rgba(248, 249, 250, 0.6);
+      border-radius: 12px;
+      padding: 20px 15px;
+      margin: 0 -10px;
+      backdrop-filter: blur(5px);
+    }
+  }
+  
+  .appointment-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
+    border: 2px solid $info;
+    border-radius: 16px;
+    margin-right: 22px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(2, 119, 189, 0.1);
+    
+    .day {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: $info;
+      line-height: 1;
+    }
+    
+    .month {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: $text-secondary;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+  }
+  
+  .appointment-details {
+    flex: 1;
+    
+    h4 {
+      margin: 0 0 8px 0;
+      font-size: 1.15rem;
+      color: $text-primary;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    
+    p {
+      margin: 0 0 12px 0;
+      font-size: 1rem;
+      color: $text-secondary;
+      line-height: 1.5;
+    }
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+    backdrop-filter: blur(5px);
+    
+    &.status-confirmed {
+      background: rgba(46, 125, 50, 0.15);
+      color: $success;
+      border-color: rgba(46, 125, 50, 0.3);
+    }
+    
+    &.status-scheduled {
+      background: rgba(2, 119, 189, 0.15);
+      color: $info;
+      border-color: rgba(2, 119, 189, 0.3);
+    }
+    
+    &.status-cancelled {
+      background: rgba(198, 40, 40, 0.15);
+      color: $error;
+      border-color: rgba(198, 40, 40, 0.3);
+    }
+    
+    &.status-completed {
+      background: rgba(112, 128, 144, 0.15);
+      color: $accent-silver;
+      border-color: rgba(112, 128, 144, 0.3);
+    }
+  }
 }
 
-/* Card Headers */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+/* Medications Card Specific */
+.medications-card {
+  .card-header h3::before {
+    background: $success;
+  }
+  
+  .medication-item {
+    display: flex;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(224, 230, 237, 0.6);
+    transition: all 0.3s ease;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 5px;
+    }
+    
+    &:hover {
+      background: rgba(248, 249, 250, 0.8);
+      border-radius: 8px;
+      padding: 18px 15px;
+      margin: 0 -10px;
+    }
+  }
+  
+  .medication-icon {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
+    border: 2px solid $success;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
+    
+    i {
+      font-size: 1.5rem;
+      color: $success;
+    }
+  }
+  
+  .medication-details {
+    h4 {
+      margin: 0 0 6px 0;
+      font-size: 1.15rem;
+      color: $text-primary;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 1rem;
+      color: $text-secondary;
+    }
+  }
 }
 
-.card-header h3 {
-  font-size: 1.25rem;
-  color: #1e293b;
+/* Notifications Card Specific */
+.notifications-card {
+  .card-header h3::before {
+    background: $warning;
+  }
+  
+  .notification-item {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(224, 230, 237, 0.6);
+    transition: all 0.3s ease;
+    position: relative;
+    
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 5px;
+    }
+    
+    &:hover {
+      background: rgba(248, 249, 250, 0.8);
+      border-radius: 8px;
+      padding: 20px 15px;
+      margin: 0 -10px;
+    }
+    
+    &.unread {
+      background: rgba(245, 124, 0, 0.02);
+      border-left: 4px solid $warning;
+      padding-left: 16px;
+      margin-left: -20px;
+    }
+  }
+  
+  .notification-icon {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
+    border: 2px solid $warning;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(245, 124, 0, 0.1);
+    
+    i {
+      font-size: 1.5rem;
+      color: $warning;
+      
+      &.fa-calendar-check { color: $info; }
+      &.fa-flask { color: $primary-medium; }
+      &.fa-pills { color: $success; }
+      &.fa-bullhorn { color: $error; }
+      &.fa-sync-alt { color: $accent-silver; }
+    }
+  }
+  
+  .notification-details {
+    flex: 1;
+    
+    h4 {
+      margin: 0 0 8px 0;
+      font-size: 1.1rem;
+      color: $text-primary;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    
+    p {
+      margin: 0 0 10px 0;
+      font-size: 1rem;
+      color: $text-secondary;
+      line-height: 1.6;
+    }
+    
+    .notification-date {
+      font-size: 0.9rem;
+      color: $accent-silver;
+      display: block;
+      font-weight: 500;
+    }
+  }
+  
+  .mark-read {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid $warning;
+    color: $warning;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    flex-shrink: 0;
+    align-self: center;
+    backdrop-filter: blur(5px);
+    
+    &:hover {
+      background: $warning;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
+    }
+    
+    i {
+      font-size: 1.1rem;
+    }
+  }
 }
 
-.btn-outline {
-  background: transparent;
-  border: 1px solid #c7d2fe;
-  color: #6366f1;
-  padding: 5px 10px;
-  border-radius: 14px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-outline:hover {
-  background: rgba(199, 210, 254, 0.2);
-  transform: translateY(-2px);
-}
-
-/* Card Body Styles */
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.no-data {
-  text-align: center;
-  padding: 18px 0;
-  color: #94a3b8;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-/* Appointment Items */
-.appointment-item {
-  display: flex;
-  gap: 14px;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(226, 232, 240, 0.3);
-}
-
-.appointment-date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(120deg, #a5b4fc 0%, #c4b5fd 100%);
-  border-radius: 10px;
-  margin-right: 15px;
-  color: white;
-}
-
-.appointment-date .day {
-  font-size: 1.1rem;
-  font-weight: bold;
-  line-height: 1;
-  color: #1e3a8a;
-
-}
-
-.appointment-date .month {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #1e3a8a;
-
-}
-
-.appointment-details h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 4px;
-}
-
-.appointment-details p {
-  color: #64748b;
-  font-size: 0.85rem;
-  margin-bottom: 7px;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 18px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.status-confirmed {
-  background-color: #dcfce7;
-  color: #166534;
-}
-
-.status-scheduled {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.status-cancelled {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-.status-completed {
-  background-color: #f0fdfa;
-  color: #0f766e;
-}
-
-/* Medication Items */
-.medication-item {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  padding: 11px 14px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(226, 232, 240, 0.3);
-}
-
-.medication-icon {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(120deg, #a5b4fc 0%, #c4b5fd 100%);
-  border-radius: 50%;
-  color: white;
-  font-size: 16px;
-  color: #1e40af;
-}
-
-.medication-details h4 {
-  font-size: 14px;
-  color: #1e293b;
-  margin-bottom: 2px;
-  font-weight: 600;
-}
-
-.medication-details p {
-  color: #64748b;
-  font-size: 0.85rem;
-}
-
-/* Fixed Notification Items */
-.notification-item {
-  display: flex;
-  gap: 14px;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(226, 232, 240, 0.3);
-  position: relative;
-  margin-bottom: 16px;
-  /* Space between notifications */
-}
-
-.notification-item:last-child {
-  margin-bottom: 0;
-}
-
-.notification-item.unread {
-  background: rgba(236, 240, 255, 0.7);
-  border-left: 3px solid #6366f1;
-}
-
-.notification-icon {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(199, 210, 254, 0.3);
-  border-radius: 50%;
-  color: #6366f1;
-  font-size: 0.9rem;
-}
-
-.notification-details {
-  flex: 1;
-}
-
-.notification-details h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 4px;
-}
-
-.notification-details p {
-  color: #64748b;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
-}
-
-.notification-date {
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
-.mark-read {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(226, 232, 240, 0.5);
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.8rem;
-  color: #2563eb;
-
-}
-
-.mark-read:hover {
-  background: #6366f1;
-  color: white;
-}
-
-/* Action Cards */
 .dashboard-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  
+  .action-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 35px 30px;
+    text-align: center;
+    box-shadow: 
+      0 10px 30px rgba(10, 61, 145, 0.08),
+      0 4px 12px rgba(10, 61, 145, 0.04);
+    border: 1px solid rgba(224, 230, 237, 0.6);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    
+    &:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 20px 40px rgba(10, 61, 145, 0.12),
+        0 8px 20px rgba(10, 61, 145, 0.08);
+      border-color: rgba(25, 118, 210, 0.4);
+      
+      i {
+        transform: scale(1.1);
+        filter: drop-shadow(0 5px 15px rgba(25, 118, 210, 0.3));
+      }
+    }
+    
+    i {
+      font-size: 3.8rem;
+      margin-bottom: 25px;
+      transition: all 0.3s ease;
+      display: inline-block;
+      
+      &.fa-calendar-plus {
+        color: $primary-medium;
+      }
+      
+      &.fa-file-medical-alt {
+        color: $info;
+      }
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      color: $text-primary;
+      margin-bottom: 18px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    
+    p {
+      color: $text-secondary;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, $primary-medium, $primary-dark);
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      letter-spacing: 0.3px;
+      box-shadow: 0 6px 20px rgba(10, 61, 145, 0.25);
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(10, 61, 145, 0.35);
+        background: linear-gradient(135deg, $primary-dark, $primary-light);
+      }
+      
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
 }
 
-.action-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    0 6px 28px rgba(31, 38, 135, 0.1),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.action-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 10px 35px rgba(31, 38, 135, 0.15),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.8);
-}
-
-.action-card i {
-  font-size: 2.6rem;
-  margin-bottom: 18px;
-  color: #6366f1;
-  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.action-card h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 8px;
-}
-
-.action-card p {
-  color: #64748b;
-  margin-bottom: 22px;
-  line-height: 1.5;
-  font-size: 0.95rem;
-}
-
-.btn-primary {
-  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 14px;
-  font-weight: 500;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow:
-    0 4px 6px rgba(99, 102, 241, 0.2),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.4);
-  display: block;
-  width: 100%;
-}
-
-.btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 5px 10px rgba(99, 102, 241, 0.3),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-
+  .dashboard-welcome {
+    h2 {
+      font-size: 2rem;
+    }
+    
+    p {
+      font-size: 1.1rem;
+    }
+  }
+  
   .dashboard-summary,
   .dashboard-actions {
     grid-template-columns: 1fr;
+    gap: 25px;
   }
-
-  .dashboard-welcome h2 {
-    font-size: 1.6rem;
+  
+  .summary-card .card-header,
+  .summary-card .card-body {
+    padding: 20px 22px;
   }
-
-  body {
-    padding: 15px;
+  
+  .action-card {
+    padding: 30px 25px;
+    
+    i {
+      font-size: 3.2rem;
+    }
+    
+    h3 {
+      font-size: 1.4rem;
+    }
   }
 }
 
 @media (max-width: 480px) {
-  .dashboard-welcome h2 {
-    font-size: 1.4rem;
+  .dashboard-welcome {
+    h2 {
+      font-size: 1.8rem;
+    }
+    
+    p {
+      font-size: 1rem;
+    }
   }
-
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  
+  .summary-card .card-header {
+    padding: 18px 20px;
+    
+    h3 {
+      font-size: 1.2rem;
+    }
+    
+    .btn-outline {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
   }
-
-  .btn-outline {
-    align-self: flex-end;
-  }
-
-  .notification-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .mark-read {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
+  
+  .appointment-date,
+  .medication-icon,
+  .notification-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    
+    .day {
+      font-size: 1.6rem;
+    }
+    
+    i {
+      font-size: 1.3rem;
+    }
   }
 }
-
-/*  background: linear-gradient(120deg, #a5b4fc 0%, #c4b5fd 100%);
-*/

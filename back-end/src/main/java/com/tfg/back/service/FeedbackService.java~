@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FeedbackService {
-    List<FeedBackDtoGet>  getAllFeedbacksByEmail(UUID email);
+    List<FeedBackDtoGet>  getAllFeedbacksByEmail(String email);
     /**
      * Submits feedback from a client, either general or directed to a specific doctor.
      * <p>

@@ -68,9 +68,7 @@
                 <div *ngIf="notifications.length === 0" class="no-data">
                     No new notifications.
                 </div>
-                <div *ngIf="notifications.length === 0" class="no-data">
-                    No upcoming appointments.
-                </div>
+
                 <div *ngIf="notifications.length !== 0">
                     <div *ngFor="let notification of notifications; let i = index" [class.unread]="!notification.seen"
                         class="notification-item">

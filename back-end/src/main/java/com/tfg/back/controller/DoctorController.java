@@ -34,7 +34,7 @@ public class DoctorController {
     @PostMapping("/register")
     public ResponseEntity<?> registerDoctor(@Valid @RequestBody DoctorDtoCreate doctor) {
         DoctorDtoGet createdDoctor = doctorService.createDoctor(doctor);
-        AuthRequest request = new AuthRequest(createdDoctor.getEmail(), doctor.hashedPassword(), false);
+        AuthRequest request = new AuthRequest(createdDoctor.getEmail().toString(), doctor.hashedPassword(), false);
         return loginService.login(request);
     }
 

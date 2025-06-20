@@ -49,8 +49,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDtoGet> getAppointmentsByClientEmail(String email) {
-        List<Appointment> appointments = appointmentRepository.findByClientEmail(email);
+    public List<AppointmentDtoGet> getAppointmentsByClientId(UUID email) {
+        List<Appointment> appointments = appointmentRepository.findByClientId(email);
         return appointmentMapper.toDtoGetList(appointments);
     }
 

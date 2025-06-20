@@ -45,7 +45,7 @@ public class AppointmentController {
     @GetMapping("/all-appointments")
     public ResponseEntity<List<AppointmentDtoGet>> getAllAppointmentsByAuthentication(Authentication authentication) {
         String email = authentication.getName();
-        List<AppointmentDtoGet> appointments = appointmentService.getAppointmentsByClientId(UUID.fromString(email));
+        List<AppointmentDtoGet> appointments = appointmentService.getAppointmentsByClientEmail(UUID.fromString(email));
         return ResponseEntity.ok(appointments);
     }
 

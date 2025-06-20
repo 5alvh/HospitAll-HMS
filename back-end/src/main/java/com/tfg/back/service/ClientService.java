@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public interface ClientService {
 
-    SummaryResponse getClientSummaryByEmail(String email);
+    SummaryResponse getClientSummaryById(String email);
 
     /**
      * Get All Clients {@link List<ClientDtoGet>}

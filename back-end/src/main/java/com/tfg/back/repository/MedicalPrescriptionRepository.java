@@ -7,15 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MedicalPrescriptionRepository extends JpaRepository<MedicalPrescription, Long> {
 
-    List<MedicalPrescription> findByPrescribedToEmail(String email);
+    List<MedicalPrescription> findByPrescribedToId(UUID email);
 
     @Query("""
         SELECT a FROM MedicalPrescription a
-        WHERE a.prescribedTo.email = :email
+        WHERE a.prescribedTo.id = :email
         ORDER BY a.createdAt DESC
         """)
-    List<MedicalPrescription> findPrescriptionsByClientEmail(@Param("email") String email, Pageable pageable);
+    List<MedicalPrescription> findPrescriptionsByClientEmail(@Param("email") UUID email, Pageable pageable);
 }

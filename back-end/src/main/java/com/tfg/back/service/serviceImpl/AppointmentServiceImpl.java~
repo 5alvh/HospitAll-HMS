@@ -49,8 +49,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDtoGet> getAppointmentsByClientEmail(String email) {
-        List<Appointment> appointments = appointmentRepository.findByClientEmail(email);
+    public List<AppointmentDtoGet> getAppointmentsByClientEmail(UUID email) {
+        List<Appointment> appointments = appointmentRepository.findByClientId(email);
         return appointmentMapper.toDtoGetList(appointments);
     }
 
@@ -190,16 +190,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Appointment getAppointment(Long id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(()-> new AppointmentNotFoundException(id));
-    }
-
-    private Doctor getDoctor(Long id) {
-        return doctorRepository.findById(id)
-                .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
-    }
-
-    private Doctor getDoctor(String email) {
-        return doctorRepository.findByEmail(email)
-                .orElseThrow(()-> new UserNotFoundException(email, SearchType.EMAIL));
     }
 
     private void createAppointmentNotification(User user, String message, String title) {

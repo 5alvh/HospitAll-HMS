@@ -23,6 +23,7 @@ public class JwtUtil {
         String role = authorities.iterator().next().getAuthority();
         claims.put(ROLE, role);
 
+        System.out.println("Claims: " + userDetails.getUsername());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
@@ -54,6 +55,6 @@ public class JwtUtil {
     public boolean isPasswordResetToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token).getBody();
-        return "pwd_reset".equals(claims.get("type"));
+        return PWD_RESET.equals(claims.get(TYPE));
     }
 }

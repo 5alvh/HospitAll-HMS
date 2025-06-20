@@ -39,7 +39,7 @@ public class LabResultsController {
     @GetMapping("/all-lab-results")
     public ResponseEntity<List<LabResultDtoGet>> getLabResultsByEmail(Authentication authentication) {
         String email = authentication.getName();
-        List<LabResultDtoGet> labResults = labResultService.getLabResultsByEmail((UUID.fromString(email)));
+        List<LabResultDtoGet> labResults = labResultService.getLabResultsByEmail((UUID.fromString(email));
         return ResponseEntity.ok(labResults);
     }
 

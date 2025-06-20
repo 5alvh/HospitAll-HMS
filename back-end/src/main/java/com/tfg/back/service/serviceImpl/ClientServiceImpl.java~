@@ -60,7 +60,7 @@ public class ClientServiceImpl implements ClientService {
     }
     //NAME - 3 LAST APPOINTMENTS THAT ARE NOT CANCELLED - 3 LAST MEDICAL RECORDS  - 3 LAST NOTIFICATIONS
     @Override
-    public SummaryResponse getClientSummaryById(String email) {
+    public SummaryResponse getClientSummaryByEmail(String email) {
         String fullName = clientRepository.findFullNameByEmail(UUID.fromString(email));
         List<Appointment> appointments = appointmentRepository.findAppointmentsByClientEmail(UUID.fromString(email), PageRequest.of(0,3));
         List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findPrescriptionsByClientEmail(UUID.fromString(email), PageRequest.of(0,3));

@@ -21,7 +21,7 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT c.fullName FROM Client c WHERE c.email = :email")
-    String findFullNameByEmail(@Param("email") String email);
+    @Query("SELECT c.fullName FROM Client c WHERE c.id = :email")
+    String findFullNameByEmail(@Param("email") UUID email);
 
 }

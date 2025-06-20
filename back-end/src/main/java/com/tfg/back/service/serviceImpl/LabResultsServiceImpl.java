@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class LabResultsServiceImpl implements LabResultsService {
@@ -40,8 +41,8 @@ public class LabResultsServiceImpl implements LabResultsService {
     }
 
     @Override
-    public List<LabResultDtoGet> getLabResultsByEmail(String email) {
-        List<LabResult> labresults = labResultRepository.findByPatientEmail(email);
+    public List<LabResultDtoGet> getLabResultsByEmail(UUID email) {
+        List<LabResult> labresults = labResultRepository.findByPatientId(email);
         return labResultMapper.toDtoGetList(labresults);
     }
 

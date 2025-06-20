@@ -3,13 +3,17 @@ package com.tfg.back.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tfg.back.enums.BloodType;
 import com.tfg.back.enums.MembershipLevel;
+import com.tfg.back.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -48,5 +52,40 @@ public class Client extends User {
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeedBack> feedbacksWritten = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_CLIENT"));
+    }
+
+    @Override
+    public String getPassword() {
+        return super.getHashedPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return super.getId().toString();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return super.getStatus() == UserStatus.ACTIVE;
+    }
 }
 

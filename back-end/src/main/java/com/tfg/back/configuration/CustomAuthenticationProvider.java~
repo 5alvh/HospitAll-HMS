@@ -47,7 +47,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         };
 
         return new UsernamePasswordAuthenticationToken(
-                user.getId(),
+                user.getEmail(),
                 null,
                 Collections.singletonList(new SimpleGrantedAuthority(role))
         );

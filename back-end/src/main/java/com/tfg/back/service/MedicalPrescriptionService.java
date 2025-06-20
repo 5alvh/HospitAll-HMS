@@ -7,10 +7,11 @@ import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoUpdate;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MedicalPrescriptionService {
 
-    List<MedicalPrescriptionDtoGet> getAllPrescriptionsByEmail(String email);
+    List<MedicalPrescriptionDtoGet> getAllPrescriptionsByEmail(UUID email);
     /**
      * Create a Medical Prescription {@link Boolean}
      * Creates and saves a new medical prescription in the system.
