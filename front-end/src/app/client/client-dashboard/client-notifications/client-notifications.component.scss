@@ -1,156 +1,202 @@
-/* ===== NOTIFICATIONS SECTION ===== */
+// Using existing color palette from dashboard
+$primary-dark: #0a3d91;
+$primary-medium: #1976d2;
+$primary-light: #42a5f5;
+$text-primary: #263238;
+$text-secondary: #546e7a;
+$background-light: #f5f7fa;
+$background-card: #ffffff;
+$border-light: #e0e6ed;
+$success: #2e7d32;
+$warning: #f57c00;
+$accent-amber: #ffb300;
+
 .section-header {
-  text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba($border-light, 0.8);
+  
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $primary-dark;
+    position: relative;
+    display: inline-block;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      width: 50px;
+      height: 4px;
+      background: linear-gradient(90deg, $primary-medium, $accent-amber);
+      border-radius: 2px;
+    }
+  }
 }
 
-.section-header h2 {
-  font-size: 2.5rem;
-  color: #1e293b;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 15px;
-}
-
-.section-header h2::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
-  border-radius: 2px;
-}
-
-.notifications-section {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  border-radius: 24px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 
-    0 8px 32px rgba(31, 38, 135, 0.1),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
-  margin-top: 20px;
-}
-
-.notifications-section h3 {
-  font-size: 22px;
-  margin-top: 0;
-  margin-bottom: 24px;
-  color: #1e293b;
-  display: flex;
-  align-items: center;
-}
-
-.notifications-section h3::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, #c7d2fe, transparent);
-  margin-left: 20px;
+.appointments-section {
+  background: $background-card;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(10, 61, 145, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 12px 30px rgba(10, 61, 145, 0.15);
+  }
 }
 
 .data-table {
-  overflow: hidden;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-th, td {
-  padding: 18px 24px;
-  text-align: left;
-  font-size: 15px;
-}
-
-thead {
-  background: linear-gradient(120deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-  border-bottom: 2px solid rgba(226, 232, 240, 0.5);
-}
-
-th {
-  color: #6366f1;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-tbody tr {
-  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
-  transition: all 0.3s ease;
-}
-
-tbody tr:last-child {
-  border-bottom: none;
-}
-
-tbody tr:hover {
-  background: rgba(241, 245, 249, 0.5);
-  transform: translateX(4px);
+  overflow-x: auto;
+  padding: 1.5rem;
+  
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 800px;
+    
+    thead {
+      background: rgba($primary-light, 0.08);
+      
+      tr {
+        th {
+          padding: 1.25rem 1.5rem;
+          text-align: left;
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: $text-primary;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          border-bottom: 2px solid rgba($border-light, 0.8);
+          
+          &:first-child {
+            border-radius: 10px 0 0 0;
+          }
+          
+          &:last-child {
+            border-radius: 0 10px 0 0;
+          }
+        }
+      }
+    }
+    
+    tbody {
+      tr {
+        transition: background 0.2s ease;
+        border-bottom: 1px solid rgba($border-light, 0.5);
+        
+        &:hover {
+          background: rgba($primary-light, 0.03);
+        }
+        
+        &:last-child {
+          border-bottom: none;
+          
+          td {
+            &:first-child {
+              border-radius: 0 0 0 10px;
+            }
+            
+            &:last-child {
+              border-radius: 0 0 10px 0;
+            }
+          }
+        }
+        
+        td {
+          padding: 1.25rem 1.5rem;
+          font-size: 1rem;
+          color: $text-primary;
+          vertical-align: middle;
+          
+          &:nth-child(1) { // Title column
+            font-weight: 600;
+            color: $primary-dark;
+          }
+          
+          &:nth-child(2) { // Message column
+            color: $text-secondary;
+            max-width: 400px;
+            line-height: 1.5;
+          }
+          
+          &:nth-child(3) { // Date column
+            color: $text-secondary;
+            font-weight: 500;
+          }
+          
+          &:nth-child(4) { // Action column
+            text-align: center;
+            width: 80px;
+          }
+        }
+        
+        // Style for unread notifications
+        &:not(.seen) {
+          background: rgba($warning, 0.03);
+          border-left: 3px solid $warning;
+          
+          td:first-child {
+            position: relative;
+            
+            &::before {
+              content: '';
+              position: absolute;
+              left: -3px;
+              top: 50%;
+              transform: translateY(-50%);
+              width: 6px;
+              height: 6px;
+              background: $warning;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .mark-read {
-  background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
-  border: none;
-  border-radius: 12px;
+  background: transparent;
+  border: 1px solid $warning;
+  color: $warning;
+  cursor: pointer;
   width: 36px;
   height: 36px;
-  display: flex;
+  border-radius: 10px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 2px 4px rgba(99, 102, 241, 0.2),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.4);
-}
-
-.mark-read:hover {
-  transform: scale(1.1);
-  box-shadow: 
-    0 4px 8px rgba(99, 102, 241, 0.3),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.6);
-}
-
-.mark-read i {
-  color: white;
-  font-size: 16px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .section-header h2 {
-    font-size: 2rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: $warning;
+    color: white;
+    transform: scale(1.05);
   }
   
-  .notifications-section {
-    padding: 20px;
+  i {
+    font-size: 1rem;
   }
-  
-  th, td {
-    padding: 14px 16px;
-    font-size: 14px;
-  }
-  
+}
+
+// Responsive adjustments
+@media (max-width: 900px) {
   .data-table {
-    overflow-x: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .section-header h2 {
-    font-size: 1.8rem;
-  }
-  
-  th, td {
-    padding: 12px;
-    font-size: 13px;
+    padding: 1rem;
+    
+    table {
+      min-width: 600px;
+      
+      thead tr th,
+      tbody tr td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
+    }
   }
 }

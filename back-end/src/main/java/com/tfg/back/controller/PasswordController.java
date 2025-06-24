@@ -2,7 +2,7 @@ package com.tfg.back.controller;
 
 import com.tfg.back.model.dtos.password.ForgotPasswordRequest;
 import com.tfg.back.model.dtos.password.ResetPasswordRequest;
-import com.tfg.back.service.serviceImpl.PasswordService;
+import com.tfg.back.service.impl.PasswordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

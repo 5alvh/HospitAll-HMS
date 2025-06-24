@@ -1,174 +1,172 @@
-/* client-dashboard-summary.component.scss - Classic Professional Style */
-
-// Classic Color Palette inspired by your primary gradient
+// Modern Color Palette
 $primary-dark: #0a3d91;
-$primary-medium: #1565c0;
-$primary-light: #1976d2;
-$accent-gold: #b8860b;
-$accent-silver: #708090;
-$text-primary: #2c3e50;
+$primary-medium: #1976d2;
+$primary-light: #42a5f5;
+$accent-teal: #00897b;
+$accent-amber: #ffb300;
+$accent-indigo: #3949ab;
+$text-primary: #263238;
 $text-secondary: #546e7a;
-$background-light: #f8f9fa;
+$background-light: #f5f7fa;
 $background-card: #ffffff;
 $border-light: #e0e6ed;
 $success: #2e7d32;
 $warning: #f57c00;
 $error: #c62828;
-$info: #0277bd;
+$info: #0288d1;
+@use "sass:color";
+
+
+// Font Smoothing
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .dashboard-welcome {
-  margin-bottom: 35px;
-  padding: 25px 0;
-  border-bottom: 2px solid $border-light;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem 0;
   
   h2 {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: $primary-dark;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
     position: relative;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
     
     &::after {
       content: '';
       position: absolute;
-      bottom: -8px;
+      bottom: -10px;
       left: 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, $primary-medium, $accent-gold);
+      width: 50px;
+      height: 4px;
+      background: linear-gradient(90deg, $primary-medium, $accent-teal);
       border-radius: 2px;
     }
   }
   
   p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: $text-secondary;
     max-width: 650px;
-    line-height: 1.7;
-    font-weight: 400;
-    margin-top: 20px;
+    line-height: 1.6;
+    margin-top: 1.5rem;
   }
 }
 
 .dashboard-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 30px;
-  margin-bottom: 45px;
+  gap: 1.75rem;
+  margin-bottom: 2.5rem;
 }
 
 .summary-card {
   background: $background-card;
   border-radius: 16px;
-  box-shadow: 
-    0 8px 25px rgba(10, 61, 145, 0.08),
-    0 3px 10px rgba(10, 61, 145, 0.04);
-  border: 1px solid rgba(224, 230, 237, 0.8);
+  box-shadow: 0 6px 20px rgba(10, 61, 145, 0.08);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   
   &:hover {
-    transform: translateY(-6px);
-    box-shadow: 
-      0 15px 35px rgba(10, 61, 145, 0.12),
-      0 5px 15px rgba(10, 61, 145, 0.08);
-    border-color: rgba(25, 118, 210, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(10, 61, 145, 0.15);
   }
   
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 22px 28px;
-    background: linear-gradient(135deg, rgba(248, 249, 250, 0.6), rgba(255, 255, 255, 0.8));
-    border-bottom: 1px solid rgba(224, 230, 237, 0.5);
-    backdrop-filter: blur(5px);
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid $border-light;
     
     h3 {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 600;
       color: $text-primary;
       margin: 0;
       display: flex;
       align-items: center;
-      gap: 15px;
-      letter-spacing: 0.3px;
-      
-      &::before {
-        content: '';
-        display: inline-block;
-        width: 4px;
-        height: 32px;
-        background: linear-gradient(to bottom, $primary-medium, $accent-gold);
-        border-radius: 2px;
-        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
-      }
+      gap: 0.75rem;
+    }
+    
+    &.accent-blue h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: $info;
+      border-radius: 2px;
+    }
+    
+    &.accent-green h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: $success;
+      border-radius: 2px;
+    }
+    
+    &.accent-orange h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: $warning;
+      border-radius: 2px;
     }
     
     .btn-outline {
-      background: rgba(255, 255, 255, 0.8);
+      background: transparent;
       border: 1px solid $primary-medium;
       color: $primary-medium;
-      padding: 8px 18px;
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-      letter-spacing: 0.3px;
-      backdrop-filter: blur(5px);
+      transition: all 0.2s ease;
       
       &:hover {
         background: $primary-medium;
         color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
       }
     }
   }
   
   .card-body {
-    padding: 25px 28px;
-    background: $background-card;
+    padding: 1.25rem 1.75rem;
   }
   
   .no-data {
     text-align: center;
-    padding: 40px 0;
+    padding: 2rem 0;
     color: $text-secondary;
-    font-style: italic;
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    
+    i {
+      font-size: 1.75rem;
+      opacity: 0.7;
+    }
   }
 }
 
-/* Appointments Card Specific */
-.appointments-card {
-  .card-header h3::before {
-    background: $info;
-  }
+// Appointments Item
+.appointment-item {
+  display: flex;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba($border-light, 0.6);
   
-  .appointment-item {
-    display: flex;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(224, 230, 237, 0.6);
-    transition: all 0.3s ease;
-    
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 5px;
-    }
-    
-    &:hover {
-      background: rgba(248, 249, 250, 0.6);
-      border-radius: 12px;
-      padding: 20px 15px;
-      margin: 0 -10px;
-      backdrop-filter: blur(5px);
-    }
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
   
   .appointment-date {
@@ -176,26 +174,24 @@ $info: #0277bd;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 75px;
-    height: 75px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
-    border: 2px solid $info;
-    border-radius: 16px;
-    margin-right: 22px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(2, 119, 189, 0.1);
+    min-width: 70px;
+    height: 70px;
+    background: rgba($info, 0.08);
+    border: 1px solid rgba($info, 0.3);
+    border-radius: 12px;
+    margin-right: 1.25rem;
     
     .day {
-      font-size: 1.9rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: $info;
       line-height: 1;
     }
     
     .month {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       color: $text-secondary;
       font-weight: 600;
       margin-top: 2px;
@@ -206,176 +202,153 @@ $info: #0277bd;
     flex: 1;
     
     h4 {
-      margin: 0 0 8px 0;
-      font-size: 1.15rem;
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
       color: $text-primary;
       font-weight: 600;
-      letter-spacing: 0.2px;
     }
     
     p {
-      margin: 0 0 12px 0;
-      font-size: 1rem;
+      margin: 0 0 0.75rem 0;
+      font-size: 0.95rem;
       color: $text-secondary;
-      line-height: 1.5;
     }
   }
   
   .status-badge {
     display: inline-block;
-    padding: 6px 16px;
-    border-radius: 25px;
-    font-size: 0.8rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 1px solid;
-    backdrop-filter: blur(5px);
     
     &.status-confirmed {
-      background: rgba(46, 125, 50, 0.15);
+      background: rgba($success, 0.1);
       color: $success;
-      border-color: rgba(46, 125, 50, 0.3);
     }
     
     &.status-scheduled {
-      background: rgba(2, 119, 189, 0.15);
+      background: rgba($info, 0.1);
       color: $info;
-      border-color: rgba(2, 119, 189, 0.3);
     }
     
     &.status-cancelled {
-      background: rgba(198, 40, 40, 0.15);
+      background: rgba($error, 0.1);
       color: $error;
-      border-color: rgba(198, 40, 40, 0.3);
     }
     
     &.status-completed {
-      background: rgba(112, 128, 144, 0.15);
-      color: $accent-silver;
-      border-color: rgba(112, 128, 144, 0.3);
+      background: rgba($text-secondary, 0.1);
+      color: $text-secondary;
     }
   }
 }
 
-/* Medications Card Specific */
-.medications-card {
-  .card-header h3::before {
-    background: $success;
-  }
+// Medications Item
+.medication-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba($border-light, 0.6);
   
-  .medication-item {
-    display: flex;
-    align-items: center;
-    padding: 18px 0;
-    border-bottom: 1px solid rgba(224, 230, 237, 0.6);
-    transition: all 0.3s ease;
-    
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 5px;
-    }
-    
-    &:hover {
-      background: rgba(248, 249, 250, 0.8);
-      border-radius: 8px;
-      padding: 18px 15px;
-      margin: 0 -10px;
-    }
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
   
   .medication-icon {
-    width: 55px;
-    height: 55px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
-    border: 2px solid $success;
-    border-radius: 16px;
+    width: 50px;
+    height: 50px;
+    background: rgba($success, 0.08);
+    border: 1px solid rgba($success, 0.3);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
+    margin-right: 1.25rem;
     
     i {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       color: $success;
     }
   }
   
   .medication-details {
     h4 {
-      margin: 0 0 6px 0;
-      font-size: 1.15rem;
+      margin: 0 0 0.25rem 0;
+      font-size: 1.1rem;
       color: $text-primary;
       font-weight: 600;
-      letter-spacing: 0.2px;
     }
     
     p {
       margin: 0;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: $text-secondary;
     }
   }
 }
 
-/* Notifications Card Specific */
-.notifications-card {
-  .card-header h3::before {
-    background: $warning;
+// Notifications Item
+.notification-item {
+  display: flex;
+  padding: 1.25rem 0;
+  position: relative;
+  border-bottom: 1px solid rgba($border-light, 0.6);
+  
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
   
-  .notification-item {
-    display: flex;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(224, 230, 237, 0.6);
-    transition: all 0.3s ease;
-    position: relative;
-    
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 5px;
-    }
-    
-    &:hover {
-      background: rgba(248, 249, 250, 0.8);
-      border-radius: 8px;
-      padding: 20px 15px;
-      margin: 0 -10px;
-    }
-    
-    &.unread {
-      background: rgba(245, 124, 0, 0.02);
-      border-left: 4px solid $warning;
-      padding-left: 16px;
-      margin-left: -20px;
-    }
+  &.unread {
+    background: rgba($warning, 0.03);
+    border-left: 3px solid $warning;
+    margin-left: -0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 0 8px 8px 0;
   }
   
   .notification-icon {
-    width: 55px;
-    height: 55px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
-    border: 2px solid $warning;
-    border-radius: 16px;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 20px;
+    margin-right: 1.25rem;
     flex-shrink: 0;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(245, 124, 0, 0.1);
+    
+    &.type-appointment {
+      background: rgba($info, 0.08);
+      border: 1px solid rgba($info, 0.3);
+      i { color: $info; }
+    }
+    &.type-lab_result {
+      background: rgba($accent-indigo, 0.08);
+      border: 1px solid rgba($accent-indigo, 0.3);
+      i { color: $accent-indigo; }
+    }
+    &.type-medical_prescription {
+      background: rgba($success, 0.08);
+      border: 1px solid rgba($success, 0.3);
+      i { color: $success; }
+    }
+    &.type-welcome {
+      background: rgba($primary-medium, 0.08);
+      border: 1px solid rgba($primary-medium, 0.3);
+      i { color: $primary-medium; }
+    }
+    &.type-update {
+      background: rgba($accent-amber, 0.08);
+      border: 1px solid rgba($accent-amber, 0.3);
+      i { color: $accent-amber; }
+    }
     
     i {
-      font-size: 1.5rem;
-      color: $warning;
-      
-      &.fa-calendar-check { color: $info; }
-      &.fa-flask { color: $primary-medium; }
-      &.fa-pills { color: $success; }
-      &.fa-bullhorn { color: $error; }
-      &.fa-sync-alt { color: $accent-silver; }
+      font-size: 1.4rem;
     }
   }
   
@@ -383,53 +356,48 @@ $info: #0277bd;
     flex: 1;
     
     h4 {
-      margin: 0 0 8px 0;
+      margin: 0 0 0.4rem 0;
       font-size: 1.1rem;
       color: $text-primary;
       font-weight: 600;
-      letter-spacing: 0.2px;
     }
     
     p {
-      margin: 0 0 10px 0;
-      font-size: 1rem;
+      margin: 0 0 0.5rem 0;
+      font-size: 0.95rem;
       color: $text-secondary;
-      line-height: 1.6;
+      line-height: 1.5;
     }
     
     .notification-date {
-      font-size: 0.9rem;
-      color: $accent-silver;
-      display: block;
+      font-size: 0.85rem;
+      color: color.adjust($text-secondary, $lightness: 15%);
       font-weight: 500;
     }
   }
   
   .mark-read {
-    background: rgba(255, 255, 255, 0.9);
+    background: transparent;
     border: 1px solid $warning;
     color: $warning;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    transition: all 0.2s ease;
     flex-shrink: 0;
     align-self: center;
-    backdrop-filter: blur(5px);
     
     &:hover {
       background: $warning;
       color: white;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
     }
     
     i {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
   }
 }
@@ -437,162 +405,86 @@ $info: #0277bd;
 .dashboard-actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
   
   .action-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 35px 30px;
+    background: $background-card;
+    border-radius: 16px;
+    padding: 2rem;
     text-align: center;
-    box-shadow: 
-      0 10px 30px rgba(10, 61, 145, 0.08),
-      0 4px 12px rgba(10, 61, 145, 0.04);
-    border: 1px solid rgba(224, 230, 237, 0.6);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    box-shadow: 0 6px 20px rgba(10, 61, 145, 0.08);
+    border: 1px solid rgba($border-light, 0.6);
+    transition: all 0.3s ease;
     
     &:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 
-        0 20px 40px rgba(10, 61, 145, 0.12),
-        0 8px 20px rgba(10, 61, 145, 0.08);
-      border-color: rgba(25, 118, 210, 0.4);
-      
-      i {
-        transform: scale(1.1);
-        filter: drop-shadow(0 5px 15px rgba(25, 118, 210, 0.3));
-      }
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(10, 61, 145, 0.15);
     }
     
-    i {
-      font-size: 3.8rem;
-      margin-bottom: 25px;
-      transition: all 0.3s ease;
-      display: inline-block;
+    .action-icon {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba($primary-medium, 0.08);
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
       
-      &.fa-calendar-plus {
+      i {
+        font-size: 2rem;
         color: $primary-medium;
       }
       
-      &.fa-file-medical-alt {
+      .fa-file-medical-alt {
         color: $info;
       }
     }
     
     h3 {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       color: $text-primary;
-      margin-bottom: 18px;
+      margin-bottom: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.3px;
     }
     
     p {
       color: $text-secondary;
-      font-size: 1.1rem;
-      line-height: 1.7;
-      margin-bottom: 28px;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, $primary-medium, $primary-dark);
+      background: $primary-medium;
       color: white;
       border: none;
-      padding: 14px 35px;
-      border-radius: 12px;
-      font-size: 1.05rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-      letter-spacing: 0.3px;
-      box-shadow: 0 6px 20px rgba(10, 61, 145, 0.25);
+      transition: background 0.2s ease;
       
       &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(10, 61, 145, 0.35);
-        background: linear-gradient(135deg, $primary-dark, $primary-light);
-      }
-      
-      &:active {
-        transform: translateY(-1px);
+        background: color.adjust($primary-medium, $lightness: -8%);
       }
     }
   }
 }
 
-/* Responsive adjustments */
+// Responsive adjustments
 @media (max-width: 768px) {
-  .dashboard-welcome {
-    h2 {
-      font-size: 2rem;
-    }
-    
-    p {
-      font-size: 1.1rem;
-    }
-  }
-  
   .dashboard-summary,
   .dashboard-actions {
     grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 1.5rem;
   }
   
-  .summary-card .card-header,
-  .summary-card .card-body {
-    padding: 20px 22px;
-  }
-  
-  .action-card {
-    padding: 30px 25px;
-    
-    i {
-      font-size: 3.2rem;
-    }
-    
-    h3 {
-      font-size: 1.4rem;
-    }
-  }
-}
-
-@media (max-width: 480px) {
   .dashboard-welcome {
     h2 {
       font-size: 1.8rem;
-    }
-    
-    p {
-      font-size: 1rem;
-    }
-  }
-  
-  .summary-card .card-header {
-    padding: 18px 20px;
-    
-    h3 {
-      font-size: 1.2rem;
-    }
-    
-    .btn-outline {
-      padding: 6px 12px;
-      font-size: 0.9rem;
-    }
-  }
-  
-  .appointment-date,
-  .medication-icon,
-  .notification-icon {
-    width: 50px;
-    height: 50px;
-    margin-right: 15px;
-    
-    .day {
-      font-size: 1.6rem;
-    }
-    
-    i {
-      font-size: 1.3rem;
     }
   }
 }

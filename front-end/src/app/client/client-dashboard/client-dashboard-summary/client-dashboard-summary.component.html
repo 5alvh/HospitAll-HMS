@@ -1,114 +1,109 @@
+<!-- client-dashboard-summary.component.html -->
 <div *ngIf="!isLoading">
-    <div class="dashboard-welcome">
-        <h2>Welcome back, {{fullName}}!
-        </h2>
+  <div class="dashboard-welcome">
+    <h2>Welcome back, {{ fullName }}!</h2>
+    <p>Here's your health summary at a glance.</p>
+  </div>
 
-        <p>Here's your health summary at a glance.</p>
+  <div class="dashboard-summary">
+    <!-- Appointments Card -->
+    <div class="summary-card">
+      <div class="card-header accent-blue">
+        <h3>Upcoming Appointments</h3>
+        <a routerLink="/dashboard-client/appointments" class="btn-outline btn-sm">View All</a>
+      </div>
+      <div class="card-body">
+        <div *ngIf="filteredUpcomingAppointments.length === 0" class="no-data">
+          <i class="far fa-calendar-check"></i>
+          No upcoming appointments
+        </div>
+        <div *ngFor="let appointment of filteredUpcomingAppointments.slice(0, 2)" class="appointment-item">
+          <div class="appointment-date">
+            <span class="day">{{ appointment.appointmentDateTime | date: 'd'  }}</span>
+            <span class="month">{{ appointment.appointmentDateTime | date: 'MMM' }}</span>
+          </div>
+          <div class="appointment-details">
+            <h4>{{ appointment.doctorFullName }}</h4>
+            <p>{{ appointment.departmentName }} - {{ appointment.appointmentDateTime | date: 'h:mm a' }}</p>
+            <span class="status-badge" [ngClass]="'status-' + appointment.status.toLowerCase()">
+              {{ appointment.status }}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="dashboard-summary">
-        <div class="summary-card appointments-card">
-            <div class="card-header">
-                <h3>Upcoming Appointments</h3>
-                <a (click)="setActiveSection('appointments')" class="btn-outline btn-sm">View All</a>
-            </div>
-            <div class="card-body">
-                <div *ngIf="filteredUpcomingAppointments.length === 0" class="no-data">
-                    No upcoming appointments.
-                </div>
-                <div *ngFor="let appointment of filteredUpcomingAppointments.slice(0, 2)" class="appointment-item">
-                    <div class="appointment-date">
-                        <span class="day">{{appointment.appointmentDateTime!.split(' ')[0]}}</span>
-                        <span class="month">{{appointment.appointmentDateTime!.split(' ')[1]}}</span>
-                    </div>
-                    <div class="appointment-details">
-                        <h4>{{appointment.doctorFullName}}</h4>
-                        <p>{{appointment.departmentName}} - {{ appointment.appointmentDateTime!.split('
-                            ').slice(3).join('
-                            ')
-                            }}</p>
-                        <span class="status-badge" [class.status-confirmed]="appointment.status === 'CONFIRMED'"
-                            [class.status-scheduled]="appointment.status === 'SCHEDULED'"
-                            [class.status-cancelled]="appointment.status === 'CANCELLED'"
-                            [class.status-completed]="appointment.status === 'COMPLETED'">
-                            {{appointment.status}}
-                        </span>
-                    </div>
-                </div>
-            </div>
+    <!-- Medications Card -->
+    <div class="summary-card">
+      <div class="card-header accent-green">
+        <h3>Current Medications</h3>
+        <a routerLink="/dashboard-client/records" class="btn-outline btn-sm">View All</a>
+      </div>
+      <div class="card-body">
+        <div *ngIf="medications.length === 0" class="no-data">
+          <i class="far fa-smile"></i>
+          No current medications
         </div>
-
-        <div class="summary-card medications-card">
-            <div class="card-header">
-                <h3>Current Medications</h3>
-                <a (click)="setActiveSection('records')" class="btn-outline btn-sm">View All</a>
-            </div>
-            <div class="card-body">
-                <div *ngIf="medications.length === 0" class="no-data">
-                    No current medications.
-                </div>
-                <div *ngFor="let medication of medications.slice(0, 3)" class="medication-item">
-                    <div class="medication-icon">
-                        <i class="fas fa-pills"></i>
-                    </div>
-                    <div class="medication-details">
-                        <h4>{{medication.medicationName}} ({{medication.dosage}})</h4>
-                        <p>{{medication.frequency}}</p>
-                    </div>
-                </div>
-            </div>
+        <div *ngFor="let medication of medications.slice(0, 3)" class="medication-item">
+          <div class="medication-icon">
+            <i class="fas fa-pills"></i>
+          </div>
+          <div class="medication-details">
+            <h4>{{ medication.medicationName }} ({{ medication.dosage }})</h4>
+            <p>{{ medication.frequency }}</p>
+          </div>
         </div>
-
-        <div class="summary-card notifications-card">
-            <div class="card-header">
-                <h3>Recent Notifications</h3>
-                <a class="btn-outline btn-sm" (click)="setActiveSection('notifications')">View All</a>
-            </div>
-            <div class="card-body">
-                <div *ngIf="notifications.length === 0" class="no-data">
-                    No new notifications.
-                </div>
-
-                <div *ngIf="notifications.length !== 0">
-                    <div *ngFor="let notification of notifications; let i = index" [class.unread]="!notification.seen"
-                        class="notification-item">
-                        <div class="notification-icon">
-                            <i class="fas" [class.fa-calendar-check]="notification.type === 'APPOINTMENT'"
-                                [class.fa-flask]="notification.type === 'LAB_RESULT'"
-                                [class.fa-pills]="notification.type === 'MEDICAMENT'"
-                                [class.fa-bullhorn]="notification.type === 'WELCOME'"
-                                [class.fa-sync-alt]="notification.type === 'UPDATE'">
-                            </i>
-                        </div>
-                        <div class="notification-details">
-                            <h4>{{notification.title}}</h4>
-                            <p>{{notification.message}}</p>
-                            <span class="notification-date">{{notification.date | date: 'short' }}</span>
-                        </div>
-                        <button class="mark-read" *ngIf="!notification.seen" (click)="markAsRead(notification.id)">
-                            <i class="fas fa-check"></i>
-                        </button>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <div class="dashboard-actions">
-        <div class="action-card">
-            <i class="fas fa-calendar-plus"></i>
-            <h3>Book Appointment</h3>
-            <p>Schedule a new appointment with our specialists</p>
-            <button class="btn-primary" (click)="setActiveSection('appointments')">Book Now</button>
+    <!-- Notifications Card -->
+    <div class="summary-card">
+      <div class="card-header accent-orange">
+        <h3>Recent Notifications</h3>
+        <a class="btn-outline btn-sm" routerLink="/dashboard-client/notifications">View All</a>
+      </div>
+      <div class="card-body">
+        <div *ngIf="notifications.length === 0" class="no-data">
+          <i class="far fa-bell-slash"></i>
+          No new notifications
         </div>
-        <div class="action-card">
-            <i class="fas fa-file-medical-alt"></i>
-            <h3>View Lab Results</h3>
-            <p>Access your latest test results and diagnostics</p>
-            <button class="btn-primary" (click)="setActiveSection('records')">View Results</button>
+        <div *ngFor="let notification of notifications" 
+             [class.unread]="!notification.seen"
+             class="notification-item">
+          <div class="notification-icon" [ngClass]="'type-' + notification.type.toLowerCase()">
+            <i [ngClass]="getNotificationIcon(notification.type)"></i>
+          </div>
+          <div class="notification-details">
+            <h4>{{ notification.title }}</h4>
+            <p>{{ notification.message }}</p>
+            <span class="notification-date">{{ notification.date | date: 'MMM d, h:mm a' }}</span>
+          </div>
+          <button class="mark-read" *ngIf="!notification.seen" 
+                  (click)="markAsRead(notification.id)" aria-label="Mark as read">
+            <i class="fas fa-check"></i>
+          </button>
         </div>
-
+      </div>
     </div>
+  </div>
+
+  <div class="dashboard-actions">
+    <div class="action-card">
+      <div class="action-icon">
+        <i class="fas fa-calendar-plus"></i>
+      </div>
+      <h3>Book Appointment</h3>
+      <p>Schedule a new appointment with our specialists</p>
+      <button class="btn-primary" routerLink="/dashboard-client/appointments">Book Now</button>
+    </div>
+    <div class="action-card">
+      <div class="action-icon">
+        <i class="fas fa-file-medical-alt"></i>
+      </div>
+      <h3>View Lab Results</h3>
+      <p>Access your latest test results and diagnostics</p>
+      <button class="btn-primary" routerLink="/dashboard-client/records">View Results</button>
+    </div>
+  </div>
 </div>
 <app-client-loading-wrapper [isLoading]="isLoading"></app-client-loading-wrapper>

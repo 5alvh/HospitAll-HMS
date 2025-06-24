@@ -15,7 +15,7 @@ export class AppointmentService {
   constructor(private httpClient: HttpClient) { }
 
   bookAppointment(appointment: AppointmentCreateDto): Observable<AppointmentDtoGet> {
-    return this.httpClient.post<any>(`${this.baseUrl}/book-appointment`, appointment);
+    return this.httpClient.post<any>(`${this.baseUrl}`, appointment);
   }
 
   getAvailableDoctors(departmentId: number, date: number): Observable<{ doctorFullName: string, doctorId: number }[]> {
@@ -34,11 +34,11 @@ export class AppointmentService {
   }
 
   bookAppobookAppointmentByDoctorUsingClientEmail(appointment: any): Observable<any> {
-    return this.httpClient.post<any>(`${this.baseUrl}/book-appointment-doctor/client-email`, appointment);
+    return this.httpClient.post<any>(`${this.baseUrl}/doctor/email`, appointment);
   }
 
   bookAppointmentByDoctorUsingClientId(appointment: any): Observable<any> {
-    return this.httpClient.post<any>(`${this.baseUrl}/book-appointment-doctor/client-id`, appointment);
+    return this.httpClient.post<any>(`${this.baseUrl}/doctor/id`, appointment);
   }
 
   giveDiagnosis(appointmentId: number, diagnosis: string) : Observable<any> {
@@ -46,6 +46,6 @@ export class AppointmentService {
   }
 
   getAllAppointments(): Observable<any>{
-    return this.httpClient.get(`${this.baseUrl}/all-appointments`);
+    return this.httpClient.get(`${this.baseUrl}/my`);
   }
 }

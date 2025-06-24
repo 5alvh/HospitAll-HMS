@@ -16,6 +16,6 @@ export class FeedbackService {
   }
 
   getAllFeedBacks(): Observable<Feedback[]>{
-    return this.httpClient.get<Feedback[]>(`${this.baseUrl}/all-feedbacks`)
+    return this.httpClient.get<Feedback[]>(`${this.baseUrl}/my`)
   }
 }

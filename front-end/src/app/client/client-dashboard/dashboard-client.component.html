@@ -1,58 +1,15 @@
-<!-- dashboard-client.component.html -->
 <div class="app-container" *ngIf="!isLoading ">
-  <!-- Sidebar -->
-  <app-client-sidebar (changeActiveSection)="setActiveSection($event)"></app-client-sidebar>
+  <app-client-sidebar></app-client-sidebar>
 
-  <!-- Main Content -->
   <div class="main-content">
-    <!-- Header -->
-    <app-client-header
-      (activeSection)="setActiveSection($event)"></app-client-header>
+    <app-client-header></app-client-header>
 
-    <!-- Dashboard Content -->
     <div class="content-area">
-      <!-- Dashboard Overview -->
-      <div *ngIf="activeSection === 'dashboard'">
-        <app-client-dashboard-summary (sectionChange)="setActiveSection($event)"></app-client-dashboard-summary>
-      </div>
-
-      <!-- Profile Section -->
-      <div *ngIf="activeSection === 'profile'">
-        <app-client-profile ></app-client-profile>
-      </div>
-
-      <!-- Appointments Section -->
-      <div *ngIf="activeSection === 'appointments'">
-        <app-client-appointments></app-client-appointments>
-      </div>
-
-      <!-- Medical Records Section -->
-      <div *ngIf="activeSection === 'records'">
-        <app-client-prescriptions></app-client-prescriptions>
-      </div>
-
-      <!-- Notifications Section -->
-      <div *ngIf="activeSection === 'notifications'">
-        <app-client-notifications></app-client-notifications>
-      </div>
-
-      <!-- Support Section -->
-      <div *ngIf="activeSection === 'support'">
-        <app-client-support></app-client-support>
-      </div>
-
-      <!-- Feedback Section -->
-      <div *ngIf="activeSection === 'feedback'">
-        <app-client-feedback [patientId]="patient.id"></app-client-feedback>
-      </div>
-
-      <!-- Documents Section -->
-      <div *ngIf="activeSection === 'documents'">
-        <app-client-documents></app-client-documents>
-      </div>
-
+      <ngx-sonner-toaster position="top-center" [richColors]="true" [closeButton]="true" [duration]="5000"
+        theme="light" [expand]="true" [visibleToasts]="5" />
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>
-<!--Loading spinner-->
+
 <app-client-loading-wrapper [isLoading]="isLoading"></app-client-loading-wrapper>

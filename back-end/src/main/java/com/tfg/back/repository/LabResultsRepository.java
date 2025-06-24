@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface LabResultsRepository extends JpaRepository<LabResult, Long> {
 
-    List<LabResult> findByPatientId(UUID email);
+    List<LabResult> findByPatientId(UUID patientId);
 }

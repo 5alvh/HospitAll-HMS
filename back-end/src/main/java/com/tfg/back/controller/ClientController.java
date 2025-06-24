@@ -2,15 +2,12 @@ package com.tfg.back.controller;
 
 import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.Notification;
-import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
+import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.auth.AuthRequest;
-import com.tfg.back.model.dtos.client.ClientDtoCreate;
-import com.tfg.back.model.dtos.client.ClientDtoGet;
-import com.tfg.back.model.dtos.client.ClientDtoUpdate;
-import com.tfg.back.model.dtos.client.SummaryResponse;
+import com.tfg.back.model.dtos.client.*;
 import com.tfg.back.service.ClientService;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
-import com.tfg.back.service.serviceImpl.LoginService;
+import com.tfg.back.service.impl.LoginService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +28,6 @@ import java.util.UUID;
 @Validated
 public class ClientController {
 
-
-    /**
-     *TODO:
-     *Consistent Naming & REST Semantics
-     * Validation
-     * Logging
-     * Constants
-     */
     private final ClientService clientService;
     private final LoginService loginService;
 
@@ -48,53 +38,44 @@ public class ClientController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerClient(@Valid @RequestBody ClientDtoCreate client) {
-        log.info("Received request to register client: {}", client);
+    public ResponseEntity<?> create(@Valid @RequestBody ClientDtoCreate client) {
         ClientDtoGet createdClient = clientService.createClient(client);
-        log.info("Client registered successfully with id: {}", createdClient.getId());
         AuthRequest request = new AuthRequest(client.email(), client.password(), false);
         return loginService.login(request);
     }
 
-    @GetMapping("/by-id/{id}")
-    public ResponseEntity<ClientDtoGet> getClientById(@NotNull @PathVariable UUID id) {
-        log.info("Fetching client by id: {}", id);
-        ClientDtoGet client = clientService.getClientById(id);
-        log.debug("Client retrieved: {}", client);
-        return ResponseEntity.ok(client);
-    }
-
-    @GetMapping("/summary")
-    public ResponseEntity<SummaryResponse> getClientSummaryByEmail(Authentication authentication) {
-        String email = authentication.getName();
-        SummaryResponse summary = clientService.getClientSummaryById(email);
-        return ResponseEntity.ok(summary);
-    }
-    @GetMapping("/profile")
-    public ResponseEntity<ClientDtoGet> getClientByEmail(Authentication authentication) {
-        String email = authentication.getName();
-        log.info("Fetching client profile for email: {}", email);
-        ClientDtoGet client = clientService.getClientById(UUID.fromString(email));
-        log.debug("Found client: {}", client);
-        return ResponseEntity.ok(client);
-    }
-
-    @PutMapping("/change-password")
-    public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest newPassword) {
-        String email = authentication.getName();
-        log.info("Changing password for email: {}", email);
-        clientService.changePassword(email, newPassword);
-        log.info("Password changed successfully for email: {}", email);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<ClientDtoGet>> getAllClients() {
-        List<ClientDtoGet> clients = clientService.getAllClients();
+        List<ClientDtoGet> clients = clientService.findAllClients();
         if (clients.isEmpty()){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.ok(clients);
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<SummaryResponse> getMySummary(@AuthenticationPrincipal User patient) {
+        SummaryResponse summary = clientService.findClientSummaryById(patient);
+        return ResponseEntity.ok(summary);
+    }
+
+    @GetMapping("/my-name")
+    public ResponseEntity<FullNameWrapper> getMyName(@AuthenticationPrincipal User patient) {
+        String fullName = clientService.findClientFullName(patient);
+        return ResponseEntity.ok(new FullNameWrapper(fullName));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ClientDtoGet> getMyProfile(@AuthenticationPrincipal User patient) {
+        ClientDtoGet client = clientService.findClientById(patient);
+        return ResponseEntity.ok(client);
+    }
+
+
+    @PutMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal User patient, @Valid @RequestBody ChangePasswordRequest newPassword) {
+        clientService.changePassword(patient, newPassword);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -103,45 +84,29 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
+    //NOTE: ACCOUNT STATUS METHODS
     @PutMapping("/inactivateAccount")
-    public ResponseEntity<Void> inactivateAccount(Authentication authentication) {
-        String email = authentication.getName();
-        clientService.inactivateClient(email);
+    public ResponseEntity<Void> inactivateAccount(@AuthenticationPrincipal User patient) {
+        clientService.inactivateClient(patient);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/get-notifications")
-    public ResponseEntity<List<Notification>> getNotifications(Authentication authentication) {
-        String email = authentication.getName();
-        List<Notification> notifications = clientService.getClientsNotifications(email);
-        return ResponseEntity.ok(notifications);
-    }
-
-    @PutMapping("/activate-account")
-    public ResponseEntity<Void> activateAccount(Authentication authentication) {
-        String email = authentication.getName();
-        clientService.activateClient(email);
+    @PutMapping("/activate-account/{id}")
+    public ResponseEntity<Void> activateAccount(@PathVariable UUID id) {
+        clientService.activateClient(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/suspend-account")
-    public ResponseEntity<Void> suspendAccount(Authentication authentication) {
-        String email = authentication.getName();
-        clientService.suspendClient(email);
+    //note: ONLY THE ADMIN CAN OPERATE THESE METHODS
+    @PutMapping("/suspend-account/{id}")
+    public ResponseEntity<Void> suspendAccount(@PathVariable UUID id) {
+        clientService.suspendClient(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentDtoGet>> getAppointmentsByClientEmail(Authentication authentication) {
-        String email = authentication.getName();
-        List<AppointmentDtoGet> clients = clientService.getAppointmentsByClientEmail(email);
-        return ResponseEntity.ok(clients);
-    }
-
-    @DeleteMapping("/by-email")
-    public ResponseEntity<Void> deleteClient(Authentication authentication) {
-        String email = authentication.getName();
-        clientService.deleteClient(email);
+    @DeleteMapping("/by-email/{id}")
+    public ResponseEntity<Void> deleteClient(@PathVariable UUID id) {
+        clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
     }
 }

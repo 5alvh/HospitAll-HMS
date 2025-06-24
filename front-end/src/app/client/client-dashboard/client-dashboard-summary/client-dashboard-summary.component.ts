@@ -1,27 +1,28 @@
 import { Component, Input, OnInit, output, Output } from '@angular/core';
-import { ClientDtoGet } from '../../../models/client-dto-get';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { NotificationService } from '../../../services/client-services/notification.service';
 import { NotificationDto } from '../../../models/notification-dto';
 import { AppointmentDtoGet } from '../../../models/appointment-dto-get';
 import { ClientService } from '../../../services/client-services/client.service';
 import { ClientLoadingWrapperComponent } from "../client-loading-wrapper/client-loading-wrapper.component";
 import { ClientStateService } from '../../../services/client-services/client-state.service';
+import { RouterLink } from '@angular/router';
+import { response } from 'express';
 
 @Component({
   selector: 'app-client-dashboard-summary',
   standalone: true,
-  imports: [NgIf, NgFor, DatePipe, ClientLoadingWrapperComponent],
+  imports: [NgIf, NgFor, DatePipe, ClientLoadingWrapperComponent, NgClass, RouterLink],
   templateUrl: './client-dashboard-summary.component.html',
   styleUrl: './client-dashboard-summary.component.scss',
   providers: [DatePipe]
 })
 export class ClientDashboardSummaryComponent implements OnInit {
+
   fullName!: string;
   medications!: any;
   notifications!: NotificationDto[];
   upcomingAppointments: AppointmentDtoGet[] = [];
-  sectionChange = output<string>();
   hideCancelled = true;
   isLoading = true;
 
@@ -31,18 +32,37 @@ export class ClientDashboardSummaryComponent implements OnInit {
       : this.upcomingAppointments;
   }
 
+  constructor(private notificationsService: NotificationService, private clientService: ClientService, private clientState: ClientStateService
+  ) { }
 
-  constructor(private notificationsService: NotificationService, private clientService: ClientService,  private clientState: ClientStateService
-) { }
   ngOnInit(): void {
     this.getSummary();
+    this.clientState.fullName$.subscribe((response)=>{
+      this.fullName = response.fullName
+    } 
+    )
   }
+
+  getNotificationIcon(type: string) {
+  switch(type.toLowerCase()) {
+    case 'appointment':
+      return 'fa-solid fa-calendar-check';
+    case 'medical_prescription':
+      return 'fa-solid fa-file-prescription';
+    case 'lab_result':
+      return 'fa-solid fa-vials';
+    case 'updated':
+      return 'fa-solid fa-pen-to-square';
+    case 'diagnosis':
+      return 'fa-solid fa-notes-medical';
+    default:
+      return 'fa-solid fa-circle-exclamation';
+  }
+}
 
   getSummary() {
     this.clientService.getSummary().subscribe({
       next: (response) => {
-        this.fullName = response.fullName
-        this.clientState.setFullName(this.fullName)
         this.medications = response.prescriptions
         this.notifications = response.notifications
         this.upcomingAppointments = response.appointments.map(
@@ -56,9 +76,7 @@ export class ClientDashboardSummaryComponent implements OnInit {
       error: (err) => console.error("Error fetching summary:", err)
     });
   }
-  setActiveSection(section: string) {
-    this.sectionChange.emit(section)
-  }
+
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     const formattedDate = new Intl.DateTimeFormat('en-GB', {
@@ -80,7 +98,10 @@ export class ClientDashboardSummaryComponent implements OnInit {
     notifInArray.seen = true;
     this.notificationsService.markAsRead(id).subscribe({
       next: () => {
-        console.log('Notification marked as read successfully.');
+        this.notificationsService.getTopThree().subscribe((response)=>{
+          this.notifications = response;
+        }
+        )
       },
       error: (error) => {
         console.error('Error marking notification as read:', error);

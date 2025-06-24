@@ -1,66 +1,125 @@
 <div class="section-header">
-    <h2>Feedback</h2>
+    <h2><i class="fas fa-comment-medical"></i> Feedback</h2>
 </div>
 
 <div class="feedback-section" *ngIf="!isLoading">
-    <div class="feedback-form">
-        <h3>Share Your Experience</h3>
-        <div class="form-group">
-            <label for="feedback-type">Feedback Type</label>
-            <select id="feedback-type" (change)="onFeedbackTypeChange()" [(ngModel)]="selectedFeedbackType">
-                <option value="">Select Type - General in default</option>
-                <option value="general">General Feedback</option>
-                <option value="doctor">FeedBack To Doctor</option>
-            </select>
-        </div>
-
-        <div class="form-group" *ngIf="!isGeneralFeedback">
-            <label for="department-feedback">Doctor</label>
-            <select id="department-feedback" [(ngModel)]="doctorFeedbackId">
-                <option value="">Select Doctor</option>
-                <option *ngFor="let dept of feedbackDoctors" [value]="dept.id">{{dept.fullName}}</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="feedback-message">Your Feedback</label>
-            <textarea id="feedback-message" rows="5" placeholder="Please share your thoughts with us..."
-                [(ngModel)]="feedbackMessage"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Rate Your Experience</label>
-            <div class="rating">
-                <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fas': (hoveredRating >= star) || (hoveredRating === 0 && selectedRating >= star),
-            'far': (hoveredRating < star && selectedRating < star)}" (click)="setRating(star)"
-                    (mouseenter)="setHover(star)" (mouseleave)="clearHover()" style="cursor: pointer;"></i>
+    <div class="feedback-container">
+        <div class="feedback-form-card">
+            <div class="card-header">
+                <h3><i class="fas fa-share-alt"></i> Share Your Experience</h3>
             </div>
-
-        </div>
-
-        <div class="form-actions">
-            <button class="btn-primary" (click)="submitFeedback()">Submit Feedback</button>
-        </div>
-    </div>
-
-    <div class="surveys">
-        <h3>Past Feedback</h3>
-        <div class="feedback-list">
-            <div *ngFor="let feedback of feedbacks" class="feedback-card">
-                <p class="feedback-comment">"{{ feedback.comment }}"</p>
-
-                <div class="feedback-rating">
-                    <ng-container *ngFor="let star of [1,2,3,4,5]">
-                        <i class="fa-star" [ngClass]="{'fas': star <= feedback.rating, 'far': star > feedback.rating}">
-                        </i>
-                    </ng-container>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="feedback-type">
+                        <i class="fas fa-tag"></i> Feedback Type
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="feedback-type" (change)="onFeedbackTypeChange()" [(ngModel)]="selectedFeedbackType">
+                            <option value="general">General Feedback</option>
+                            <option value="doctor">Feedback To Doctor</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
 
-                <p class="feedback-date">Submitted on: {{ feedback.createdAt | date:'medium' }}</p>
+                <div class="form-group" *ngIf="!isGeneralFeedback">
+                    <label for="department-feedback">
+                        <i class="fas fa-user-md"></i> Doctor
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="department-feedback" [(ngModel)]="doctorFeedbackId">
+                            <option value="">Select Doctor</option>
+                            <option *ngFor="let dept of feedbackDoctors" [value]="dept.id">{{dept.fullName}}</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
 
-                <div class="feedback-actions">
-                    <button class="btn-edit" (click)="editFeedback(feedback.id)">Update</button>
-                    <button class="btn-delete" (click)="deleteFeedback(feedback.id)">Delete</button>
+                <div class="form-group">
+                    <label for="feedback-message">
+                        <i class="fas fa-comment-dots"></i> Your Feedback
+                    </label>
+                    <div class="textarea-wrapper">
+                        <textarea id="feedback-message" rows="5" placeholder="Please share your thoughts with us..."
+                            [(ngModel)]="feedbackMessage"></textarea>
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-star"></i> Rate Your Experience
+                    </label>
+                    <div class="rating">
+                        <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{
+                 'fas text-amber': (hoveredRating >= star) || (hoveredRating === 0 && selectedRating >= star),
+                 'far text-muted': (hoveredRating < star && selectedRating < star)
+               }" (click)="setRating(star)" (mouseenter)="setHover(star)" (mouseleave)="clearHover()"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-primary" (click)="submitFeedback()">
+                        <i class="fas fa-paper-plane"></i> Submit Feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="feedback-list-card">
+            <div class="card-header">
+                <h3><i class="fas fa-history"></i> Past Feedback</h3>
+            </div>
+            <div class="card-body">
+                <div class="feedback-list">
+                    <div *ngIf="feedbacks.length === 0" class="no-feedback">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>You haven't submitted any feedback yet</p>
+                    </div>
+
+                    <div *ngFor="let feedback of feedbacks" class="feedback-card">
+                        <div class="feedback-header">
+                            <div class="feedback-type">
+                                <i class="fas fa-comments"></i>
+                                {{ feedback.comment === 'general' ? 'General Feedback' : 'Doctor Feedback' }}
+                            </div>
+                            <div class="feedback-date">
+                                {{ feedback.createdAt | date:'mediumDate' }}
+                            </div>
+                        </div>
+                        <!--
+            <div class="feedback-type">
+                <i *ngIf="feedback.type === 'general'" class="fas fa-comments"></i>
+                <i *ngIf="feedback.type === 'doctor'" class="fas fa-user-md"></i>
+                {{ feedback.type === 'general' ? 'General Feedback' : 'Doctor Feedback' }}
+              </div>
+              -->
+                        <!--<div *ngIf="feedback.doctorName" class="feedback-doctor">
+              <i class="fas fa-user-md"></i> Dr. {{ feedback.doctorName }}
+            </div>-->
+
+                        <div class="feedback-comment">
+                            <i class="fas fa-quote-left"></i>
+                            <p>{{ feedback.comment }}</p>
+                            <i class="fas fa-quote-right"></i>
+                        </div>
+
+                        <div class="feedback-rating">
+                            <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                <i class="fa-star"
+                                    [ngClass]="{'fas text-amber': star <= feedback.rating, 'far text-muted': star > feedback.rating}"></i>
+                            </ng-container>
+                        </div>
+
+                        <div class="feedback-actions">
+                            <button class="btn-icon" (click)="editFeedback(feedback.id)" title="Edit Feedback">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon" (click)="deleteFeedback(feedback.id)" title="Delete Feedback">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

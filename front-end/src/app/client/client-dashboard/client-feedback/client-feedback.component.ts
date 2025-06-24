@@ -22,7 +22,7 @@ export class ClientFeedbackComponent implements OnInit{
   doctorFeedbackId: number | null = null;
   feedbackDoctors: VisitedDoctorDto[] = [];
   isGeneralFeedback: boolean = true;
-  selectedFeedbackType: string = '';
+  selectedFeedbackType: string = 'general';
   feedbackMessage: string = '';
   hoveredRating: number = 0;
   isLoading: boolean = true;

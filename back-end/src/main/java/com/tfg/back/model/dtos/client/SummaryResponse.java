@@ -1,8 +1,6 @@
 package com.tfg.back.model.dtos.client;
 
 
-import com.tfg.back.model.Appointment;
-import com.tfg.back.model.MedicalPrescription;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
@@ -10,7 +8,6 @@ import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import java.util.List;
 
 public record SummaryResponse(
-        String fullName,
         List<AppointmentDtoGet> appointments,
         List<MedicalPrescriptionDtoGet> prescriptions,
         List<Notification> notifications

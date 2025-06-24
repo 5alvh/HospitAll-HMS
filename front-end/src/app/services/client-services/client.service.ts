@@ -16,6 +16,11 @@ export class ClientService {
   patient$ = this.patientSource.asObservable();
   constructor(private httpClient: HttpClient, private router: Router, private localStorageManager: LocalStorageManagerService) { }
 
+  
+  getFullName(): Observable<{fullName: string}> {
+    return this.httpClient.get<{fullName: string}>(`${this.baseUrl}/my-name`);
+  }
+
   updateProfile(client: ClientDtoUpdate, id: number): Observable<ClientDtoGet> {
     return this.httpClient.put<ClientDtoGet>(`${this.baseUrl}/${id}`, client).pipe(
       tap((response) => this.setPatient(response)),
@@ -26,7 +31,7 @@ export class ClientService {
     );
   }
 
-  getSummary(): Observable<SummaryResponse>{
+  getSummary(): Observable<SummaryResponse> {
     return this.httpClient.get<SummaryResponse>(`${this.baseUrl}/summary`)
   }
 

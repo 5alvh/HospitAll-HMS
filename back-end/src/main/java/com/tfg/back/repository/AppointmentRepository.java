@@ -29,9 +29,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("""
         SELECT a FROM Appointment a
-        WHERE a.client.id = :email
+        WHERE a.client.id = :id
             AND a.status <> 'CANCELLED'
         ORDER BY a.appointmentDateTime DESC
         """)
-    List<Appointment> findAppointmentsByClientEmail(@Param("email") UUID email, Pageable pageable);
+    List<Appointment> findAppointmentsByClientId(@Param("id") UUID id, Pageable pageable);
 }

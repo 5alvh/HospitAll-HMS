@@ -1,7 +1,7 @@
 package com.tfg.back.configuration;
 
 import static com.tfg.back.constants.JwtClaims.*;
-import com.tfg.back.service.serviceImpl.MyUserDetailsService;
+import com.tfg.back.service.impl.MyUserDetailsService;
 import com.tfg.back.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,21 +38,36 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            id = jwtUtil.extractUsername(jwt);
+            try {
+                id = jwtUtil.extractUsername(jwt);
+            } catch (Exception e) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
 
         if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(UUID.fromString(id));
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(UUID.fromString(id));
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (IllegalArgumentException e) {
+                chain.doFilter(request, response);
+                return;
             }
         }
 
         chain.doFilter(request, response);
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().equals("/auth/login");
+    }
+
 }
 

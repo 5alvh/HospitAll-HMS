@@ -70,7 +70,7 @@ export class DoctorService {
   }
 
   getNumberOfPatientsByDoctorId(doctorId: number): Observable<number> {
-    return this.httpClient.get<number>(`${this.baseUrlForAppointments}/total-patients/${doctorId}`).pipe(
+    return this.httpClient.get<number>(`${this.baseUrlForAppointments}/doctor/patients/count`).pipe(
       catchError((error) => {
         console.error('Error fetching number of patients:', error);
         return throwError(() => new Error('Failed to fetch number of patients'));
@@ -97,7 +97,7 @@ export class DoctorService {
   }
 
   createPrescription(prescription: any): Observable<any> {
-    return this.httpClient.post<any>(`${this.baseUrlMedicalPrescriptions}/create`, prescription).pipe(
+    return this.httpClient.post<any>(`${this.baseUrlMedicalPrescriptions}`, prescription).pipe(
       catchError((error) => {
         console.error('Error creating prescription:', error);
         return throwError(() => new Error('Failed to create prescription'));
@@ -106,7 +106,7 @@ export class DoctorService {
   }
 
   publishPrescription(id: number) {
-    return this.httpClient.patch<any>(`${this.baseUrlMedicalPrescriptions}/publish/${id}`, {}).pipe(
+    return this.httpClient.patch<any>(`${this.baseUrlMedicalPrescriptions}/${id}/publish`, {}).pipe(
       catchError((error) => {
         console.error('Error publishing prescription:', error);
         return throwError(() => new Error('Failed to publish prescription'));
@@ -123,7 +123,7 @@ export class DoctorService {
   }
 
   deletePrescription(prescriptionId: number) {
-    return this.httpClient.delete(`${this.baseUrlMedicalPrescriptions}/delete/${prescriptionId}`).pipe(
+    return this.httpClient.delete(`${this.baseUrlMedicalPrescriptions}/${prescriptionId}`).pipe(
       catchError((error) => {
         console.error('Error deleting prescription:', error);
         return throwError(() => error);

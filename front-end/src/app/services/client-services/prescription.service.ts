@@ -13,6 +13,6 @@ export class PrescriptionService {
   constructor(private httpClient: HttpClient) { }
   
   getAllPrescriptions(): Observable<MedicalPrescriptionDtoGet[]>{
-    return this.httpClient.get<MedicalPrescriptionDtoGet[]>(`${this.baseUrl}/all-prescriptions`)
+    return this.httpClient.get<MedicalPrescriptionDtoGet[]>(`${this.baseUrl}/my`)
   }
 }

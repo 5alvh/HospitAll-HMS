@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByUserId(UUID email);
-    List<Notification> findTop3ByUserIdAndSeenFalseOrderByDateDesc(UUID email);
+    List<Notification> findTop3ByUserIdAndSeenFalseOrderByDateDesc(UUID id);
+    Long countByUserIdAndSeenFalse(UUID email);
 }

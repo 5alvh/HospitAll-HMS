@@ -5,8 +5,8 @@
 
     <div class="menu">
         @for (section of sections; track $index) {
-        <div class="menu-item" [class.active]="activeSection === section.section"
-            (click)="setActiveSection(section.section)">
+        <div class="menu-item" [class.active]="activeSection === section.section" routerLink="{{section.route}}"
+            >
             <i [class]="section.icon"></i>
             <span>{{section.section}}</span>
         </div>

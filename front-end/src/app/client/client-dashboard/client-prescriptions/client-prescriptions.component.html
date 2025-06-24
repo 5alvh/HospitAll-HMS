@@ -1,113 +1,179 @@
+<!-- Medical Records Component -->
 <div class="modal-backdrop" *ngIf="selectedPrescription && !isLoadingPrescriptions">
-  <div class="summary-card appointment-modal">
-    <div class="card-header">
-      <h3>Appointment Details</h3>
+  <div class="summary-card prescription-modal">
+    <div class="card-header accent-teal">
+      <h3><i class="fas fa-prescription-bottle-alt"></i> Prescription Details</h3>
       <button class="close-btn" (click)="closeDetails()">×</button>
     </div>
     <div class="card-body">
-      <ul class="details-list">
-        <li><strong>Prescription ID:</strong> {{ selectedPrescription.id }}</li>
-        <li><strong>Medication:</strong> {{ selectedPrescription.medicationName }}</li>
-        <li><strong>Dosage:</strong> {{ selectedPrescription.dosage }}</li>
-        <li><strong>Frequency:</strong> {{ selectedPrescription.frequency }}</li>
-        <li><strong>Start Date:</strong> {{ selectedPrescription.startDate }}</li>
-        <li><strong>End Date:</strong> {{ selectedPrescription.endDate }}</li>
-        <li><strong>Notes:</strong> {{ selectedPrescription.notes }}</li>
-        <li><strong>Doctor:</strong> {{ selectedPrescription.prescribedBy }}</li>
-      </ul>
-      <button class="btn-outline btn-sm download-btn" (click)="downloadPrescription(selectedPrescription.id)">
-        <i class="fas fa-download"></i> Download Summary
+      <div class="details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Prescription ID:</span>
+          <span class="detail-value">{{ selectedPrescription.id }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Medication:</span>
+          <span class="detail-value">{{ selectedPrescription.medicationName }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Dosage:</span>
+          <span class="detail-value">{{ selectedPrescription.dosage }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Frequency:</span>
+          <span class="detail-value">{{ selectedPrescription.frequency }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Start Date:</span>
+          <span class="detail-value">{{ selectedPrescription.startDate | date:'mediumDate' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">End Date:</span>
+          <span class="detail-value">{{ selectedPrescription.endDate | date:'mediumDate' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Notes:</span>
+          <span class="detail-value">{{ selectedPrescription.notes || 'None' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Prescribed By:</span>
+          <span class="detail-value">{{ selectedPrescription.prescribedBy }}</span>
+        </div>
+      </div>
+      <button class="btn-outline download-btn" (click)="downloadPrescription(selectedPrescription.id)">
+        <i class="fas fa-download"></i> Download Prescription
       </button>
     </div>
   </div>
 </div>
 
 <div class="section-header">
-    <h2>Medical Records</h2>
-    <div class="section-tabs">
-        <div class="tab active">Prescriptions</div>
-        <div class="tab">Lab Results</div>
+  <h2><i class="fas fa-file-medical"></i> Medical Records</h2>
+  <div class="section-tabs">
+    <div class="tab " [class.active]="activeTab === 'prescriptions'" (click)="activeTab = 'prescriptions'">
+      <i class="fas fa-pills"></i> Prescriptions
     </div>
+    <div class="tab" [class.active]="activeTab === 'labResults'" (click)="activeTab = 'labResults'">
+      <i class="fas fa-flask"></i> Lab Results
+    </div>
+  </div>
 </div>
 
 <div class="records-section" >
-    <div class="prescriptions" *ngIf="!isLoadingPrescriptions">
-        <h3>Current Prescriptions</h3>
-        <div class="data-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Medication</th>
-                        <th>Dosage</th>
-                        <th>Frequency</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Prescribed By</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <div *ngIf="medications.length === 0" class="no-data">
-                        No prescriptions found.
-                    </div>
-                    <ng-container *ngFor="let medication of medications">
-                        <tr *ngIf="medication.status === 'PUBLISHED'">
-                            <td>{{medication.medicationName}}</td>
-                            <td>{{medication.dosage}}</td>
-                            <td>{{medication.frequency}}</td>
-                            <td>{{medication.startDate}}</td>
-                            <td>{{medication.endDate}}</td>
-                            <td>{{medication.prescribedBy}}</td>
-                            <td>
-                                <button class="btn-icon" title="Request Refill" (click)="sorryMessage()"><i
-                                        class="fas fa-sync-alt"></i></button>
-                                <button class="btn-icon" title="View Details"
-                                    (click)="showDetailsPrescription(medication)"><i class="fas fa-eye"></i></button>
-                            </td>
-                        </tr>
-                    </ng-container>
-                </tbody>
-            </table>
+  <!-- Prescriptions Card -->
+  <div class="records-card" *ngIf="activeTab === 'prescriptions' && !isLoadingPrescriptions ">
+    <div class="records-header">
+      <h3><i class="fas fa-prescription-bottle"></i> Current Prescriptions</h3>
+      <div class="filter-wrapper">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search medications..." [(ngModel)]="medicationSearch">
         </div>
+      </div>
     </div>
+    
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Medication</th>
+            <th>Dosage</th>
+            <th>Frequency</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Prescribed By</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf=" medications && medications.length === 0">
+            <td colspan="7" class="no-data">
+              <i class="fas fa-prescription-bottle-alt"></i> No prescriptions found
+            </td>
+          </tr>
+          <tr *ngFor="let medication of medications">
+            <td>
+              <div class="medication-info">
+                <i class="fas fa-pills"></i>
+                {{medication.medicationName}}
+              </div>
+            </td>
+            <td>{{medication.dosage}}</td>
+            <td>{{medication.frequency}}</td>
+            <td>{{medication.startDate | date:'shortDate'}}</td>
+            <td>{{medication.endDate | date:'shortDate'}}</td>
+            <td>{{medication.prescribedBy}}</td>
+            <td class="actions-cell">
+              <button class="btn-icon" title="Request Refill" (click)="sorryMessage()">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="btn-icon" title="View Details" (click)="showDetailsPrescription(medication)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-    <div class="lab-results" *ngIf="isLoadingLabResults">
-        <h3>Lab Results</h3>
-        <div class="data-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Test Name</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <div *ngIf="labResults.length === 0" class="no-data">
-                        No Lab Results found.
-                    </div>
-                    <tr *ngFor="let result of labResults">
-                        <td>{{result.testName}}</td>
-                        <td>{{result.createdAt | date: 'mediumDate'}}</td>
-                        <td>
-                            <span class="status-badge" [class.status-completed]="result.status === 'Completed'"
-                                [class.status-scheduled]="result.status === 'SCHEDULED'">
-                                {{result.status}}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn-icon" title="View Results" [disabled]="result.status !== 'Completed'">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" title="Download Report" [disabled]="result.status !== 'Completed'">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <!-- Lab Results Card -->
+  <div class="records-card" *ngIf="activeTab === 'labResults' && !isLoadingLabResults">
+    <div class="records-header">
+      <h3><i class="fas fa-microscope"></i> Lab Results</h3>
+      <div class="filter-wrapper">
+        <select [(ngModel)]="labResultFilter" class="filter-select">
+          <option value="all">All Results</option>
+          <option value="recent">Last 30 Days</option>
+          <option value="completed">Completed Only</option>
+        </select>
+      </div>
     </div>
+    
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Test Name</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="labResults.length === 0">
+            <td colspan="4" class="no-data">
+              <i class="fas fa-vial"></i> No lab results found
+            </td>
+          </tr>
+          <tr *ngFor="let result of labResults">
+            <td>
+              <div class="test-info">
+                <i class="fas fa-vial"></i>
+                {{result.testName}}
+              </div>
+            </td>
+            <td>{{result.createdAt | date:'mediumDate'}}</td>
+            <td>
+              <span class="status-badge" 
+                    [class.status-completed]="result.status === 'Completed'"
+                    [class.status-pending]="result.status === 'Pending'"
+                    [class.status-processing]="result.status === 'Processing'">
+                {{result.status}}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-icon" title="View Results" [disabled]="result.status !== 'Completed'">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-icon" title="Download Report" [disabled]="result.status !== 'Completed'">
+                <i class="fas fa-download"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<app-client-loading-wrapper [isLoading]="isLoadingPrescriptions "></app-client-loading-wrapper>
+<app-client-loading-wrapper [isLoading]="isLoadingPrescriptions || isLoadingLabResults"></app-client-loading-wrapper>

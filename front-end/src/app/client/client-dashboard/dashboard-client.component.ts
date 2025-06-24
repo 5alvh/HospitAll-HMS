@@ -4,31 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { ClientDtoGet } from '../../models/client-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 import { ClientService } from '../../services/client-services/client.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import { NotificationDto } from '../../models/notification-dto';
 import { NotificationService } from '../../services/client-services/notification.service';
 import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
 import { LabResultDtoGet } from '../../models/lab-result-dto-get';
 import { AppointmentService } from '../../services/client-services/appointment.service';
-import Swal from 'sweetalert2';
-import { AppointmentStatus } from '../../models/enums/appointment-status';
-import { DoctorService } from '../../services/doctor-services/doctor.service';
-import { FeedbackService } from '../../services/feedback-service/feedback.service';
 import { Feedback } from '../../doctor/doctor-dashboard/doctor-dashboard.component';
-import { FilesGeneratorService } from '../../services/shared-services/files-generator.service';
-import { ClientProfileComponent } from "./client-profile/client-profile.component";
-import { ClientAppointmentsComponent } from "./client-appointments/client-appointments.component";
-import { ClientPrescriptionsComponent } from './client-prescriptions/client-prescriptions.component';
-import { ClientNotificationsComponent } from './client-notifications/client-notifications.component';
-import { ClientSupportComponent } from "./client-support/client-support.component";
-import { ClientDocumentsComponent } from "./client-documents/client-documents.component";
-import { ClientFeedbackComponent } from "./client-feedback/client-feedback.component";
-import { ClientDashboardSummaryComponent } from "./client-dashboard-summary/client-dashboard-summary.component";
 import { ClientLoadingWrapperComponent } from "./client-loading-wrapper/client-loading-wrapper.component";
 import { ClientHeaderComponent } from "./client-header/client-header.component";
 import { ClientSidebarComponent } from "./client-sidebar/client-sidebar.component";
-
+import { NotificationSocketService } from '../../services/client-services/notification-socket.service';
+import { NgxSonnerToaster } from 'ngx-sonner';
 export interface VisitedDoctorDto {
   id: number;
   fullName: string;
@@ -36,7 +24,7 @@ export interface VisitedDoctorDto {
 
 @Component({
   selector: 'app-dashboard-client',
-  imports: [NgIf, FormsModule, ClientProfileComponent, ClientAppointmentsComponent, ClientPrescriptionsComponent, ClientNotificationsComponent, ClientSupportComponent, ClientDocumentsComponent, ClientFeedbackComponent, ClientDashboardSummaryComponent, ClientDashboardSummaryComponent, ClientLoadingWrapperComponent, ClientHeaderComponent, ClientSidebarComponent],
+  imports: [NgIf, FormsModule, ClientLoadingWrapperComponent, ClientHeaderComponent, ClientSidebarComponent, RouterOutlet, NgxSonnerToaster],
   templateUrl: './dashboard-client.component.html',
   styleUrl: './dashboard-client.component.scss',
   providers: [DatePipe, TitleCasePipe],
@@ -62,55 +50,25 @@ export class DashboardClientComponent implements OnInit {
   selectedAppointment: AppointmentDtoGet | null = null;
   feedbacks: Feedback[] = [];
 
-  sections=[
-    {
-    section:'dashboard',
-    icon:'fas fa-home'
-    },
-    {
-    section:'profile',
-    icon:'fas fa-user'
-    },
-    {
-    section:'appointments',
-    icon:'fas fa-calendar-alt'
-    },
-    {
-    section:'records',
-    icon:'fas fa-file-medical'
-    },
-    {
-    section:'notifications',
-    icon:'fas fa-file-invoice-dollar'
-    },
-    {
-    section:'documents',
-    icon:'fas fa-file-download'
-    },
-    {
-    section:'feedback',
-    icon:'fas fa-comment-dots'
-    },
-    {
-    section:'support',
-    icon:'fas fa-question-circle'
-    }
-  ]
+
   constructor(
     private router: Router,
     private localS: LocalStorageManagerService,
-    private clientService: ClientService
+    private clientService: ClientService,
+    private socket: NotificationSocketService
   ) { }
 
   ngOnInit(): void {
     this.getProfile();
+    this.socket.connect(); 
+    
   }
 
   getProfile() {
     this.clientService.getProfile().subscribe({
       next: (response) => {
-        this.patient = response;  
-        this.isLoading = false;  
+        this.patient = response;
+        this.isLoading = false;
       },
       error: (error) => {
         this.localS.clearAuth();
@@ -139,5 +97,6 @@ export class DashboardClientComponent implements OnInit {
   setActiveSection(section: string) {
     this.activeSection = section;
   }
+
 
 }

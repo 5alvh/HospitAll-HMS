@@ -1,13 +1,19 @@
 package com.tfg.back.controller;
 
 import static com.tfg.back.constants.BaseRoutes.*;
+
+import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoCreate;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoUpdate;
 import com.tfg.back.service.MedicalPrescriptionService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,42 +30,39 @@ public class MedicalPrescriptionController {
         this.medicalPrescriptionService = medicalPrescriptionService;
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<MedicalPrescriptionDtoGet> getMedicalPrescriptionById(@PathVariable Long id, Authentication authentication) {
-        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.getPrescriptionById(id, authentication.getName());
+    @PostMapping
+    public ResponseEntity<Boolean> create(@RequestBody @Valid MedicalPrescriptionDtoCreate dto, @AuthenticationPrincipal User doctor) {
+        Boolean prescription = medicalPrescriptionService.createPrescription(dto, doctor);
         return ResponseEntity.ok(prescription);
     }
 
-    @GetMapping("/all-prescriptions")
-    public ResponseEntity<List<MedicalPrescriptionDtoGet>> getAllMedicalPrescriptionByAuthentication(Authentication authentication) {
-        String email = authentication.getName();
-        List<MedicalPrescriptionDtoGet> prescriptions = medicalPrescriptionService.getAllPrescriptionsByEmail(UUID.fromString(email));
-        return ResponseEntity.ok(prescriptions);
-    }
-
-
-    @PostMapping("/create")
-    public ResponseEntity<Boolean> createMedicalPrescription(@RequestBody  MedicalPrescriptionDtoCreate dto, Authentication authentication) {
-        Boolean prescription = medicalPrescriptionService.createPrescription(dto, authentication.getName());
+    @GetMapping("/{id}")
+    public ResponseEntity<MedicalPrescriptionDtoGet> getById(@PathVariable @Positive Long id, @AuthenticationPrincipal User user) {
+        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.findPrescriptionById(id, user);
         return ResponseEntity.ok(prescription);
     }
 
-    @PatchMapping("/publish/{id}")
-    public ResponseEntity<Boolean> publishPrescription(@PathVariable Long id, Authentication authentication) {
-        Boolean published = medicalPrescriptionService.publishPrescription(id, authentication.getName());
-        return ResponseEntity.ok(published);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteMedicalPrescription(@PathVariable Long id, Authentication authentication) {
-        medicalPrescriptionService.deletePrescription(id, authentication.getName());
-        return ResponseEntity.noContent().build();
+    @GetMapping("/my")
+    public ResponseEntity<List<MedicalPrescriptionDtoGet>> getMyPrescriptions(@AuthenticationPrincipal User user) {
+        List<MedicalPrescriptionDtoGet> prescriptions = medicalPrescriptionService.findPrescriptionsByPatientId(user);
+        return prescriptions.isEmpty()? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.ok(prescriptions);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<MedicalPrescriptionDtoGet> updateMedicalPrescription(@RequestBody MedicalPrescriptionDtoUpdate dto, Authentication authentication) {
-        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.updatePrescription(dto, authentication.getName());
+    public ResponseEntity<MedicalPrescriptionDtoGet> update(@RequestBody @Valid MedicalPrescriptionDtoUpdate dto, @AuthenticationPrincipal User doctor) {
+        MedicalPrescriptionDtoGet prescription = medicalPrescriptionService.updatePrescription(dto, doctor);
         return ResponseEntity.ok(prescription);
     }
 
+    @PatchMapping("/{id}/publish")
+    public ResponseEntity<Boolean> publish(@PathVariable @Positive Long id, @AuthenticationPrincipal User doctor) {
+        Boolean published = medicalPrescriptionService.publishPrescription(id, doctor);
+        return ResponseEntity.ok(published);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable @Positive Long id, @AuthenticationPrincipal User doctor) {
+        medicalPrescriptionService.deletePrescription(id, doctor);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -7,4 +7,6 @@ public class BaseRoutes {
     public static final String NOTIFICATION = "/notifications";
     public static final String LAB_RESULT = "/lab-results";
     public static final String FEEDBACK = "/feedback";
+    public static final String APPOINTMENT = "/appointment";
+    public static final String AUTHENTICATION = "/auth";
 }

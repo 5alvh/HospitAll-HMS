@@ -6,7 +6,7 @@ import { ClientService } from '../../../services/client-services/client.service'
 
 @Component({
   selector: 'app-client-profile',
-  imports: [TitleCasePipe, RouterLink],
+  imports: [TitleCasePipe, RouterLink, NgIf],
   templateUrl: './client-profile.component.html',
   styleUrl: './client-profile.component.scss',
   providers: [TitleCasePipe],

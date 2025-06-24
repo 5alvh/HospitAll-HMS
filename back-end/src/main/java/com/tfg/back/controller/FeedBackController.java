@@ -1,12 +1,15 @@
 package com.tfg.back.controller;
 
 import static com.tfg.back.constants.BaseRoutes.*;
+
+import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.feedBack.FeedbackDtoCreate;
 import com.tfg.back.service.FeedbackService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,16 +23,14 @@ public class FeedBackController {
     private final FeedbackService feedbackService;
 
 
-    @GetMapping("/all-feedbacks")
-    public ResponseEntity<List<FeedBackDtoGet>> getAllFeedBacksByAuthentication(Authentication authentication){
-        String email = authentication.getName();
-        List<FeedBackDtoGet> feedbacks = feedbackService.getAllFeedbacksByEmail(UUID.fromString(email));
+    @GetMapping("/my")
+    public ResponseEntity<List<FeedBackDtoGet>> getMyFeedBacks(@AuthenticationPrincipal User patient){
+        List<FeedBackDtoGet> feedbacks = feedbackService.findMyFeedbacks(patient);
         return ResponseEntity.ok(feedbacks);
     }
     @PostMapping("/create")
-    public ResponseEntity<FeedBackDtoGet> sendFeedback(@RequestBody FeedbackDtoCreate feedbackDtoCreate, Authentication authentication) {
-        String clientEmail = authentication.getName();
-        FeedBackDtoGet saved = feedbackService.sendFeedback(UUID.fromString(clientEmail), feedbackDtoCreate);
+    public ResponseEntity<FeedBackDtoGet> create(@RequestBody FeedbackDtoCreate feedbackDtoCreate, @AuthenticationPrincipal User patient) {
+        FeedBackDtoGet saved = feedbackService.writeFeedback(patient, feedbackDtoCreate);
         return ResponseEntity.ok(saved);
     }
 

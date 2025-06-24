@@ -8,34 +8,39 @@ import { PrescriptionService } from '../../../services/client-services/prescript
 import { response } from 'express';
 import { ClientLoadingWrapperComponent } from "../client-loading-wrapper/client-loading-wrapper.component";
 import { LabResultService } from '../../../services/client-services/lab-result.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-client-prescriptions',
-  imports: [NgIf, NgFor, DatePipe, ClientLoadingWrapperComponent],
+  imports: [NgIf, NgFor, DatePipe, ClientLoadingWrapperComponent, FormsModule],
   templateUrl: './client-prescriptions.component.html',
   styleUrl: './client-prescriptions.component.scss',
   providers: [DatePipe]
 })
 export class ClientPrescriptionsComponent implements OnInit {
 
-  medications!: MedicalPrescriptionDtoGet[];
-  labResults!: LabResultDtoGet[];
+  medications: MedicalPrescriptionDtoGet[] = [];
+  labResults: LabResultDtoGet[]= [];
   selectedPrescription: MedicalPrescriptionDtoGet | null = null;
   isLoadingPrescriptions: boolean = true;
   isLoadingLabResults: boolean = true;
-
+  medicationSearch: string = '';
+  labResultFilter: string = 'all';
+  activeTab: string='prescriptions'
+  
   constructor(private filesGenerator: FilesGeneratorService, private prescriptionService: PrescriptionService, private labResultService: LabResultService) { }
- 
+
   ngOnInit(): void {
     this.prescriptionService.getAllPrescriptions().subscribe(
       (response) => {
-        this.medications = response;
+        this.medications = response || [];
         this.isLoadingPrescriptions = false;
       }
     )
     this.labResultService.getAllLabResults().subscribe(
-      (response)=>{
-        this.labResults = response;
+      (response) => {
+        this.labResults = response || [];
+        this.isLoadingLabResults = false;
       }
     )
   }

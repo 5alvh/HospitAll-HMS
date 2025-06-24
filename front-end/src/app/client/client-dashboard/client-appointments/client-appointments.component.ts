@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -12,9 +12,10 @@ import { ClientLoadingWrapperComponent } from "../client-loading-wrapper/client-
 
 @Component({
   selector: 'app-client-appointments',
-  imports: [RouterLink, FormsModule, NgIf, NgFor, ClientLoadingWrapperComponent],
+  imports: [RouterLink, FormsModule, NgIf, NgFor, ClientLoadingWrapperComponent, NgClass,DatePipe],
   templateUrl: './client-appointments.component.html',
-  styleUrl: './client-appointments.component.scss'
+  styleUrl: './client-appointments.component.scss',
+  providers:[DatePipe]
 })
 export class ClientAppointmentsComponent implements OnInit {
 
@@ -24,6 +25,7 @@ export class ClientAppointmentsComponent implements OnInit {
   pastAppointments: AppointmentDtoGet[] = [];
   upcomingAppointments: AppointmentDtoGet[] = [];
   isLoading: boolean= true;
+  clickedTab = 'upcoming';
 
   constructor(private appointmentService: AppointmentService, private filesGenerator: FilesGeneratorService) { }
 

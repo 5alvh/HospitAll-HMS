@@ -3,13 +3,19 @@ package com.tfg.back.controller;
 import static com.tfg.back.constants.BaseRoutes.*;
 
 import com.tfg.back.model.Notification;
+import com.tfg.back.model.User;
 import com.tfg.back.service.NotificationService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
 @RequestMapping(NOTIFICATION)
@@ -21,17 +27,28 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    @GetMapping("/my")
+    public ResponseEntity<List<Notification>> getMyNotifications(@AuthenticationPrincipal User patient) {
+        List<Notification> notifications = notificationService.findAppointmentsByClientId(patient);
+        return ResponseEntity.ok(notifications);
+    }
+
     @PutMapping("/mark-as-read/{id}")
-    public ResponseEntity<?> markAsRead(Authentication authentication, @PathVariable Long id) {
-        String email = authentication.getName();
-        notificationService.seenNotification(id, UUID.fromString(email));
+    public ResponseEntity<?> markAsRead(@AuthenticationPrincipal User patient, @PathVariable Long id) {
+        notificationService.markNotificationAsSeen(id, patient);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/all-notifications")
-    public ResponseEntity<List<Notification>> getNotifications(Authentication authentication) {
-        String email = authentication.getName();
-        List<Notification> notifications = notificationService.getAllClientNotifications(email);
+    @GetMapping("/unseen/count")
+    public ResponseEntity<Long> getUnseenNotificationsCount(@AuthenticationPrincipal User patient) {
+        Long count = notificationService.countUnseenNotifications(patient);
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/top-three")
+    public ResponseEntity<List<Notification>> getTopThreeNotifications(@AuthenticationPrincipal User patient) {
+        List<Notification> notifications = notificationService.getTopThreeNotifications(patient);
         return ResponseEntity.ok(notifications);
     }
+
 }

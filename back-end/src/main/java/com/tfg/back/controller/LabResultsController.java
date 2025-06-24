@@ -1,12 +1,17 @@
 package com.tfg.back.controller;
 
 import static com.tfg.back.constants.BaseRoutes.*;
+
+import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.labResults.LabResultDtoCreate;
 import com.tfg.back.model.dtos.labResults.LabResultDtoGet;
 import com.tfg.back.service.LabResultsService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,30 +28,27 @@ public class LabResultsController {
         this.labResultService = labResultService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<LabResultDtoGet> createLabResult(@RequestBody LabResultDtoCreate labResult, Authentication authentication) {
-        String email = authentication.getName();
-        LabResultDtoGet labResultDtoGet = labResultService.sendLabResult(labResult, email);
+    @PostMapping
+    public ResponseEntity<LabResultDtoGet> create(@RequestBody @Valid LabResultDtoCreate labResult, @AuthenticationPrincipal User doctor) {
+        LabResultDtoGet labResultDtoGet = labResultService.createLabResult(labResult, doctor);
         return ResponseEntity.ok(labResultDtoGet);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LabResultDtoGet> getLabResultById(@PathVariable Long id) {
-        LabResultDtoGet labResultDtoGet = labResultService.getLabResultById(id);
-        return ResponseEntity.ok(labResultService.getLabResultById(id));
+    public ResponseEntity<LabResultDtoGet> getById(@PathVariable @Positive Long id) {
+        LabResultDtoGet labResult = labResultService.findLabResultById(id);
+        return ResponseEntity.ok(labResult);
     }
 
-    @GetMapping("/all-lab-results")
-    public ResponseEntity<List<LabResultDtoGet>> getLabResultsByEmail(Authentication authentication) {
-        String email = authentication.getName();
-        List<LabResultDtoGet> labResults = labResultService.getLabResultsByEmail((UUID.fromString(email)));
+    @GetMapping("/my")
+    public ResponseEntity<List<LabResultDtoGet>> getMyLabResults(@AuthenticationPrincipal User patient) {
+        List<LabResultDtoGet> labResults = labResultService.findLabResultsByPatientId(patient);
         return ResponseEntity.ok(labResults);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteLabResult(@PathVariable Long id, Authentication authentication) {
-        String email = authentication.getName();
-        labResultService.deleteLabResult(id, email);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        labResultService.deleteLabResult(id);
         return ResponseEntity.noContent().build();
     }
 }

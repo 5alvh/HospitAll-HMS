@@ -1,63 +1,74 @@
 <div class="section-header">
-    <h2>Support & Help</h2>
+  <h2><i class="fas fa-headset"></i> Support & Help</h2>
 </div>
 
 <div class="support-section">
-    <div class="contact-info">
-        <h3>Contact Information</h3>
-        <div class="contact-cards">
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fas fa-phone-alt"></i>
-                </div>
-                <div class="contact-details">
-                    <h4>Emergency</h4>
-                    <p><strong>Emergency Room:</strong> +1 (555) 911-0000</p>
-                    <p><strong>Ambulance:</strong> 911</p>
-                </div>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fas fa-hospital"></i>
-                </div>
-                <div class="contact-details">
-                    <h4>Hospital Departments</h4>
-                    <p><strong>Main Reception:</strong> +1 (555) 123-0000</p>
-                    <p><strong>Appointments:</strong> +1 (555) 123-0001</p>
-                    <p><strong>Billing:</strong> +1 (555) 123-0002</p>
-                </div>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fas fa-headset"></i>
-                </div>
-                <div class="contact-details">
-                    <h4>Technical Support</h4>
-                    <p><strong>Portal Help:</strong> +1 (555) 123-0099</p>
-                    <p><strong>Email:</strong> HospitAll.example.com</p>
-                </div>
-            </div>
+  <div class="contact-info">
+    <h3><i class="fas fa-address-book"></i> Contact Information</h3>
+    <div class="contact-cards">
+      <div class="contact-card">
+        <div class="contact-icon accent-red">
+          <i class="fas fa-phone-alt"></i>
         </div>
-    </div>
-
-    <div class="faq-section">
-        <h3>Frequently Asked Questions</h3>
-        <div class="faq-list">
-
-
-            <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.active]="activeIndex === i"
-                (click)="toggleAnswer(i)">
-                <div class="faq-question">
-                    <h4>{{ faq.question }}</h4>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>{{ faq.answer }}</p>
-                </div>
-            </div>
-
+        <div class="contact-details">
+          <h4>Emergency</h4>
+          <div class="contact-line">
+            <strong>Emergency Room:</strong> +1 (555) 911-0000
+          </div>
+          <div class="contact-line">
+            <strong>Ambulance:</strong> 911
+          </div>
         </div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-icon accent-blue">
+          <i class="fas fa-hospital"></i>
+        </div>
+        <div class="contact-details">
+          <h4>Hospital Departments</h4>
+          <div class="contact-line">
+            <strong>Main Reception:</strong> +1 (555) 123-0000
+          </div>
+          <div class="contact-line">
+            <strong>Appointments:</strong> +1 (555) 123-0001
+          </div>
+          <div class="contact-line">
+            <strong>Billing:</strong> +1 (555) 123-0002
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-icon accent-teal">
+          <i class="fas fa-headset"></i>
+        </div>
+        <div class="contact-details">
+          <h4>Technical Support</h4>
+          <div class="contact-line">
+            <strong>Portal Help:</strong> +1 (555) 123-0099
+          </div>
+          <div class="contact-line">
+            <strong>Email:</strong> supportHospitAll.example.com
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="faq-section">
+    <h3><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs; let i = index" 
+           [class.active]="activeIndex === i" (click)="toggleAnswer(i)">
+        <div class="faq-question">
+          <h4>{{ faq.question }}</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

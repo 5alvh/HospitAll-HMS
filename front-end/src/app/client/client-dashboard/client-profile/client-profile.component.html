@@ -1,67 +1,88 @@
 <div class="section-header">
-    <h2>Profile & Personal Information</h2>
-    <button class="btn-outline" [routerLink]="['/edit-profile']"><i class="fas fa-pencil-alt"></i> Edit
-        Profile</button>
+    <h2><i class="fas fa-user-circle"></i> Profile & Personal Information</h2>
+    <button class="btn-outline" [routerLink]="['/edit-profile']">
+        <i class="fas fa-pencil-alt"></i> Edit Profile
+    </button>
 </div>
 
-<div class="profile-section">
+<div class="profile-section" *ngIf="!isLoading">
     <div class="profile-card">
         <div class="profile-header">
-            <div class="profile-avatar icon-avatar">
+            <div class="profile-avatar">
                 <i class="fas fa-user-circle"></i>
             </div>
             <div class="profile-info">
                 <h3>{{patient.fullName}}</h3>
-                <p>Patient ID: {{patient.id}}</p>
-                <p>DOB: {{patient.dateOfBirth}}</p>
-                <p>Blood Type: {{patient.bloodType.replace('_', ' ') | titlecase}}</p>
+                <div class="info-badges">
+                    <span class="info-badge">ID: {{patient.id}}</span>
+                    <span class="info-badge">DOB: {{patient.dateOfBirth}}</span>
+                    <span class="info-badge">Blood: {{patient.bloodType.replace('_', ' ') | titlecase}}</span>
+                </div>
             </div>
         </div>
 
         <div class="profile-body">
-            <div class="info-group">
-                <h4>Contact Information</h4>
-                <div class="info-row">
-                    <span class="info-label">Phone:</span>
-                    <span class="info-value">{{patient.phoneNumber}}</span>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-header accent-blue">
+                        <i class="fas fa-phone-alt"></i>
+                        <h4>Contact Information</h4>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">{{patient.phoneNumber}}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{patient.email}}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">{{patient.address}}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Email:</span>
-                    <span class="info-value">{{patient.email}}</span>
+
+                <div class="info-group">
+                    <div class="info-header accent-orange">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Emergency Contact</h4>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-row">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">{{patient.emergencyContact.contactName}}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Relation:</span>
+                            <span class="info-value">{{patient.emergencyContact.relationship}}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">{{patient.emergencyContact.contactPhone}}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Address:</span>
-                    <span class="info-value">{{patient.address}}</span>
+
+                <div class="info-group">
+                    <div class="info-header accent-teal">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Insurance Information</h4>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-row">
+                            <span class="info-label">Membership Type:</span>
+                            <span class="info-value">{{patient.membershipLevel}}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Created At:</span>
+                            <span class="info-value">{{patient.createdAt}}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="info-group">
-                <h4>Emergency Contact</h4>
-                <div class="info-row">
-                    <span class="info-label">Name:</span>
-                    <span class="info-value">{{patient.emergencyContact.contactName}}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Relation:</span>
-                    <span class="info-value">{{patient.emergencyContact.relationship}}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Phone:</span>
-                    <span class="info-value">{{patient.emergencyContact.contactPhone}}</span>
-                </div>
-            </div>
-
-            <div class="info-group">
-                <h4>Insurance Information</h4>
-                <div class="info-row">
-                    <span class="info-label">Membership Type:</span>
-                    <span class="info-value">{{patient.membershipLevel}}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">created At:</span>
-                    <span class="info-value">{{patient.createdAt}}</span>
-                </div>
-            </div>
             <div class="delete-account">
                 <button class="btn-danger" (click)="onInactivateAccount()">
                     <i class="fas fa-trash-alt"></i> Inactivate Account

@@ -115,5 +115,5 @@ public interface DoctorService {
      */
     List<VisitedDoctorGet> getDoctorsClientVisited(Long id);
 
-    void changePassword(String email, ChangePasswordRequest newPassword);
+    void changePassword(UUID email, ChangePasswordRequest newPassword);
 }

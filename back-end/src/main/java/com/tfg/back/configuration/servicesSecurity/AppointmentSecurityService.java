@@ -1,0 +1,52 @@
+package com.tfg.back.configuration.servicesSecurity;
+
+import static com.tfg.back.constants.Roles.*;
+import com.tfg.back.exceptions.appointment.AppointmentNotFoundException;
+import com.tfg.back.model.Appointment;
+import com.tfg.back.model.Client;
+import com.tfg.back.model.User;
+import com.tfg.back.repository.AppointmentRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+
+@Component("appointmentSecurityService")
+public class AppointmentSecurityService {
+
+    private final AppointmentRepository appointmentRepository;
+
+    public AppointmentSecurityService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+    }
+
+    public boolean canCancelAppointment(Long id, Authentication authentication) {
+        User user =(User) authentication.getPrincipal();
+        UUID uuid = user.getId();
+        String role = user instanceof Client ? CLIENT : DOCTOR;
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new AppointmentNotFoundException(id));
+
+        if (role.equals(CLIENT)) {
+            return appointment.getClient().getId().equals(uuid);
+        }
+
+        return false;
+    }
+
+    public boolean canUpdateAppointmentStatus(Long appointmentId, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        UUID userId = user.getId();
+
+        String role = user instanceof Client ? CLIENT : DOCTOR;
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException(appointmentId));
+
+        if (role.equals(DOCTOR)) {
+            return appointment.getDoctor().getId().equals(userId);
+        }
+        return false;
+    }
+}

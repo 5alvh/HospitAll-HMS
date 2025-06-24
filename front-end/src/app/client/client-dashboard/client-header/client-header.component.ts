@@ -1,36 +1,44 @@
 import { NgIf } from '@angular/common';
-import { Component, Input, OnInit, output } from '@angular/core';
+import { Component, computed, Input, OnInit, output, signal } from '@angular/core';
 import { LocalStorageManagerService } from '../../../services/auth/local-storage-manager.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ClientStateService } from '../../../services/client-services/client-state.service';
+import { ClientService } from '../../../services/client-services/client.service';
+import { NotificationService } from '../../../services/client-services/notification.service';
+import { NotificationStateService } from '../../../services/client-services/notification-state.service';
 
 @Component({
   selector: 'app-client-header',
-  imports: [NgIf],
+  imports: [NgIf, RouterLink],
   templateUrl: './client-header.component.html',
   styleUrl: './client-header.component.scss'
 })
 export class ClientHeaderComponent implements OnInit {
 
-
-  unreadNotificationsCount: number=1;
+  unreadNotificationsCount: any =  signal<number>;
   patientName!: string;
-  activeSection = output<string>();
-
   showOptions = false;
   titles = ['Your Hospital Dashboard', 'Caring for You, Every Step of the Way'];
   titleIndex = 0;
   title = this.titles[this.titleIndex];
-  fadeState = 'visible'; // 'visible' or 'hidden'
+  fadeState = 'visible';
   intervalId: any;
-  constructor(private localS: LocalStorageManagerService, private router: Router, private clientState: ClientStateService) { }
+
+  constructor(private notifStateService: NotificationStateService, private localS: LocalStorageManagerService, private router: Router, private clientState: ClientStateService) {
+  }
 
   ngOnInit(): void {
+    
+    this.notifStateService.refreshUnseenNotificationCount();
+    this.unreadNotificationsCount = this.notifStateService.unseenNotificationsCount;
+    
+    this.clientState.getFullName();
     this.clientState.fullName$.subscribe(
-      (response)=>{
-        this.patientName = response
+      (response) => {
+        this.patientName = response.fullName
       }
     )
+
     this.intervalId = setInterval(() => {
       this.fadeState = 'hidden';
 
@@ -38,18 +46,16 @@ export class ClientHeaderComponent implements OnInit {
         this.titleIndex = (this.titleIndex + 1) % this.titles.length;
         this.title = this.titles[this.titleIndex];
         this.fadeState = 'visible';
-      }, 1000); // Match with fade out duration
-    }, 6000); // Every 3 seconds
+      }, 1000);
+    }, 6000);
   }
+
   ngOnDestroy() {
     clearInterval(this.intervalId);
   }
+  
   onShowOptions() {
     this.showOptions = !this.showOptions;
-  }
-
-  setActiveSection(section: string) {
-    this.activeSection.emit(section)
   }
 
   logout() {

@@ -1,6 +1,6 @@
 package com.tfg.back.configuration;
 
-import com.tfg.back.service.serviceImpl.MyUserDetailsService;
+import com.tfg.back.service.impl.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",

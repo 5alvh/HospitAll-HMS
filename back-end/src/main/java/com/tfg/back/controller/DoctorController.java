@@ -8,7 +8,7 @@ import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.model.dtos.users.EmailRequest;
 import com.tfg.back.model.dtos.doctor.*;
 import com.tfg.back.service.DoctorService;
-import com.tfg.back.service.serviceImpl.LoginService;
+import com.tfg.back.service.impl.LoginService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +41,7 @@ public class DoctorController {
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest newPassword) {
         String email = authentication.getName();
-        doctorService.changePassword(email, newPassword);
+        doctorService.changePassword(UUID.fromString(email), newPassword);
         return ResponseEntity.noContent().build();
     }
 
@@ -55,7 +55,7 @@ public class DoctorController {
     @GetMapping("/profile")
     public ResponseEntity<DoctorDtoGet> getDoctor(Authentication authentication) {
         String email = authentication.getName();
-        DoctorDtoGet doctor = doctorService.getDoctorByEmail(email);
+        DoctorDtoGet doctor = doctorService.getDoctorById(UUID.fromString(email));
         return ResponseEntity.ok(doctor);
     }
     @GetMapping("/{id}")

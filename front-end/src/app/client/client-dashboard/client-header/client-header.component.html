@@ -7,14 +7,14 @@
     <div class="header-actions">
         <div class="notification-icon">
             <i class="fas fa-bell"></i>
-            <span class="badge" *ngIf="unreadNotificationsCount > 0">{{unreadNotificationsCount}}</span>
+            <span class="badge" *ngIf="unreadNotificationsCount() > 0">{{unreadNotificationsCount()}}</span>
         </div>
         <div (click)="onShowOptions()" class="user-profile">
             <i class="fas fa-user-circle"></i>
             <span>{{patientName}}</span>
 
             <div class="dropdown-menu" *ngIf="showOptions">
-                <button (click)="setActiveSection('profile')">Go to Profile</button>
+                <button routerLink="/dashboard-client/profile">Go to Profile</button>
                 <button (click)="logout()">Logout</button>
             </div>
         </div>
