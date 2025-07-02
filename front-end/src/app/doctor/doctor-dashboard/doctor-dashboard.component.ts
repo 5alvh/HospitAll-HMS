@@ -1,7 +1,7 @@
-import { CommonModule, DatePipe, NgClass, NgFor, NgIf, Time, TitleCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DoctorService } from '../../services/doctor-services/doctor.service';
 import { DoctorDtoGet } from '../../models/doctor-dto-get';
 import { AppointmentDtoGet } from '../../models/appointment-dto-get';
@@ -9,9 +9,19 @@ import { AppointmentStatus } from '../../models/enums/appointment-status';
 import { MedicalPrescriptionDtoGet } from '../../models/medical-prescription-dto-get';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
 import Swal from 'sweetalert2';
-import { AppointmentService } from '../../services/client-services/appointment.service';
 import { PrescriptionStatus } from '../../models/enums/prescription-status';
 import { FilesGeneratorService } from '../../services/shared-services/files-generator.service';
+import { AppointmentService } from '../../client/services/appointment.service';
+import { DashboardSummaryComponent } from "./dashboard-summary/dashboard-summary.component";
+import { CalendarComponent } from "./calendar/calendar.component";
+import { ProfileComponent } from "./profile/profile.component";
+import { AppointmentListComponent } from "./appointment-list/appointment-list.component";
+import { SupportComponent } from "./support/support.component";
+import { FeedbackComponent } from "./feedback/feedback.component";
+import { PrescriptionsComponent } from "./prescriptions/prescriptions.component";
+import { PatientsComponent } from "./patients/patients.component";
+import { SidebarComponent } from "./sidebar/sidebar.component";
+import { HeaderComponent } from "./header/header.component";
 
 
 export interface Feedback {
@@ -20,6 +30,7 @@ export interface Feedback {
   rating: number;
   comment: string;
   createdAt: Date;
+  type: string;
 }
 
 export interface BookAppRequest {
@@ -50,7 +61,7 @@ export interface MedicalPrescriptionDtoUpdate {
 }
 @Component({
   selector: 'app-doctor-dashboard',
-  imports: [FormsModule, NgIf, NgFor, NgClass, DatePipe, CommonModule, RouterLink],
+  imports: [FormsModule, NgIf, RouterOutlet,CommonModule, SidebarComponent, HeaderComponent],
   templateUrl: './doctor-dashboard.component.html',
   styleUrl: './doctor-dashboard.component.scss',
   providers: [DatePipe],
@@ -63,7 +74,6 @@ export class DoctorDashboardComponent {
   showDiagnosisForm: { [key: string]: boolean } = {};
   diagnosisInputs: { [key: string]: string } = {};
   showCancelledAppointments: boolean = true;
-  filteredAppointments: any[] = [];
   appointmentsWithoutCancelled: any[] = [];
   selectedAppointment: any;
   filterStatus: string = 'all';
@@ -73,8 +83,9 @@ export class DoctorDashboardComponent {
   showUserMenu: boolean = false;
   doctor!: DoctorDtoGet;
   prescriptions: MedicalPrescriptionDtoGet[] = [];
-  feedback: Feedback[] = [];
+  feedbacks: Feedback[] = [];
   isLoading: boolean = true;
+  todaysAppointments: any[] = [];
 
   dashboardStats = {
     todayAppointments: 0,
@@ -98,6 +109,10 @@ export class DoctorDashboardComponent {
     appointmentId: 0,
     status: ''
   };
+  changeSection(section: string): void {
+    console.log('Section changed to:', section);
+    this.activeSection = section;
+  }
 
   constructor(private docService: DoctorService,
     private localStorageService: LocalStorageManagerService,
@@ -105,31 +120,15 @@ export class DoctorDashboardComponent {
     private appService: AppointmentService,
     private filesGenerator: FilesGeneratorService) { }
 
+
+
   ngOnInit(): void {
     this.docService.getProfile().subscribe({
       next: (response) => {
+        console.log(response)
         this.doctor = response;
         this.isLoading = false;
-        this.doctor.appointments.forEach((appointment: AppointmentDtoGet) => {
-          const date = new Date(appointment.appointmentDateTime);
-          this.appointments.push({
-            id: appointment.id,
-            clientFullName: appointment.clientFullName,
-            appointmentDateTime: appointment.appointmentDateTime, // Keep the original datetime string
-            date: date,
-            time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            status: appointment.status,
-            reason: appointment.reason,
-            diagnosis: appointment.diagnosis,
-            type: appointment.type
-          });
-        });
-        this.prescriptions = this.doctor.prescriptionsGiven;
-        this.feedback = this.doctor.feedbacksReceived || [];
 
-        this.filteredAppointments = this.appointments;
-        this.filterFromCancelledAppointments();
-        this.calculateDashboardStats()
         console.log(this.prescriptions);
       },
       error: (error) => {
@@ -207,26 +206,7 @@ export class DoctorDashboardComponent {
     }
 
     console.log(`Publishing diagnosis for appointment ${appointmentId}: ${diagnosis}`);
-    this.appService.giveDiagnosis(appointmentId, diagnosis).subscribe({
-      next: (res) => {
-        console.log('Diagnosis published successfully.');
-        this.appointments.find(a => a.id === appointmentId)!.diagnosis = diagnosis;
-        Swal.fire({
-          title: 'Success',
-          text: 'Diagnosis published successfully.',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        })
-      },
-      error: (err) => {
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to publish diagnosis. Please try again later.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        })
-      }
-    })
+
     this.diagnosisInputs[appointmentId] = '';
     this.showDiagnosisForm[appointmentId] = false;
   }
@@ -235,34 +215,8 @@ export class DoctorDashboardComponent {
     this.changeSection('dashboard');
   }
 
-  applyFilter() {
-    this.filteredAppointments = this.appointments.filter(appointment => {
-      if (this.filterStatus === 'all' && this.showCancelledAppointments) {
-        return appointment.status.toLocaleLowerCase() !== 'cancelled';
-      } else if (this.filterStatus === 'all') {
-        return true;
-      }
-      return appointment.status.toLocaleLowerCase() === this.filterStatus.toLocaleLowerCase();
-    });
-  }
 
-  filterFromCancelledAppointments() {
-    if (this.filterStatus !== 'all') {
-      this.applyFilter();
-      return;
-    }
-    if (this.showCancelledAppointments) {
-      this.filteredAppointments = this.appointments.filter(appointment => {
-        if (appointment.status !== "CANCELLED") {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      this.filteredAppointments = this.appointments;
-    }
-  }
+
 
   confirmAppointment(appId: any) {
     const appointment = this.appointments.find(a => a.id === appId);
@@ -303,45 +257,8 @@ export class DoctorDashboardComponent {
       });
     }
   }
-  changeSection(section: string): void {
-    this.activeSection = section;
-  }
 
-  calculateDashboardStats(): void {
-    const today = new Date();
-    const todayYear = today.getFullYear();
-    const todayMonth = today.getMonth();
-    const todayDate = today.getDate();
 
-    this.dashboardStats.todayAppointments = this.appointments.filter(appointment => {
-      const appointmentDate = new Date(appointment.appointmentDateTime);
-      return (
-        appointment.status !== AppointmentStatus.CANCELLED &&
-        appointmentDate.getFullYear() === todayYear &&
-        appointmentDate.getMonth() === todayMonth &&
-        appointmentDate.getDate() === todayDate
-      );
-    }).length;
-
-    this.dashboardStats.pendingPrescriptions = this.prescriptions.filter(
-      prescription => prescription.status === PrescriptionStatus.DRAFT
-    ).length;
-    this.getTotalPatients();
-
-    const totalRating = this.feedback.reduce((sum, item) => sum + item.rating, 0);
-    this.dashboardStats.averageRating = totalRating / this.feedback.length;
-  }
-
-  getTotalPatients() {
-    this.docService.getNumberOfPatientsByDoctorId(this.doctor.id).subscribe({
-      next: (response) => {
-        this.dashboardStats.totalPatients = response;
-      },
-      error: (error) => {
-        console.error('Error fetching number of patients:', error);
-      }
-    });
-  }
 
   downloadAppointment(appointmentId: number) {
     console.log('Downloading appointment PDF for ID:', appointmentId);
@@ -413,8 +330,6 @@ export class DoctorDashboardComponent {
             icon: 'success',
             confirmButtonText: 'OK'
           });
-          this.getTotalPatients();
-          this.calculateDashboardStats();
         },
         error: (error) => {
           console.error('Error booking appointment:', error);
@@ -449,7 +364,6 @@ export class DoctorDashboardComponent {
             icon: 'success',
             confirmButtonText: 'OK'
           });
-          this.calculateDashboardStats();
         },
         error: (error) => {
           console.error('Error booking appointment:', error);
@@ -463,7 +377,6 @@ export class DoctorDashboardComponent {
       });
       return;
     }
-    this.calculateDashboardStats();
   }
 
   refreshAppointmentsForm(): void {
@@ -489,7 +402,6 @@ export class DoctorDashboardComponent {
         this.docService.deletePrescription(prescriptionId).subscribe({
           next: () => {
             this.prescriptions = this.prescriptions.filter(prescription => prescription.id !== prescriptionId);
-            this.calculateDashboardStats();
             Swal.fire({
               title: 'Success',
               text: 'Prescription deleted successfully.',
@@ -526,7 +438,6 @@ export class DoctorDashboardComponent {
 
     this.docService.createPrescription(prescriptionRequest).subscribe({
       next: (response) => {
-        this.calculateDashboardStats();
         this.refreshPrescriptionsForm();
         Swal.fire({
           title: 'Success',
@@ -582,7 +493,6 @@ export class DoctorDashboardComponent {
           if (prescription !== null) {
             prescription!.status = PrescriptionStatus.PUBLISHED;
           }
-          this.calculateDashboardStats();
           this.refreshPrescriptionsForm();
 
           Swal.fire({
@@ -625,22 +535,9 @@ export class DoctorDashboardComponent {
     return titles[this.activeSection] || 'Dashboard';
   }
 
-  getAppointmentTrend(): string {
-    return this.dashboardStats.todayAppointments > 5 ? 'Busy day' : 'Manageable schedule';
-  }
 
-  getTodaysAppointments(): any[] {
-    const today = new Date();
-    return this.appointments.filter(appointment => {
-      const appointmentDate = new Date(appointment.appointmentDateTime); // FIXED
-      return (
-        appointmentDate.getFullYear() === today.getFullYear() &&
-        appointmentDate.getMonth() === today.getMonth() &&
-        appointmentDate.getDate() === today.getDate() &&
-        appointment.status !== AppointmentStatus.CANCELLED
-      );
-    });
-  }
+
+
 
   getCurrentMonth(): string {
     return this.currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -742,12 +639,12 @@ export class DoctorDashboardComponent {
     return prescription.status === PrescriptionStatus.PUBLISHED;
   }
   getRatingPercentage(rating: number): number {
-    const count = this.feedback.filter(f => f.rating === rating).length;
-    return this.feedback.length > 0 ? (count / this.feedback.length) * 100 : 0;
+    const count = this.feedbacks.filter(f => f.rating === rating).length;
+    return this.feedbacks.length > 0 ? (count / this.feedbacks.length) * 100 : 0;
   }
 
   getRatingCount(rating: number): number {
-    return this.feedback.filter(f => f.rating === rating).length;
+    return this.feedbacks.filter(f => f.rating === rating).length;
   }
 
   showDetails(appointment: AppointmentDtoGet) {
@@ -759,7 +656,7 @@ export class DoctorDashboardComponent {
 
   logout() {
     this.localStorageService.clearAuth();
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
     console.log('Logging out...');
 
   }

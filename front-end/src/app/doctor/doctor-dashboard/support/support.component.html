@@ -1,0 +1,75 @@
+<div class="support-section">
+    <div class="section-header">
+        <h2>Support & Help Center</h2>
+    </div>
+
+    <div class="support-options">
+        <div class="support-card">
+            <div class="support-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3>Help Center</h3>
+            <p>Browse through our knowledge base for answers to common questions</p>
+            <button class="btn-primary">Visit Help Center</button>
+        </div>
+
+        <div class="support-card">
+            <div class="support-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h3>Technical Support</h3>
+            <p>Contact our technical team for system-related issues</p>
+            <button class="btn-primary">Open Ticket</button>
+        </div>
+
+        <div class="support-card">
+            <div class="support-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h3>Live Chat</h3>
+            <p>Chat with our support representatives in real-time</p>
+            <button class="btn-primary">Start Chat</button>
+        </div>
+    </div>
+
+    <div class="contact-support">
+        <h3>Contact Support</h3>
+        <form class="support-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="supportSubject">Subject *</label>
+                    <input type="text" id="supportSubject" class="form-control" required
+                        placeholder="Brief description of your issue">
+                </div>
+
+                <div class="form-group">
+                    <label for="supportPriority">Priority</label>
+                    <select id="supportPriority" class="form-control">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="supportMessage">Message *</label>
+                <textarea id="supportMessage" class="form-control" rows="5" required
+                    placeholder="Describe your issue in detail..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="supportAttachment">Attachments (Optional)</label>
+                <input type="file" id="supportAttachment" class="form-control-file" multiple>
+                <small class="form-text">You can attach screenshots or relevant files</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Submit Support Request
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

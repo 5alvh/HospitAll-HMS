@@ -3,6 +3,7 @@ package com.tfg.back.controller;
 import static com.tfg.back.constants.BaseRoutes.*;
 
 import com.tfg.back.model.TimeInterval;
+import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.auth.AuthRequest;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.model.dtos.users.EmailRequest;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,6 +60,13 @@ public class DoctorController {
         DoctorDtoGet doctor = doctorService.getDoctorById(UUID.fromString(email));
         return ResponseEntity.ok(doctor);
     }
+
+    @GetMapping("/summary")
+    public ResponseEntity<DoctorSummaryResponse> getMySummary(@AuthenticationPrincipal User doctor) {
+        DoctorSummaryResponse summary = doctorService.getMySummary(doctor.getId());
+        return ResponseEntity.ok(summary);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDtoGet> getDoctorById(@PathVariable UUID id) {
         DoctorDtoGet doctor = doctorService.getDoctorById(id);
@@ -95,9 +104,9 @@ public class DoctorController {
         return ResponseEntity.ok(timeIntervals);
     }
 
-    @GetMapping("/get-doctors/{id}")
-    public ResponseEntity<List<VisitedDoctorGet>> getDoctorsClientVisited(@PathVariable Long id) {
-        List<VisitedDoctorGet> doctors = doctorService.getDoctorsClientVisited(id);
+    @GetMapping("/get-doctors")
+    public ResponseEntity<List<VisitedDoctorGet>> getDoctorsClientVisited(@AuthenticationPrincipal User user) {
+        List<VisitedDoctorGet> doctors = doctorService.getDoctorsClientVisited(user.getId());
         return ResponseEntity.ok(doctors);
     }
 }

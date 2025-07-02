@@ -21,11 +21,13 @@ public class DoctorMapper {
 
     private final PasswordEncoder passwordEncoder;
     private final AppointmentMapper appointmentMapper;
+    private final MedicalPrescriptionMapper medicalPrescriptionMapper;
 
     @Autowired
-    public DoctorMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper) {
+    public DoctorMapper(PasswordEncoder passwordEncoder, AppointmentMapper appointmentMapper, MedicalPrescriptionMapper medicalPrescriptionMapper) {
         this.passwordEncoder = passwordEncoder;
         this.appointmentMapper = appointmentMapper;
+        this.medicalPrescriptionMapper = medicalPrescriptionMapper;
     }
 
     public Doctor toEntity(Doctor doctor,DoctorDtoUpdate dto) {
@@ -86,10 +88,7 @@ public class DoctorMapper {
                 .department(doctor.getDepartment())
                 .specialization(doctor.getSpecialization())
                 .address(doctor.getAddress())
-                .appointments(appointmentMapper.toDtoGetList(doctor.getAppointments()))
-                .prescriptionsGiven(MedicalPrescriptionMapper.toDtoGetList(doctor.getPrescriptionsGiven()))
                 .workingHours(doctor.getWorkingHours())
-                .feedbacksReceived(FeedbackMapper.toFeedBackDtoGetList(doctor.getFeedbacksReceived()))
                 .build();
     }
 

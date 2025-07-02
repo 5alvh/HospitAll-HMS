@@ -199,7 +199,7 @@ export class DoctorSignupComponent {
           this.localStorageManager.setToken(response.token);
           this.localStorageManager.setUserData(role);
           setTimeout(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/login']);
           }, 3000);
         }, 1500);
       },

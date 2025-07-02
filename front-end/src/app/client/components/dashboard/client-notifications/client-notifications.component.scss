@@ -1,0 +1,260 @@
+// Using existing color palette from dashboard
+$primary-dark: #0a3d91;
+$primary-medium: #1976d2;
+$primary-light: #42a5f5;
+$text-primary: #263238;
+$text-secondary: #546e7a;
+$background-light: #f5f7fa;
+$background-card: #ffffff;
+$border-light: #e0e6ed;
+$success: #2e7d32;
+$warning: #f57c00;
+$accent-amber: #ffb300;
+
+
+
+
+.section-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba($border-light, 0.8);
+  
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $primary-dark;
+    position: relative;
+    display: inline-block;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      width: 50px;
+      height: 4px;
+      background: linear-gradient(90deg, $primary-medium, $accent-amber);
+      border-radius: 2px;
+    }
+  }
+}
+
+.appointments-section {
+  background: $background-card;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(10, 61, 145, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  &:hover {
+    box-shadow: 0 12px 30px rgba(10, 61, 145, 0.15);
+  }
+}
+
+.data-table {
+  overflow-x: visible;
+  padding: 1.5rem;
+  
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 800px;
+    
+    thead {
+      background: rgba($primary-light, 0.08);
+      
+      tr {
+        th {
+          padding: 1.25rem 1.5rem;
+          text-align: left;
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: $text-primary;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          border-bottom: 2px solid rgba($border-light, 0.8);
+          
+          &:first-child {
+            border-radius: 10px 0 0 0;
+          }
+          
+          &:last-child {
+            border-radius: 0 10px 0 0;
+          }
+        }
+      }
+    }
+    
+    tbody {
+      tr {
+        transition: background 0.2s ease;
+        border-bottom: 1px solid rgba($border-light, 0.5);
+        
+        &:hover {
+          background: rgba($primary-light, 0.03);
+        }
+        
+        &:last-child {
+          border-bottom: none;
+          
+          td {
+            &:first-child {
+              border-radius: 0 0 0 10px;
+            }
+            
+            &:last-child {
+              border-radius: 0 0 10px 0;
+            }
+          }
+        }
+        
+        td {
+          padding: 1.25rem 1.5rem;
+          font-size: 1rem;
+          color: $text-primary;
+          vertical-align: middle;
+          
+          &:nth-child(1) { // Title column
+            font-weight: 600;
+            color: $primary-dark;
+          }
+          
+          &:nth-child(2) { // Message column
+            color: $text-secondary;
+            max-width: 400px;
+            line-height: 1.5;
+          }
+          
+          &:nth-child(3) { // Date column
+            color: $text-secondary;
+            font-weight: 500;
+          }
+          
+          &:nth-child(4) { // Action column
+            text-align: center;
+            width: 80px;
+          }
+        }
+        
+        // Style for unread notifications
+        &:not(.seen) {
+          background: rgba($warning, 0.03);
+          border-left: 3px solid $warning;
+          
+          td:first-child {
+            position: relative;
+            
+            &::before {
+              content: '';
+              position: absolute;
+              left: -3px;
+              top: 50%;
+              transform: translateY(-50%);
+              width: 6px;
+              height: 6px;
+              background: $warning;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.mark-read {
+  background: transparent;
+  border: 1px solid $warning;
+  color: $warning;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: $warning;
+    color: white;
+    transform: scale(1.05);
+  }
+  
+  i {
+    font-size: 1rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 900px) {
+  .data-table {
+    padding: 1rem;
+    
+    table {
+      min-width: 600px;
+      
+      thead tr th,
+      tbody tr td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.load-more-btn {
+  background: $primary-medium;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(10, 61, 145, 0.25);
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 61, 145, 0.35);
+  }
+  
+  // Loading state (optional)
+  &.loading {
+    pointer-events: none;
+    opacity: 0.7;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    span {
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

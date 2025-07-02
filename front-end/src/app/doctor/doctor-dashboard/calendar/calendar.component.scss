@@ -1,0 +1,262 @@
+.calendar-section {
+  padding: 25px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e6ed;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-outline {
+  background: white;
+  border: 1px solid #dce1e8;
+  border-radius: 6px;
+  color: #34495e;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.btn-outline:hover {
+  background-color: #f8f9fb;
+  border-color: #bdc3c7;
+}
+
+.current-month {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 180px;
+  text-align: center;
+}
+
+.calendar-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 25px;
+  border: 1px solid #eaeff5;
+  margin-bottom: 25px;
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e6ed;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendar-day {
+  min-height: 120px;
+  border: 1px solid #eaeff5;
+  border-radius: 8px;
+  padding: 10px;
+  background: white;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.calendar-day:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border-color: #3498db;
+}
+
+.calendar-day.other-month {
+  background-color: #f9fbfd;
+  color: #bdc3c7;
+}
+
+.calendar-day.other-month .day-number {
+  color: #bdc3c7;
+}
+
+.calendar-day.today {
+  background-color: rgba(52, 152, 219, 0.05);
+  border: 1px solid #3498db;
+}
+
+.calendar-day.today .day-number {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+}
+
+.day-number {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.day-appointments {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendar-appointment {
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.calendar-appointment:hover {
+  transform: translateX(3px);
+}
+
+.appointment-time {
+  font-weight: 600;
+  min-width: 35px;
+}
+
+.appointment-patient {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scheduled {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+  border-left: 3px solid #3498db;
+}
+
+.confirmed {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #27ae60;
+  border-left: 3px solid #27ae60;
+}
+
+.completed {
+  background-color: rgba(155, 89, 182, 0.1);
+  color: #9b59b6;
+  border-left: 3px solid #9b59b6;
+}
+
+.more-appointments {
+  font-size: 11px;
+  color: #7f8c8d;
+  text-align: center;
+  padding: 4px;
+  background: rgba(127, 140, 141, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.more-appointments:hover {
+  background: rgba(127, 140, 141, 0.1);
+}
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.legend-color.scheduled {
+  background-color: #3498db;
+}
+
+.legend-color.confirmed {
+  background-color: #27ae60;
+}
+
+.legend-color.completed {
+  background-color: #9b59b6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .calendar-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .calendar-container {
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  .calendar-grid {
+    min-width: 600px;
+  }
+
+  .calendar-legend {
+    flex-wrap: wrap;
+  }
+}

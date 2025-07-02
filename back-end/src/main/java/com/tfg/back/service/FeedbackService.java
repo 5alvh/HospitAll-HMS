@@ -11,9 +11,11 @@ import java.util.UUID;
 
 public interface FeedbackService {
     List<FeedBackDtoGet>  findMyFeedbacks(User patient);
+    List<FeedBackDtoGet>  findMyFeedbacksByDoctor(User doctor);
 
     FeedBackDtoGet writeFeedback(User patient, FeedbackDtoCreate feedbackDtoCreate);
 
     void deleteFeedback(Long id);
 
+    Double averageRating(UUID doctorId);
 }

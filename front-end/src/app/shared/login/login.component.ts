@@ -36,7 +36,20 @@ export class LoginComponent implements OnInit {
     this.checkRole();
     this.initForm();
   }
+  signInWithGoogle() {
+    console.log('Google sign in');
+    // Add Google OAuth logic
+  }
 
+  signInWithFacebook() {
+    console.log('Facebook sign in');
+    // Add Facebook OAuth logic
+  }
+
+  signInWithLinkedIn() {
+    console.log('LinkedIn sign in');
+    // Add LinkedIn OAuth logic
+  }
   checkRole(): void {
     const role = this.localStorageManager.getUserData();
     const token = this.localStorageManager.getToken();
@@ -50,12 +63,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/dashboard-client/']);
       } else if (role === Roles.ROLE_DOCTOR) {
         this.router.navigate(['/dashboard-doctor']);
-      } else if (role === 'ROLE_ADMIN') {
-        this.router.navigate(['/dashboard-admin']);
       }
     }
-
-
   }
   initForm(): void {
     this.loginForm = this.fb.group({
@@ -88,17 +97,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(email, password, rememberMe).subscribe({
       next: response => {
         const role = response.role;
-        this.localStorageManager.setToken(response.token);
-        this.localStorageManager.setUserData(role);
         setTimeout(() => {
           console.log('Login successful');
           this.processing = false;
           this.loginSuccess = true;
-
-          setTimeout(() => {
-
-            this.routingService.routeUserByRole(role);
-          }, 2000);
+          this.routingService.routeUserByRole(role);
         }, 1500);
       },
       error: error => {

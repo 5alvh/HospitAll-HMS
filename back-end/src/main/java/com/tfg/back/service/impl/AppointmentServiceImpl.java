@@ -23,12 +23,15 @@ import com.tfg.back.service.DoctorServiceLookUp;
 import com.tfg.back.service.NotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +62,29 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentMapper.toDtoGetList(appointments);
     }
 
+    @Override
+    public Page<AppointmentDtoGet> findUpcomingAppointmentsByClientId(User patient, Pageable pageable, boolean includeCancelled) {
+        List<AppointmentStatus> statuses = includeCancelled? List.of(AppointmentStatus.SCHEDULED,AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED): List.of(AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED,AppointmentStatus.SCHEDULED);
+        return appointmentRepository.findByClientIdAndAppointmentDateTimeAfterAndStatusIn(patient.getId(),LocalDateTime.now(),statuses, pageable).map(appointmentMapper::toDtoGet);
+    }
+
+    @Override
+    public Page<AppointmentDtoGet> findAppointmentsHistoryByClientId(User patient, Pageable pageable) {
+        return appointmentRepository.findByClientIdAndAppointmentDateTimeBefore(patient.getId(), LocalDateTime.now(),pageable).map(appointmentMapper::toDtoGet);
+    }
+
+    @Override
+    public List<AppointmentDtoGet> findAppointmentsByDoctorId(User doctor) {
+        List<Appointment> appointments = appointmentRepository.findByDoctorId(doctor.getId());
+        return appointmentMapper.toDtoGetList(appointments);
+    }
+
+    @Override
+    public Page<AppointmentDtoGet> findAppointmentsByDoctorIdPageable(User doctor, Collection<AppointmentStatus> status, LocalDateTime before, LocalDateTime after,Pageable pageable) {
+        return appointmentRepository.findByDoctorAndStatusAndDateRange(doctor.getId(), status,before, after, pageable)
+                .map(appointmentMapper::toDtoGet);
+
+    }
     @Override
     public List<AppointmentDtoGet> findAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
@@ -164,6 +190,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Appointment getAppointment(Long id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(()-> new AppointmentNotFoundException(id));
+    }
+
+    @Override
+    public List<AppointmentDtoGet> getTodayAppointments(UUID id, List<AppointmentStatus> statuses) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
+        List<Appointment> appointments = appointmentRepository.findTop3ByDoctorIdAndAppointmentDateTimeBetweenAndStatusInOrderByAppointmentDateTimeAsc(id, startOfDay, endOfDay, statuses);
+        return appointmentMapper.toDtoGetList(appointments);
+    }
+
+    @Override
+    public Long countDistinctClientsByDoctorId(UUID id) {
+        return appointmentRepository.countDistinctClientsByDoctorId(id);
     }
 
     @Transactional

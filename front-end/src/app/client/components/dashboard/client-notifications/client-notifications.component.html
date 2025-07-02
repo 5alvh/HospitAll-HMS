@@ -1,0 +1,37 @@
+<div class="section-header">
+    <h2><i class="fas fa-bell"></i> Notifications</h2>
+</div>
+<div class="appointments-section">
+    <div class="appointments-upcoming">
+        <!--<h3>Lastest Notifications</h3>-->
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th>Seen</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let notification of notifications">
+                        <td>{{notification.title}}</td>
+                        <td>{{notification.message}}</td>
+                        <td>{{notification.date | date: 'mediumDate'}}</td>
+                        <td>
+                            <button class="mark-read" *ngIf="!notification.seen" (click)="markAsRead(notification.id)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <button *ngIf="totalPages>1 && totalPages>currentPage" type="button" class="load-more-btn" [class.loading]="isLoading" (click)="loadMore()">
+                <span>Load More</span>
+            </button>
+        </div>
+    </div>
+</div>

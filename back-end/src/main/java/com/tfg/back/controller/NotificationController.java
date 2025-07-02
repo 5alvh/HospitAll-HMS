@@ -5,6 +5,9 @@ import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.User;
 import com.tfg.back.service.NotificationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +25,8 @@ public class NotificationController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<Notification>> getMyNotifications(@AuthenticationPrincipal User patient) {
-        List<Notification> notifications = notificationService.findAppointmentsByClientId(patient);
+    public ResponseEntity<Page<Notification>> getMyNotifications(@AuthenticationPrincipal User patient, @RequestParam(defaultValue = "0") int size, @RequestParam(defaultValue = "10") int page) {
+        Page<Notification> notifications = notificationService.findAppointmentsByClientId(patient, PageRequest.of(page, size, Sort.by("date").descending()));
         return ResponseEntity.ok(notifications);
     }
 

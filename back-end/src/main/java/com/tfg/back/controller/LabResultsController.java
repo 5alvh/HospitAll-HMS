@@ -9,6 +9,9 @@ import com.tfg.back.service.LabResultsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,8 +44,10 @@ public class LabResultsController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<LabResultDtoGet>> getMyLabResults(@AuthenticationPrincipal User patient) {
-        List<LabResultDtoGet> labResults = labResultService.findLabResultsByPatientId(patient);
+    public ResponseEntity<Page<LabResultDtoGet>> getMyLabResults(@AuthenticationPrincipal User patient,
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        Page<LabResultDtoGet> labResults = labResultService.findLabResultsByPatientId(patient, PageRequest.of(page, size));
         return ResponseEntity.ok(labResults);
     }
 

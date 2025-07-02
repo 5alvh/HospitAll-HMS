@@ -1,6 +1,8 @@
 package com.tfg.back.service.impl;
 
 import static com.tfg.back.constants.ResponseMessages.*;
+
+import com.tfg.back.enums.AppointmentStatus;
 import com.tfg.back.enums.SearchType;
 import com.tfg.back.exceptions.department.DepartmentNotFoundException;
 import com.tfg.back.exceptions.user.IncorrectPasswordException;
@@ -8,18 +10,24 @@ import com.tfg.back.exceptions.user.UserAlreadyExistsException;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.mappers.DoctorMapper;
 import com.tfg.back.model.*;
+import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
 import com.tfg.back.model.dtos.doctor.*;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.DepartmentRepository;
 import com.tfg.back.repository.DoctorRepository;
+import com.tfg.back.repository.MedicalPrescriptionRepository;
+import com.tfg.back.service.AppointmentService;
 import com.tfg.back.service.DoctorService;
+import com.tfg.back.service.FeedbackService;
+import com.tfg.back.service.MedicalPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,15 +41,21 @@ public class DoctorServiceImpl implements DoctorService {
     private final AppointmentRepository appointmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final FeedbackService feedbackService;
+    private final MedicalPrescriptionService medicalPrescriptionService;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper, AppointmentRepository appointmentRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, DepartmentRepository departmentRepository, DoctorMapper doctorMapper, AppointmentRepository appointmentRepository, PasswordEncoder passwordEncoder, EmailService emailService, FeedbackService feedbackService, MedicalPrescriptionService medicalPrescriptionService, AppointmentService appointmentService) {
         this.doctorRepository = doctorRepository;
         this.departmentRepository = departmentRepository;
         this.doctorMapper = doctorMapper;
         this.appointmentRepository = appointmentRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.feedbackService = feedbackService;
+        this.medicalPrescriptionService = medicalPrescriptionService;
+        this.appointmentService = appointmentService;
     }
 
 
@@ -56,6 +70,19 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(()-> new UserNotFoundException(id, SearchType.ID));
         return doctorMapper.toDtoGet(doctor);
+    }
+
+    @Override
+    public DoctorSummaryResponse getMySummary(UUID id) {
+
+        List<AppointmentStatus> statuses = List.of(AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED);
+
+        Long totalPatients = appointmentService.countDistinctClientsByDoctorId(id);
+        List<AppointmentDtoGet> todayAppointments = appointmentService.getTodayAppointments(id, statuses);
+        Long pendingPrescriptions=medicalPrescriptionService.countPendingPrescriptionsByDoctorId(id);
+        Double averageRating = feedbackService.averageRating(id);
+
+        return new DoctorSummaryResponse(todayAppointments,  pendingPrescriptions, totalPatients, averageRating);
     }
 
     @Override
@@ -170,7 +197,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     //NOTE: Doctors Client Visited
     @Override
-    public List<VisitedDoctorGet> getDoctorsClientVisited(Long id) {
+    public List<VisitedDoctorGet> getDoctorsClientVisited(UUID id) {
         List<Doctor> doctors = doctorRepository.findDistinctDoctorsByClientId(id);
         return doctorMapper.toVisitedDoctorGetList(doctors);
     }

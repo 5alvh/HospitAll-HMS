@@ -39,6 +39,12 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public List<FeedBackDtoGet> findMyFeedbacksByDoctor(User doctor) {
+        List<FeedBack> feedbacks = feedbackRepository.findByWrittenToId(doctor.getId());
+        return FeedbackMapper.toFeedBackDtoGetList(feedbacks);
+    }
+
+    @Override
     public FeedBackDtoGet writeFeedback(User patient, FeedbackDtoCreate feedbackDtoCreate) {
 
         Client author = clientService.findClientById(patient.getId());
@@ -60,5 +66,11 @@ public class FeedbackServiceImpl implements FeedbackService {
         FeedBack feedback = feedbackRepository.findById(id)
                 .orElseThrow(()-> new FeedbackNotFoundException("Feedback with ID: "+id+" is not found"));
         feedbackRepository.delete(feedback);
+    }
+
+    @Override
+    public Double averageRating(UUID doctorId) {
+        Double averageRating = feedbackRepository.doctorAverageRating(doctorId);
+        return averageRating != null? averageRating : 0.0;
     }
 }

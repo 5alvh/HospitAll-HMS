@@ -10,6 +10,8 @@ import com.tfg.back.repository.LabResultsRepository;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +43,10 @@ public class LabResultsServiceImpl implements LabResultsService {
     }
 
     @Override
-    public List<LabResultDtoGet> findLabResultsByPatientId(User patient) {
-        List<LabResult> labResults = labResultRepository.findByPatientId(patient.getId());
-        return labResultMapper.toDtoGetList(labResults);
+    public Page<LabResultDtoGet> findLabResultsByPatientId(User patient, Pageable pageable) {
+        Page<LabResultDtoGet> labResults = labResultRepository.findByPatientId(patient.getId(), pageable)
+                .map(labResultMapper::toDtoGet);
+        return labResults;
     }
 
     @Override

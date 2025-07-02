@@ -34,9 +34,5 @@ public class DoctorDtoGet {
     private Department department;
     private Specialization specialization;
     private String address;
-    private List<MedicalPrescriptionDtoGet> prescriptionsGiven;
-    private List<AppointmentDtoGet> appointments;
     private Set<WorkingHours> workingHours;
-    private List<FeedBackDtoGet> feedbacksReceived;
-
 }

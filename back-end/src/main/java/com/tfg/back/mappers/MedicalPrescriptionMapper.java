@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class MedicalPrescriptionMapper {
 
-    public static MedicalPrescriptionDtoGet toDtoGet(MedicalPrescription prescription) {
+    public MedicalPrescriptionDtoGet toDtoGet(MedicalPrescription prescription) {
         return MedicalPrescriptionDtoGet.builder()
                 .id(prescription.getId())
                 .medicationName(prescription.getMedicationName())
@@ -33,8 +33,8 @@ public class MedicalPrescriptionMapper {
 
     }
 
-    public static List<MedicalPrescriptionDtoGet> toDtoGetList(List<MedicalPrescription> prescriptions) {
-        return prescriptions.stream().map(MedicalPrescriptionMapper::toDtoGet).toList();
+    public List<MedicalPrescriptionDtoGet> toDtoGetList(List<MedicalPrescription> prescriptions) {
+        return prescriptions.stream().map(this::toDtoGet).toList();
     }
 
     public MedicalPrescription toEntity(PrescriptionStatus status, Medication dto, Doctor doctor, Client client) {

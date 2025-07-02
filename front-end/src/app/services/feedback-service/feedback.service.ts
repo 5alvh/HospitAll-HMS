@@ -18,4 +18,8 @@ export class FeedbackService {
   getAllFeedBacks(): Observable<Feedback[]>{
     return this.httpClient.get<Feedback[]>(`${this.baseUrl}/my`)
   }
+
+  deleteFeedback(id: number){
+    return this.httpClient.delete(`${this.baseUrl}/delete/${id}`)
+  }
 }

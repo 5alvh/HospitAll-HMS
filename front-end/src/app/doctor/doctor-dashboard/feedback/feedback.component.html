@@ -1,0 +1,55 @@
+<div class="feedback-section">
+    <div class="section-header">
+        <h2>Patient Feedback & Reviews</h2>
+    </div>
+
+    <div class="feedback-summary">
+        <div class="rating-overview">
+            <div class="average-rating">
+                <h3>Overall Rating</h3>
+                <div class="rating-display">
+                    <span class="rating-number">{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
+                    <div class="rating-stars">
+                        <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star"
+                            [class.filled]="star <= dashboardStats.averageRating"></i>
+                    </div>
+                </div>
+                <p>Based on {{ feedbacks.length }} reviews</p>
+            </div>
+
+            <div class="rating-breakdown">
+                <div class="rating-bar" *ngFor="let rating of [5, 4, 3, 2, 1]">
+                    <span class="rating-label">{{ rating }} stars</span>
+                    <div class="bar-container">
+                        <div class="bar-fill" [style.width.%]="getRatingPercentage(rating)"></div>
+                    </div>
+                    <span class="rating-count">{{ getRatingCount(rating) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feedback-list">
+        <div *ngFor="let item of feedbacks" class="feedback-card">
+            <div class="feedback-header">
+                <div class="patient-info">
+                    <h4>{{ item.patientName }}</h4>
+                    <div class="feedback-rating">
+                        <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fas fa-star"
+                            [class.filled]="star <= item.rating"></i>
+                    </div>
+                </div>
+                <span class="feedback-date">{{ item.createdAt| date:'MMM d, y' }}</span>
+            </div>
+            <div class="feedback-comment">
+                <p>{{ item.comment }}</p>
+            </div>
+        </div>
+
+        <div *ngIf="!feedbacks || feedbacks.length === 0" class="no-feedback">
+            <i class="fas fa-comment-slash"></i>
+            <h3>No feedback received yet</h3>
+            <p>Patient reviews will appear here once they submit feedback.</p>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 package com.tfg.back.controller;
 
 import static com.tfg.back.constants.BaseRoutes.*;
-import com.tfg.back.model.Notification;
+
 import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.auth.AuthRequest;
 import com.tfg.back.model.dtos.client.*;
@@ -12,14 +12,14 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -44,18 +44,19 @@ public class ClientController {
         return loginService.login(request);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ClientDtoGet>> getAllClients() {
-        List<ClientDtoGet> clients = clientService.findAllClients();
-        if (clients.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity.ok(clients);
+    @GetMapping("/clients")
+    public ResponseEntity<Page<ClientDtoGet>> getClients(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        Page<ClientDtoGet> clients = clientService.findClients(search, PageRequest.of(page, size));
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<SummaryResponse> getMySummary(@AuthenticationPrincipal User patient) {
-        SummaryResponse summary = clientService.findClientSummaryById(patient);
+    public ResponseEntity<ClientSummaryResponse> getMySummary(@AuthenticationPrincipal User patient) {
+        ClientSummaryResponse summary = clientService.findClientSummaryById(patient);
         return ResponseEntity.ok(summary);
     }
 
@@ -65,12 +66,17 @@ public class ClientController {
         return ResponseEntity.ok(new FullNameWrapper(fullName));
     }
 
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ClientDetailsDto> getClientDetailsByDoctor(@PathVariable @NotNull UUID id) {
+        ClientDetailsDto client = clientService.getClientDetailsByDoctor(id);
+        return ResponseEntity.ok(client);
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<ClientDtoGet> getMyProfile(@AuthenticationPrincipal User patient) {
         ClientDtoGet client = clientService.findClientById(patient);
         return ResponseEntity.ok(client);
     }
-
 
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal User patient, @Valid @RequestBody ChangePasswordRequest newPassword) {

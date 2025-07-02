@@ -18,10 +18,13 @@ import com.tfg.back.service.DoctorServiceLookUp;
 import com.tfg.back.service.MedicalPrescriptionService;
 import com.tfg.back.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -49,9 +52,16 @@ public class MedicalPrescriptionServiceImpl implements MedicalPrescriptionServic
     }
 
     @Override
-    public List<MedicalPrescriptionDtoGet> findPrescriptionsByPatientId(User user) {
-        List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findByPrescribedToId(user.getId());
-        return medicalPrescriptionmapper.toDtoGetList(prescriptions);
+    public Page<MedicalPrescriptionDtoGet> findPrescriptionsByPatientId(User user,String search, Pageable pageable) {
+        return medicalPrescriptionRepository.findByPrescribedToId(user.getId(), search, pageable)
+                .map(medicalPrescriptionmapper::toDtoGet);
+    }
+
+    @Override
+    public Page<MedicalPrescriptionDtoGet> findPrescriptionsByDoctorId(User user, String search,Pageable pageable) {
+        return medicalPrescriptionRepository.findByPrescribedById(user.getId(), search, pageable)
+                .map(medicalPrescriptionmapper::toDtoGet);
+
     }
 
     @Override
@@ -111,6 +121,13 @@ public class MedicalPrescriptionServiceImpl implements MedicalPrescriptionServic
         prescription.setNotes(dto.notes());
         MedicalPrescription prescriptionSaved = medicalPrescriptionRepository.save(prescription);
         return medicalPrescriptionmapper.toDtoGet(prescriptionSaved);
+    }
+
+    @Override
+    public Long countPendingPrescriptionsByDoctorId(UUID uuid) {
+        Long count = medicalPrescriptionRepository.countByPrescribedByIdAndStatus(uuid, PrescriptionStatus.DRAFT);
+        System.out.println("The count: " + count);
+        return count;
     }
 
     private MedicalPrescription findById(Long id) {

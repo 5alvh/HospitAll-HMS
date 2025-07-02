@@ -1,0 +1,59 @@
+<div class="calendar-section">
+    <div class="section-header">
+        <h2>Appointment Calendar</h2>
+        <div class="calendar-controls">
+            <button class="btn-outline btn-sm" (click)="previousMonth()">
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="current-month">{{ getCurrentMonth() }}</span>
+            <button class="btn-outline btn-sm" (click)="nextMonth()">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <div class="calendar-day-header">Sun</div>
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+        </div>
+        <div class="calendar-grid">
+            <div *ngFor="let day of getCalendarDays()" class="calendar-day" [class.other-month]="!day.isCurrentMonth"
+                [class.today]="day.isToday" [class.has-appointments]="day.hasAppointments">
+                <span class="day-number">{{ day.number }}</span>
+                <div class="day-appointments">
+                    <div *ngFor="let appointment of day.appointments.slice(0, 3)" class="calendar-appointment"
+                        [class.scheduled]="appointment.status === 'SCHEDULED'"
+                        [class.confirmed]="appointment.status === 'CONFIRMED'"
+                        [class.completed]="appointment.status === 'COMPLETED'">
+                        <span class="appointment-time">{{ appointment.time }}</span>
+                        <span class="appointment-patient">{{ appointment.clientFullName.split(' ')[0] }}</span>
+                    </div>
+                    <div *ngIf="day.appointments.length > 3" class="more-appointments">
+                        +{{ day.appointments.length - 3 }} more
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="calendar-legend">
+        <div class="legend-item">
+            <div class="legend-color scheduled"></div>
+            <span>Scheduled</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color confirmed"></div>
+            <span>Confirmed</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color completed"></div>
+            <span>Completed</span>
+        </div>
+    </div>
+</div>

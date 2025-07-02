@@ -1,0 +1,136 @@
+<div class="prescription-modal-backdrop" *ngIf="isEditModalOpen">
+  <div class="prescription-modal-container">
+    <div class="prescription-modal-header">
+      <h3>Edit Prescription</h3>
+      <button class="prescription-modal-close-btn" (click)="closeModal()">×</button>
+    </div>
+    <form (ngSubmit)="updatePrescription()" #editForm="ngForm">
+      <div class="prescription-modal-body">
+        <label>
+          Patient Email:
+          <input [(ngModel)]="selectedPrescription!.prescribedEmail" name="clientEmail" required />
+        </label>
+        <label>
+          Medication Name:
+          <input [(ngModel)]="selectedPrescription!.medicationName" name="medicationName" required />
+        </label>
+        <label>
+          Dosage:
+          <input [(ngModel)]="selectedPrescription!.dosage" name="dosage" required />
+        </label>
+        <label>
+          Frequency:
+          <input [(ngModel)]="selectedPrescription!.frequency" name="frequency" required />
+        </label>
+        <label>
+          Start Date:
+          <input type="date" [(ngModel)]="selectedPrescription!.startDate" name="startDate" required />
+        </label>
+        <label>
+          Duration (days):
+          <input type="number" [(ngModel)]="selectedPrescription!.duration" name="duration" required />
+        </label>
+        <label>
+          Notes:
+          <textarea [(ngModel)]="selectedPrescription!.notes" name="notes"></textarea>
+        </label>
+        <button type="submit" class="prescription-modal-submit-btn">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="prescriptions-container">
+    <div class="prescriptions-stats">
+        <div class="stat-item">
+            <span class="number">{{ prescriptions.length }}</span>
+            <span class="label">Total Prescriptions</span>
+        </div>
+        <div class="stat-item">
+            <span class="number">{{ getPublishedPrescriptions().length }}</span>
+            <span class="label">Published</span>
+        </div>
+        <div class="stat-item">
+            <span class="number">{{ getDraftPrescriptions().length }}</span>
+            <span class="label">Drafts</span>
+        </div>
+    </div>
+
+    <div class="data-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Medication</th>
+                    <th>Dosage</th>
+                    <th>Date Created</th>
+                    <th>Status</th>
+                    <th>Connected Appointment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let prescription of prescriptions">
+                    <td>
+                        <div class="patient-info">
+                            <strong>{{ prescription.prescribedTo }}</strong>
+                            <div class="patient-email">{{ prescription.clientEmail }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="medication-info">
+                            <strong>{{ prescription.medicationName }}</strong>
+                            <div class="frequency">{{ prescription.frequency }}</div>
+                        </div>
+                    </td>
+                    <td>{{ prescription.dosage }}</td>
+                    <td>{{ prescription.createdAt | date:'MMM d, y' }}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="isPublished(prescription) ? 'published' : 'draft'">
+                            {{ isPublished(prescription) ? 'Published' : 'Draft' }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="appointment-link">
+                            <span *ngIf="getConnectedAppointment(prescription.id)">
+                                <i class="fas fa-link"></i>
+                                {{ getConnectedAppointment(prescription.id)?.clientFullName }}
+                            </span>
+                            <span *ngIf="!getConnectedAppointment(prescription.id)" class="no-link">
+                                <i class="fas fa-unlink"></i> Not connected
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <button *ngIf="!isPublished(prescription)" class="btn-success btn-sm"
+                            (click)="publishPrescription(prescription.id)">
+                            <i class="fas fa-paper-plane"></i> Publish
+                        </button>
+                        <button class="btn-outline btn-sm" (click)="openEditModal(prescription)">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-outline btn-sm" (click)="downloadPrescription(prescription.id)">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="btn-outline btn-sm" (click)="deletePrescription(prescription.id)">
+                            <i class="fa-solid fa-trash"></i> Delete </button>
+                    </td>
+                </tr>
+                <tr *ngIf="!prescriptions || prescriptions.length === 0">
+                    <td colspan="7" class="no-data">No prescriptions found</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-controls">
+            <button (click)="previousPage()" [disabled]="currentPage === 0">
+                <fa-icon [icon]="icons.chevronLeft"></fa-icon> Previous
+            </button>
+
+            <span>Page {{ currentPage+1 }} of {{ totalPages+1 }}</span>
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+                Next <fa-icon [icon]="icons.chevronRight"></fa-icon>
+            </button>
+        </div>
+    </div>
+</div>

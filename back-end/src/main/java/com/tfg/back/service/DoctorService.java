@@ -43,6 +43,8 @@ public interface DoctorService {
      */
     DoctorDtoGet getDoctorById(UUID id);
 
+
+    DoctorSummaryResponse getMySummary(UUID id);
     /**
      * Get Doctor by Email {@link DoctorDtoGet}
      * Retrieves a specific doctor's information by their email address.
@@ -113,7 +115,7 @@ public interface DoctorService {
      * @return List<VisitedDoctorGet> containing visited doctors' information
      * @throws UserNotFoundException if no client exists with the given ID
      */
-    List<VisitedDoctorGet> getDoctorsClientVisited(Long id);
+    List<VisitedDoctorGet> getDoctorsClientVisited(UUID id);
 
     void changePassword(UUID email, ChangePasswordRequest newPassword);
 }

@@ -4,6 +4,7 @@ import com.tfg.back.model.Appointment;
 import com.tfg.back.model.Client;
 import com.tfg.back.model.Doctor;
 import com.tfg.back.model.MedicalPrescription;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,5 +24,11 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
 
     @Query("SELECT c.fullName FROM Client c WHERE c.id = :id")
     String findFullNameById(@Param("id") UUID id);
+
+    @Query("SELECT c FROM Client c WHERE " +
+            "LOWER(c.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(c.email) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "c.phoneNumber LIKE CONCAT('%', :search, '%')")
+    Page<Client> searchByNameOrEmail(@Param("search") String search, Pageable pageable);
 
 }

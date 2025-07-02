@@ -1,0 +1,181 @@
+<div class="admin-dashboard">
+  <div class="header">
+    <h2><fa-icon [icon]="icons.dashboard"></fa-icon> Doctor Dashboard</h2>
+    <div class="date-display">{{ currentDate | date:'fullDate' }}</div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-bar">
+    <!-- Today's Appointments -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-title">Today's Appointments</div>
+        <div class="stat-icon appointments-icon">
+          <fa-icon [icon]="icons.calendar"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-value">{{ dashboardStats.todayAppointments }}</div>
+      <div class="stat-trend" [ngClass]="{
+          'trend-up': dashboardStats.todayAppointments > 5,
+          'trend-down': dashboardStats.todayAppointments <= 5
+        }">
+        <fa-icon [icon]="dashboardStats.todayAppointments > 5 ? icons.trendUp : icons.check"></fa-icon>
+        <span>{{ getAppointmentTrend() }}</span>
+      </div>
+    </div>
+    
+    <!-- Pending Prescriptions -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-title">Pending Prescriptions</div>
+        <div class="stat-icon prescriptions-icon">
+          <fa-icon [icon]="icons.prescription"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-value">{{ dashboardStats.pendingPrescriptions }}</div>
+      <div class="stat-trend" [ngClass]="{
+          'trend-up': dashboardStats.pendingPrescriptions > 5,
+          'trend-down': dashboardStats.pendingPrescriptions <= 5
+        }">
+        <fa-icon [icon]="dashboardStats.pendingPrescriptions > 5 ? icons.warning : icons.check"></fa-icon>
+        <span>{{ dashboardStats.pendingPrescriptions > 5 ? 'Needs attention' : 'Under control' }}</span>
+      </div>
+    </div>
+    
+    <!-- Total Patients -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-title">Total Patients</div>
+        <div class="stat-icon patients-icon">
+          <fa-icon [icon]="icons.users"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-value">{{ dashboardStats.totalPatients }}</div>
+      <div class="stat-trend trend-up">
+        <fa-icon [icon]="icons.trendUp"></fa-icon>
+        <span>Growing</span>
+      </div>
+    </div>
+    
+    <!-- Average Rating -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-title">Average Rating</div>
+        <div class="stat-icon rating-icon">
+          <fa-icon [icon]="icons.star"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-value">
+        <div class="rating-value">
+          <span>{{ dashboardStats.averageRating | number:'1.1-1' }}</span>
+          <div>
+            <fa-icon *ngFor="let star of [1,2,3,4,5]" [icon]="icons.star" class="star" 
+                   [ngClass]="{
+                     'filled': star <= dashboardStats.averageRating,
+                     'half-filled': (star > dashboardStats.averageRating) && (star - 0.5 <= dashboardStats.averageRating),
+                     'empty': (star > dashboardStats.averageRating) && (star - 0.5 > dashboardStats.averageRating)
+                   }"></fa-icon>
+          </div>
+        </div>
+      </div>
+      <div class="stat-trend trend-neutral">
+        <fa-icon [icon]="icons.comment"></fa-icon>
+        <span>Patient reviews</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Row -->
+  <div class="content-row">
+    <!-- Today's Appointments Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3 class="panel-title">Today's Appointments</h3>
+        <a routerLink="/appointments" class="view-all">View All</a>
+      </div>
+      
+      <div *ngIf="isLoading" class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+      
+      <ul *ngIf="todaysAppointments.length > 0; else noAppointments" class="appointment-list">
+        <li *ngFor="let appointment of todaysAppointments" class="appointment-item">
+          <div class="appointment-time">{{ appointment.time }}</div>
+          <div class="appointment-info">
+            <div class="appointment-patient">{{ appointment.clientFullName }}</div>
+            <div class="appointment-reason">{{ appointment.reason || 'No reason provided' }}</div>
+          </div>
+          <div class="appointment-status" [ngClass]="'status-' + appointment.status.toLowerCase()">
+            {{ appointment.status }}
+          </div>
+          <div class="appointment-actions">
+            <button class="action-btn" [routerLink]="['/appointments', appointment.id]">
+              <fa-icon [icon]="icons.play"></fa-icon>
+            </button>
+            <button class="action-btn">
+              <fa-icon [icon]="icons.ellipsis"></fa-icon>
+            </button>
+          </div>
+        </li>
+      </ul>
+      
+      <ng-template #noAppointments>
+        <div class="no-appointments">
+          <fa-icon [icon]="icons.calendarTimes" size="3x"></fa-icon>
+          <p>No appointments scheduled for today</p>
+        </div>
+      </ng-template>
+    </div>
+    
+    <!-- Quick Actions Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3 class="panel-title">Quick Actions</h3>
+      </div>
+      
+      <div class="actions-grid">
+        <div class="action-card" routerLink="/appointments/new">
+          <div class="action-icon">
+            <fa-icon [icon]="icons.calendarPlus"></fa-icon>
+          </div>
+          <div class="action-title">New Appointment</div>
+        </div>
+        
+        <div class="action-card" routerLink="/prescriptions">
+          <div class="action-icon">
+            <fa-icon [icon]="icons.filePrescription"></fa-icon>
+          </div>
+          <div class="action-title">Write Prescription</div>
+        </div>
+        
+        <div class="action-card" [routerLink]="todaysAppointments[0] ? ['/consultation', todaysAppointments[0].id] : null">
+          <div class="action-icon">
+            <fa-icon [icon]="icons.stethoscope"></fa-icon>
+          </div>
+          <div class="action-title">Start Consultation</div>
+        </div>
+        
+        <div class="action-card" routerLink="/reports">
+          <div class="action-icon">
+            <fa-icon [icon]="icons.fileInvoice"></fa-icon>
+          </div>
+          <div class="action-title">Generate Report</div>
+        </div>
+        
+        <div class="action-card" routerLink="/referrals">
+          <div class="action-icon">
+            <fa-icon [icon]="icons.userMd"></fa-icon>
+          </div>
+          <div class="action-title">Refer Specialist</div>
+        </div>
+        
+        <div class="action-card" routerLink="/lab-tests">
+          <div class="action-icon">
+            <fa-icon [icon]="icons.vial"></fa-icon>
+          </div>
+          <div class="action-title">Order Test</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

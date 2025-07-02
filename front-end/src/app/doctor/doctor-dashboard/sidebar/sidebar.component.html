@@ -1,0 +1,60 @@
+<div class="sidebar">
+    <div class="logo">
+        <h2>HospitAll</h2>
+    </div>
+
+
+
+    <div class="menu">
+        <div class="menu-item" [class.active]="activeSection === 'summary'" [routerLink]="['/dashboard-doctor/summary']">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeSection === 'patients'" [routerLink]="['/dashboard-doctor/patients']">
+            <i class="fa-solid fa-person"></i> <span>Patients</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeSection === 'calendar'" [routerLink]="['/dashboard-doctor/calendar']">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Calendar</span>
+        </div>
+        
+        <div class="menu-item" [class.active]="activeSection === 'profile'" [routerLink]="['/dashboard-doctor/profile']">
+            <i class="fas fa-user-md"></i>
+            <span>My Profile</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeSection === 'appointments'"
+            [routerLink]="['/dashboard-doctor/appointments']">
+            <i class="fas fa-calendar-check"></i>
+            <span>Appointments</span>
+        </div>
+        <div class="menu-item" [class.active]="activeSection === 'prescriptions'"
+            [routerLink]="['/dashboard-doctor/prescriptions']">
+            <i class="fas fa-prescription"></i>
+            <span>Prescriptions</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeSection === 'feedback'" [routerLink]="['/dashboard-doctor/feedback']">
+            <i class="fas fa-star"></i>
+            <span>Patient Feedback</span>
+        </div>
+        <div class="menu-item" [class.active]="activeSection === 'support'" [routerLink]="['/dashboard-doctor/support']">
+            <i class="fas fa-headset"></i>
+            <span>Support</span>
+        </div>
+
+    </div>
+</div>
+
+<!--<div class="menu-item" [class.active]="activeSection === 'create-prescription'"
+            (click)="changeSection('create-prescription')">
+            <i class="fas fa-file-medical"></i>
+            <span>Create Prescription</span>
+        </div>
+        <div class="menu-item" [class.active]="activeSection === 'book-appointment'"
+            (click)="changeSection('book-appointment')">
+            <i class="fas fa-calendar-plus"></i>
+            <span>Book Appointment</span>
+        </div>-->

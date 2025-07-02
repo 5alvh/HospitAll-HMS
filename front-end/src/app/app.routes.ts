@@ -1,18 +1,18 @@
 import { Routes } from '@angular/router';
-import { RoleGuard } from './utils/role-guard';
+import { RoleGuard } from './guards/role-guard';
 import { Roles } from './models/roles';
 
 export const routes: Routes = [
   //signup - login routes
   {
-    path: '',
+    path: 'login',
     loadComponent: () =>
       import('./shared/login/login.component').then((c) => c.LoginComponent)
   },
   {
     path: 'signup-client',
     loadComponent: () =>
-      import('./client/client-signup/client-signup.component').then((c) => c.ClientSignupComponent)
+      import('./client/components/signup/client-signup.component').then((c) => c.ClientSignupComponent)
   },
   {
     path: 'signup-doctor',
@@ -24,14 +24,14 @@ export const routes: Routes = [
   {
     path: 'edit-profile',
     loadComponent: () =>
-      import('./client/client-update/client-update.component').then((c) => c.ClientUpdateComponent),
+      import('./client/components/client-update/client-update.component').then((c) => c.ClientUpdateComponent),
     canActivate: [RoleGuard],
     data: { expectedRole: Roles.ROLE_PATIENT }
   },
   {
     path: 'dashboard-client',
     loadComponent: () =>
-      import('./client/client-dashboard/dashboard-client.component').then((c) => c.DashboardClientComponent),
+      import('./client/components/dashboard/dashboard-client.component').then((c) => c.DashboardClientComponent),
     canActivate: [RoleGuard],
     data: { expectedRole: Roles.ROLE_PATIENT },
     children: [
@@ -43,57 +43,50 @@ export const routes: Routes = [
       {
         path: 'summary',
         loadComponent: () =>
-          import('./client/client-dashboard/client-dashboard-summary/client-dashboard-summary.component').then((c) => c.ClientDashboardSummaryComponent),
+          import('./client/components/dashboard/client-dashboard-summary/client-dashboard-summary.component').then((c) => c.ClientDashboardSummaryComponent),
       },
       {
         path: 'profile',
         loadComponent: () =>
-          import('./client/client-dashboard/client-profile/client-profile.component').then((c) => c.ClientProfileComponent),
+          import('./client/components/dashboard/client-profile/client-profile.component').then((c) => c.ClientProfileComponent),
       },
       {
         path: 'appointments',
         loadComponent: () =>
-          import('./client/client-dashboard/client-appointments/client-appointments.component').then((c) => c.ClientAppointmentsComponent),
+          import('./client/components/dashboard/client-appointments/client-appointments.component').then((c) => c.ClientAppointmentsComponent),
       },
       {
         path: 'records',
         loadComponent: () =>
-          import('./client/client-dashboard/client-prescriptions/client-prescriptions.component').then((c) => c.ClientPrescriptionsComponent),
+          import('./client/components/dashboard/client-prescriptions/client-prescriptions.component').then((c) => c.ClientPrescriptionsComponent),
       },
       {
         path: 'notifications',
         loadComponent: () =>
-          import('./client/client-dashboard/client-notifications/client-notifications.component').then((c) => c.ClientNotificationsComponent),
+          import('./client/components/dashboard/client-notifications/client-notifications.component').then((c) => c.ClientNotificationsComponent),
       },
       {
         path: 'documents',
         loadComponent: () =>
-          import('./client/client-dashboard/client-documents/client-documents.component').then((c) => c.ClientDocumentsComponent),
+          import('./client/components/dashboard/client-documents/client-documents.component').then((c) => c.ClientDocumentsComponent),
       },
       {
         path: 'feedback',
         loadComponent: () =>
-          import('./client/client-dashboard/client-feedback/client-feedback.component').then((c) => c.ClientFeedbackComponent),
+          import('./client/components/dashboard/client-feedback/client-feedback.component').then((c) => c.ClientFeedbackComponent),
       },
       {
         path: 'support',
         loadComponent: () =>
-          import('./client/client-dashboard/client-support/client-support.component').then((c) => c.ClientSupportComponent),
+          import('./client/components/dashboard/client-support/client-support.component').then((c) => c.ClientSupportComponent),
       },
     ]
   },
-  
+
   {
     path: 'book-appointment',
     loadComponent: () =>
-      import('./client/client-appointment/client-appointment.component').then((c) => c.ClientAppointmentComponent),
-    canActivate: [RoleGuard],
-    data: { expectedRole: Roles.ROLE_PATIENT }
-  },
-  {
-    path: 'dashboard-client',
-    loadComponent: () =>
-      import('./client/client-dashboard/dashboard-client.component').then((c) => c.DashboardClientComponent),
+      import('./client/components/client-appointment/client-appointment.component').then((c) => c.ClientAppointmentComponent),
     canActivate: [RoleGuard],
     data: { expectedRole: Roles.ROLE_PATIENT }
   },
@@ -103,7 +96,54 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./doctor/doctor-dashboard/doctor-dashboard.component').then((c) => c.DoctorDashboardComponent),
     canActivate: [RoleGuard],
-    data: { expectedRole: Roles.ROLE_DOCTOR }
+    data: { expectedRole: Roles.ROLE_DOCTOR },
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: '/dashboard-doctor/summary'
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/profile/profile.component').then((c) => c.ProfileComponent),
+      },
+      {
+        path: 'summary',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/dashboard-summary/dashboard-summary.component').then((c) => c.DashboardSummaryComponent),
+      },
+      {
+        path: 'patients',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/patients/patients.component').then((c) => c.PatientsComponent),
+      },
+      {
+        path: 'calendar',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/calendar/calendar.component').then((c) => c.CalendarComponent),
+      },
+      {
+        path: 'appointments',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/appointment-list/appointment-list.component').then((c) => c.AppointmentListComponent),
+      },
+      {
+        path: 'prescriptions',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/prescriptions/prescriptions.component').then((c) => c.PrescriptionsComponent),
+      },
+      {
+        path: 'feedback',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/feedback/feedback.component').then((c) => c.FeedbackComponent),
+      },
+      {
+        path: 'support',
+        loadComponent: () =>
+          import('./doctor/doctor-dashboard/support/support.component').then((c) => c.SupportComponent),
+      },
+    ]
   },
   {
     path: 'edit-profile-doctor',
@@ -124,18 +164,8 @@ export const routes: Routes = [
       import('./shared/reset-password/reset-password.component').then((c) => c.ResetPasswordComponent)
   },
   {
-    path: 'admin',
-    loadComponent: () =>
-      import('./admin/admin-dashboard/admin-dashboard.component').then((c) => c.AdminDashboardComponent)
-  },
-  {
     path: 'unauthorized',
     loadComponent: () =>
       import('./shared/unauthorized/unauthorized.component').then((c) => c.UnauthorizedComponent),
-  },
-  {
-    path: 'hello',
-    loadComponent: () =>
-      import('./interface/interface.component').then((c) => c.InterfaceComponent)
   }
 ];

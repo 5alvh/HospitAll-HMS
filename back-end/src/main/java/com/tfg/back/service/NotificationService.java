@@ -6,6 +6,8 @@ import com.tfg.back.exceptions.user.UnauthorizedToPerformThisAction;
 import com.tfg.back.exceptions.user.UserNotFoundException;
 import com.tfg.back.model.Notification;
 import com.tfg.back.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.UUID;
 
 public interface NotificationService {
 
-    List<Notification> findAppointmentsByClientId(User patient);
+    Page<Notification> findAppointmentsByClientId(User patient, Pageable pageable);
 
     void markNotificationAsSeen(Long id, User patient);
 

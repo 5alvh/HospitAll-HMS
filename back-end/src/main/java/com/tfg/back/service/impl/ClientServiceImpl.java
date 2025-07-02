@@ -2,6 +2,7 @@ package com.tfg.back.service.impl;
 
 import static com.tfg.back.constants.ResponseMessages.*;
 
+import com.tfg.back.enums.AppointmentStatus;
 import com.tfg.back.enums.NotificationType;
 import com.tfg.back.enums.SearchType;
 import com.tfg.back.enums.UserStatus;
@@ -13,10 +14,7 @@ import com.tfg.back.mappers.ClientMapper;
 import com.tfg.back.mappers.MedicalPrescriptionMapper;
 import com.tfg.back.model.*;
 import com.tfg.back.model.dtos.appointment.AppointmentDtoGet;
-import com.tfg.back.model.dtos.client.ClientDtoCreate;
-import com.tfg.back.model.dtos.client.ClientDtoGet;
-import com.tfg.back.model.dtos.client.ClientDtoUpdate;
-import com.tfg.back.model.dtos.client.SummaryResponse;
+import com.tfg.back.model.dtos.client.*;
 import com.tfg.back.model.dtos.medicalPrescription.MedicalPrescriptionDtoGet;
 import com.tfg.back.repository.AppointmentRepository;
 import com.tfg.back.repository.ClientRepository;
@@ -26,7 +24,9 @@ import com.tfg.back.service.ClientService;
 import com.tfg.back.model.dtos.users.ChangePasswordRequest;
 import com.tfg.back.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,9 +47,9 @@ public class ClientServiceImpl implements ClientService {
     private final AppointmentRepository appointmentRepository;
     private final MedicalPrescriptionRepository medicalPrescriptionRepository;
     private final NotificationService notificationService;
-
+    private final MedicalPrescriptionMapper medicalPrescriptionMapper;
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder, EmailService emailService, AppointmentRepository appointmentRepository, MedicalPrescriptionRepository medicalPrescriptionRepository, NotificationService notificationService) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper, AppointmentMapper appointmentMapper, NotificationRepository notificationRepository, PasswordEncoder passwordEncoder, EmailService emailService, AppointmentRepository appointmentRepository, MedicalPrescriptionRepository medicalPrescriptionRepository, NotificationService notificationService, MedicalPrescriptionMapper medicalPrescriptionMapper) {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
         this.appointmentMapper = appointmentMapper;
@@ -59,6 +59,17 @@ public class ClientServiceImpl implements ClientService {
         this.appointmentRepository = appointmentRepository;
         this.medicalPrescriptionRepository = medicalPrescriptionRepository;
         this.notificationService = notificationService;
+        this.medicalPrescriptionMapper = medicalPrescriptionMapper;
+    }
+
+    @Override
+    public Page<ClientDtoGet> findClients(String search, Pageable pageable) {
+        if (search == null || search.isBlank()) {
+            return clientRepository.findAll(pageable).map(clientMapper::toGetDto);
+        } else {
+            return clientRepository.searchByNameOrEmail(search.toLowerCase(), pageable)
+                    .map(clientMapper::toGetDto);
+        }
     }
 
     @Override
@@ -88,15 +99,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public SummaryResponse findClientSummaryById(User patient) {
+    public ClientSummaryResponse findClientSummaryById(User patient) {
         List<Appointment> appointments = appointmentRepository.findAppointmentsByClientId(patient.getId(), PageRequest.of(0,3));
         List<MedicalPrescription> prescriptions = medicalPrescriptionRepository.findPrescriptionsByClientEmail(patient.getId(), PageRequest.of(0,3));
         List<Notification> notifications = notificationRepository.findTop3ByUserIdAndSeenFalseOrderByDateDesc(patient.getId());
         //Mapping
         List<AppointmentDtoGet> appointmentsDto = appointmentMapper.toDtoGetList(appointments);
-        List<MedicalPrescriptionDtoGet> prescriptionsDto = MedicalPrescriptionMapper.toDtoGetList(prescriptions);
+        List<MedicalPrescriptionDtoGet> prescriptionsDto = medicalPrescriptionMapper.toDtoGetList(prescriptions);
 
-        SummaryResponse summary = new SummaryResponse(appointmentsDto, prescriptionsDto, notifications);
+        ClientSummaryResponse summary = new ClientSummaryResponse(appointmentsDto, prescriptionsDto, notifications);
         return summary;
     }
 
@@ -117,6 +128,13 @@ public class ClientServiceImpl implements ClientService {
     public ClientDtoGet findClientById(User patient) {
         Client client = findClientById(patient.getId());
         return clientMapper.toGetDto(client);
+    }
+
+    @Override
+    public ClientDetailsDto getClientDetailsByDoctor(UUID id) {
+        Client client = findClientById(id);
+        ClientDetailsDto clientDetailsDto = clientMapper.toDetailsDto(client);
+        return clientDetailsDto;
     }
 
     @Override
@@ -158,12 +176,15 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
     }
 
+
+
     @Override
     public void inactivateClient(User patient) {
         Client client = findClientById(patient.getId());
         client.setStatus(UserStatus.INACTIVE);
         clientRepository.save(client);
     }
+
 
     //XXX: NEED A PREAUTHORISATION SERVICE
     @Override

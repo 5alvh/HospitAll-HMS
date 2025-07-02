@@ -24,8 +24,13 @@ public class FeedBackController {
 
 
     @GetMapping("/my")
-    public ResponseEntity<List<FeedBackDtoGet>> getMyFeedBacks(@AuthenticationPrincipal User patient){
+    public ResponseEntity<List<FeedBackDtoGet>> getFeedBacksByPatient(@AuthenticationPrincipal User patient){
         List<FeedBackDtoGet> feedbacks = feedbackService.findMyFeedbacks(patient);
+        return ResponseEntity.ok(feedbacks);
+    }
+    @GetMapping("/doctor/my")
+    public ResponseEntity<List<FeedBackDtoGet>> getFeedBacksByDoctor(@AuthenticationPrincipal User doctor){
+        List<FeedBackDtoGet> feedbacks = feedbackService.findMyFeedbacksByDoctor(doctor);
         return ResponseEntity.ok(feedbacks);
     }
     @PostMapping("/create")
@@ -34,6 +39,7 @@ public class FeedBackController {
         return ResponseEntity.ok(saved);
     }
 
+    //check if it's the same user with a feedbacksecurityservice
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteFeedback(@PathVariable Long id) {
         feedbackService.deleteFeedback(id);

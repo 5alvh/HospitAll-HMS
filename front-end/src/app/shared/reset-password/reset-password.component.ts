@@ -53,7 +53,7 @@ export class ResetPasswordComponent {
         })
         setTimeout(() => {
           this.submitted = false;
-          this.router.navigate(['/']);
+          this.router.navigate(['/login']);
         }
           , 2000);
       },

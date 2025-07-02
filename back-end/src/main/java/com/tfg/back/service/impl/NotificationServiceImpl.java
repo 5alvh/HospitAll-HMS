@@ -7,6 +7,8 @@ import com.tfg.back.model.User;
 import com.tfg.back.repository.NotificationRepository;
 import com.tfg.back.service.ClientServiceLookUp;
 import com.tfg.back.service.NotificationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -30,8 +32,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> findAppointmentsByClientId(User patient) {
-        List<Notification> notifications = notificationRepository.findByUserId(patient.getId());
+    public Page<Notification> findAppointmentsByClientId(User patient, Pageable pageable) {
+        Page<Notification> notifications = notificationRepository.findByUserId(patient.getId(), pageable);
         return notifications;
     }
 

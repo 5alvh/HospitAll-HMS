@@ -2,6 +2,7 @@ package com.tfg.back.mappers;
 
 import com.tfg.back.enums.UserStatus;
 import com.tfg.back.model.Client;
+import com.tfg.back.model.dtos.client.ClientDetailsDto;
 import com.tfg.back.model.dtos.client.ClientDtoCreate;
 import com.tfg.back.model.dtos.client.ClientDtoGet;
 import com.tfg.back.model.dtos.client.ClientDtoUpdate;
@@ -85,6 +86,24 @@ public class ClientMapper {
                 .address(client.getAddress())
                 .emergencyContact(client.getEmergencyContact())
                 .createdAt(client.getCreatedAt())
+                .build();
+    }
+
+    public ClientDetailsDto toDetailsDto(Client client) {
+        return ClientDetailsDto.builder()
+                .id(client.getId())
+                .fullName(client.getFullName())
+                .email(client.getEmail())
+                .phoneNumber(client.getPhoneNumber())
+                .dateOfBirth(client.getDateOfBirth())
+                .status(client.getStatus())
+                .address(client.getAddress())
+                .membershipLevel(client.getMembershipLevel())
+                .emergencyContact(client.getEmergencyContact())
+                .bloodType(client.getBloodType())
+                .appointments(appointmentMapper.toDtoGetList(client.getAppointments()))
+                .prescriptionsReceived(medicalPrescriptionMapper.toDtoGetList(client.getPrescriptionsReceived()))
+                .labResultsReceived(labResultMapper.toDtoGetList(client.getLabResultsReceived()))
                 .build();
     }
 

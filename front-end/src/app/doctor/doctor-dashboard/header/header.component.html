@@ -1,0 +1,31 @@
+<div class="header">
+    <div class="page-title">
+        <h1>{{ getPageTitle() }}</h1>
+    </div>
+    <div class="header-actions">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="badge" *ngIf="dashboardStats.pendingPrescriptions > 0">{{ dashboardStats.pendingPrescriptions
+                }}</span>
+        </div>
+        <div class="user-profile" (click)="toggleUserMenu()">
+            <div class="avatar-placeholder">
+                MN
+            </div>
+            <span>MY NAME</span>
+            <i class="fas fa-chevron-down"></i>
+
+            <div class="dropdown-menu" *ngIf="showUserMenu">
+                <button [routerLink]="['/dashboard-doctor/profile']">
+                    <i class="fas fa-user"></i> My Profile
+                </button>
+                <button [routerLink]="['/dashboard-doctor/support']">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+                <button (click)="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

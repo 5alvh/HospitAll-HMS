@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PasswordService } from '../../services/shared-services/password.service';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-password-recover',
@@ -12,14 +11,14 @@ import Swal from 'sweetalert2';
   styleUrl: './password-recover.component.scss'
 })
 export class PasswordRecoverComponent {
-  forgotForm!: FormGroup;           // declared but not built yet
-
+  forgotForm!: FormGroup;
   submitted = false;
   processing = false;
   requestSuccess = false;
   requestError = false;
   errorMessage = '';
-
+  redirectionTime: number = 10;
+  countDounInterval :any;
   constructor(private fb: FormBuilder, private router: Router, private passwordService: PasswordService) {
     this.forgotForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -42,17 +41,22 @@ export class PasswordRecoverComponent {
       this.passwordService.forgetPassword(this.forgotForm.value.email).subscribe(
         (response) => {
           this.processing = false;
-          Swal.fire({
-            icon: 'success',
-            title: 'Password Reset Request Sent',
-            text: 'Please check your email for instructions on how to reset your password.',
-          });
           this.requestSuccess = true;
+          this.redirectionTime = 10;
+
+          this.countDounInterval = setInterval(() => {
+            this.redirectionTime = this.redirectionTime - 1;
+            console.log(this.redirectionTime)
+          }, 1000);
+          setTimeout(() => {
+            clearInterval(this.countDounInterval);
+            this.router.navigate(['/login'])
+          }, 10000)
         },
         (error) => {
           console.error(error);
           this.processing = false;
-          const demoError = true; 
+          const demoError = true;
           if (demoError) {
             this.requestError = true;
             this.errorMessage =
@@ -60,11 +64,11 @@ export class PasswordRecoverComponent {
           }
         }
       );
-      
+
     }, 1800);
   }
 
   backToLogin() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 }

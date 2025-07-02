@@ -1,10 +1,16 @@
 package com.tfg.back.service;
 
+import com.tfg.back.enums.AppointmentStatus;
 import com.tfg.back.model.Appointment;
 import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.appointment.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Service implementation for managing appointments.
@@ -17,6 +23,15 @@ import java.util.List;
 public interface AppointmentService {
 
     List<AppointmentDtoGet> findAppointmentsByClientId(User patient);
+
+    Page<AppointmentDtoGet> findUpcomingAppointmentsByClientId(User patient, Pageable pageable, boolean includeCancelled);
+
+    Page<AppointmentDtoGet> findAppointmentsHistoryByClientId(User patient, Pageable pageable);
+
+
+    List<AppointmentDtoGet> findAppointmentsByDoctorId(User doctor);
+
+    Page<AppointmentDtoGet> findAppointmentsByDoctorIdPageable(User doctor, Collection<AppointmentStatus> status, LocalDateTime before, LocalDateTime after, Pageable pageable);
 
     List<AppointmentDtoGet> findAllAppointments();
 
@@ -41,5 +56,9 @@ public interface AppointmentService {
     AppointmentDtoGet bookByDoctorWithClientId(BookAppointmentByDoctorRequest request, User doctor);
 
     Appointment getAppointment(Long id);
+
+    List<AppointmentDtoGet> getTodayAppointments(UUID id , List<AppointmentStatus> statuses);
+
+    Long countDistinctClientsByDoctorId(UUID id);
 }
 

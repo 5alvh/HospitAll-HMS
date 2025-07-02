@@ -1,0 +1,450 @@
+<!-- patient-details.component.html -->
+<div class="patient-profile-container">
+    <!-- Patient Header -->
+    <div class="patient-header">
+        <button class="back-btn" (click)="goBack()">
+            <fa-icon [icon]="icons.chevronLeft"></fa-icon> Back to Patients
+        </button>
+
+        <div class="patient-summary">
+            <div class="avatar-large">
+                <fa-icon [icon]="icons.user"></fa-icon>
+            </div>
+
+            <div class="patient-info">
+                <h1>{{ selectedUser?.fullName || 'Patient Name' }}</h1>
+                <div class="patient-meta">
+                    <span class="meta-item">
+                        <fa-icon [icon]="icons.idCard"></fa-icon>
+                        ID: {{ selectedUser?.id || 'N/A' }}
+                    </span>
+                    <span class="meta-item">
+                        <fa-icon [icon]="icons.calendar"></fa-icon>
+                        DOB: {{ (selectedUser?.dateOfBirth | date) || 'N/A' }}
+                    </span>
+                    <span class="meta-item">
+                        <fa-icon [icon]="icons.heart"></fa-icon>
+                        Insurance: {{ selectedUser?.membershipLevel || 'N/A' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="patient-stats">
+                <div class="stat-card">
+                    <div class="stat-value">{{ prescriptions.length }}</div>
+                    <div class="stat-label">Prescriptions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ appointments.length }}</div>
+                    <div class="stat-label">Appointments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ labResults.length }}</div>
+                    <div class="stat-label">Lab Results</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="contact-section">
+        <div class="contact-card">
+            <h3><fa-icon [icon]="icons.info"></fa-icon> Contact Information</h3>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <fa-icon [icon]="icons.envelope"></fa-icon>
+                    <div>
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">{{ selectedUser?.email || 'N/A' }}</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <fa-icon [icon]="icons.phone"></fa-icon>
+                    <div>
+                        <div class="contact-label">Phone</div>
+                        <div class="contact-value">{{ selectedUser?.phoneNumber || 'N/A' }}</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <fa-icon [icon]="icons.location"></fa-icon>
+                    <div>
+                        <div class="contact-label">Address</div>
+                        <div class="contact-value">{{ selectedUser?.address || 'N/A' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="medical-card">
+            <h3><fa-icon [icon]="icons.medical"></fa-icon> Medical Information</h3>
+            <div class="medical-details">
+                <div class="medical-item">
+                    <fa-icon [icon]="icons.allergy"></fa-icon>
+                    <div>
+                        <div class="medical-label">Allergies</div>
+                        <div class="medical-value">{{ selectedUser?.allergies || 'None recorded' }}</div>
+                    </div>
+                </div>
+                <div class="medical-item">
+                    <fa-icon [icon]="icons.condition"></fa-icon>
+                    <div>
+                        <div class="medical-label">Conditions</div>
+                        <div class="medical-value">{{ selectedUser?.conditions || 'None recorded' }}</div>
+                    </div>
+                </div>
+                <div class="medical-item">
+                    <fa-icon [icon]="icons.medication"></fa-icon>
+                    <div>
+                        <div class="medical-label">Current Medications</div>
+                        <div class="medical-value">{{ selectedUser?.medications || 'None recorded' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-btn" [class.active]="activeTab === 'prescriptions'" (click)="setActiveTab('prescriptions')">
+            <fa-icon [icon]="icons.prescription"></fa-icon> Prescriptions
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'appointments'" (click)="setActiveTab('appointments')">
+            <fa-icon [icon]="icons.appointment"></fa-icon> Appointments
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'labResults'" (click)="setActiveTab('labResults')">
+            <fa-icon [icon]="icons.lab"></fa-icon> Lab Results
+        </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Prescriptions Tab -->
+        <div *ngIf="activeTab === 'prescriptions'" class="tab-panel">
+            <div class="section-header">
+                <h2><fa-icon [icon]="icons.prescription"></fa-icon> Prescriptions</h2>
+                <button class="add-btn" (click)="showPrescriptionForm = !showPrescriptionForm">
+                    <fa-icon [icon]="showPrescriptionForm ? icons.close : icons.plus"></fa-icon>
+                    {{ showPrescriptionForm ? 'Cancel' : 'Add Prescription' }}
+                </button>
+            </div>
+
+            <!-- Prescription Form -->
+            <div *ngIf="showPrescriptionForm" class="form-container">
+                <form (ngSubmit)="addPrescription()" [formGroup]="prescriptionForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Medication</label>
+                            <input type="text" formControlName="medication" class="form-control"
+                                placeholder="Medication name">
+                        </div>
+                        <div class="form-group">
+                            <label>Dosage</label>
+                            <input type="text" formControlName="dosage" class="form-control" placeholder="e.g., 500mg">
+                        </div>
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <input type="text" formControlName="frequency" class="form-control"
+                                placeholder="e.g., Twice daily">
+                        </div>
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <input type="text" formControlName="duration" class="form-control"
+                                placeholder="e.g., 7 days">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Instructions</label>
+                        <textarea formControlName="instructions" class="form-control" rows="3"
+                            placeholder="Special instructions"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-outline" (click)="showPrescriptionForm = false">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <fa-icon [icon]="icons.save"></fa-icon> Save Prescription
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Prescriptions List -->
+            <div class="data-list">
+                <div *ngFor="let prescription of prescriptions" class="data-card">
+                    <div class="card-header">
+                        <div class="medication-info">
+                            <h3>{{ prescription.medicationName }}</h3>
+                            <div class="prescription-meta">
+                                <span class="badge">{{ prescription.status || 'Active' }}</span>
+                                <span>{{ prescription.startDate | date }} - {{ prescription.endDate | date }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon">
+                                <fa-icon [icon]="icons.print"></fa-icon>
+                            </button>
+                            <button class="btn-icon">
+                                <fa-icon [icon]="icons.edit"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="prescription-details">
+                            <div class="detail">
+                                <label>Dosage:</label>
+                                <span>{{ prescription.dosage }}</span>
+                            </div>
+                            <div class="detail">
+                                <label>Frequency:</label>
+                                <span>{{ prescription.frequency }}</span>
+                            </div>
+                            <div class="detail">
+                                <label>Prescribed By:</label>
+                                <span>{{ prescription.prescribedBy || 'Dr. Smith' }}</span>
+                            </div>
+                        </div>
+
+                        <div *ngIf="prescription.notes" class="instructions">
+                            <label>Instructions:</label>
+                            <p>{{ prescription.notes }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="prescriptions.length === 0" class="empty-state">
+                    <fa-icon [icon]="icons.prescription" class="empty-icon"></fa-icon>
+                    <h3>No Prescriptions Found</h3>
+                    <p>This patient doesn't have any prescriptions recorded yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Tab -->
+        <div *ngIf="activeTab === 'appointments'" class="tab-panel">
+            <div class="section-header">
+                <h2><fa-icon [icon]="icons.appointment"></fa-icon> Appointments</h2>
+                <button class="add-btn" (click)="showAppointmentForm = !showAppointmentForm">
+                    <fa-icon [icon]="showAppointmentForm ? icons.close : icons.plus"></fa-icon>
+                    {{ showAppointmentForm ? 'Cancel' : 'Add Appointment' }}
+                </button>
+            </div>
+
+            <!-- Appointment Form -->
+            <div *ngIf="showAppointmentForm" class="form-container">
+                <form (ngSubmit)="addAppointment()" [formGroup]="appointmentForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" formControlName="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="time" formControlName="time" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Doctor</label>
+                            <select formControlName="doctor" class="form-control">
+                                <option value="Dr. Smith">Dr. Smith</option>
+                                <option value="Dr. Johnson">Dr. Johnson</option>
+                                <option value="Dr. Williams">Dr. Williams</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select formControlName="status" class="form-control">
+                                <option value="scheduled">Scheduled</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reason</label>
+                        <input type="text" formControlName="reason" class="form-control" placeholder="Reason for visit">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea formControlName="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-outline" (click)="showAppointmentForm = false">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <fa-icon [icon]="icons.save"></fa-icon> Save Appointment
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Appointments List -->
+            <div class="data-list">
+                <div *ngFor="let appointment of appointments" class="data-card">
+                    <div class="card-header">
+                        <div class="appointment-info">
+                            <h3>{{ appointment.appointmentDateTime | date:'medium' }}</h3>
+                            <div class="appointment-meta">
+                                <span class="badge" [ngClass]="appointment.status.toLowerCase()">
+                                    {{ appointment.status }}
+                                </span>
+                                <span>With {{ appointment.doctorFullName || 'Dr. Smith' }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon">
+                                <fa-icon [icon]="icons.edit"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="appointment-details">
+                            <div class="detail">
+                                <label>Reason:</label>
+                                <span>{{ appointment.reason || 'General Consultation' }}</span>
+                            </div>
+                            <div class="detail">
+                                <label>Type:</label>
+                                <span>{{ appointment.type || 'Regular Visit' }}</span>
+                            </div>
+                            <div class="detail">
+                                <label>Notes:</label>
+                                <span>{{ appointment.notes || 'No additional notes' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="appointments.length === 0" class="empty-state">
+                    <fa-icon [icon]="icons.appointment" class="empty-icon"></fa-icon>
+                    <h3>No Appointments Found</h3>
+                    <p>This patient doesn't have any appointments scheduled.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lab Results Tab -->
+        <div *ngIf="activeTab === 'labResults'" class="tab-panel">
+            <div class="section-header">
+                <h2><fa-icon [icon]="icons.lab"></fa-icon> Lab Results</h2>
+                <button class="add-btn" (click)="showLabResultForm = !showLabResultForm">
+                    <fa-icon [icon]="showLabResultForm ? icons.close : icons.plus"></fa-icon>
+                    {{ showLabResultForm ? 'Cancel' : 'Add Lab Result' }}
+                </button>
+            </div>
+
+            <!-- Lab Result Form -->
+            <div *ngIf="showLabResultForm" class="form-container">
+                <form (ngSubmit)="addLabResult()" [formGroup]="labResultForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Test Name</label>
+                            <input type="text" formControlName="testName" class="form-control" placeholder="Test name">
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" formControlName="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Result</label>
+                            <input type="text" formControlName="result" class="form-control" placeholder="Result value">
+                        </div>
+                        <div class="form-group">
+                            <label>Normal Range</label>
+                            <input type="text" formControlName="normalRange" class="form-control"
+                                placeholder="Normal range">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select formControlName="status" class="form-control">
+                            <option value="normal">Normal</option>
+                            <option value="abnormal">Abnormal</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea formControlName="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-outline" (click)="showLabResultForm = false">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <fa-icon [icon]="icons.save"></fa-icon> Save Lab Result
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lab Results List -->
+            <div class="data-list">
+                <div *ngFor="let labResult of labResults" class="data-card">
+                    <div class="card-header">
+                        <div class="lab-info">
+                            <h3>{{ labResult.testName || 'Complete Blood Count' }}</h3>
+                            <div class="lab-meta">
+                                <span class="badge" [ngClass]="labResult.status || 'normal'">
+                                    {{ labResult.status || 'Normal' }}
+                                </span>
+                                <span>{{ labResult.createdAt | date }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon">
+                                <fa-icon [icon]="icons.chart"></fa-icon>
+                            </button>
+                            <button class="btn-icon">
+                                <fa-icon [icon]="icons.download"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="lab-details">
+                            <div class="detail">
+                                <label>Result:</label>
+                                <span [ngClass]="{
+                  'normal': (labResult.status || 'normal') === 'normal',
+                  'abnormal': (labResult.status || 'normal') === 'abnormal',
+                  'critical': (labResult.status || 'normal') === 'critical'
+                }">
+                                    {{ labResult.resultValue || '7.2 x 10^9/L' }}
+                                </span>
+                            </div>
+                            <div class="detail">
+                                <label>Normal Range:</label>
+                                <span>{{ labResult.referenceRange || '4.0 - 11.0 x 10^9/L' }}</span>
+                            </div>
+                            <div class="detail">
+                                <label>Performed By:</label>
+                                <span>{{ labResult.performedBy || 'MediLab Diagnostics' }}</span>
+                            </div>
+                        </div>
+
+                        <div *ngIf="labResult.notes" class="notes">
+                            <label>Notes:</label>
+                            <p>{{ labResult.notes || 'Results within normal range' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="labResults.length === 0" class="empty-state">
+                    <fa-icon [icon]="icons.lab" class="empty-icon"></fa-icon>
+                    <h3>No Lab Results Found</h3>
+                    <p>This patient doesn't have any lab results recorded yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

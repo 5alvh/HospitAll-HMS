@@ -1,17 +1,13 @@
 import { Component } from '@angular/core';
-import { ClientDtoGet } from '../../models/client-dto-get';
-import { BloodType } from '../../models/enums/blood-type';
-import { MembershipLevel } from '../../models/enums/membership-level';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ClientService } from '../../services/client-services/client.service';
 import { Router } from '@angular/router';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
-import { ClientDtoUpdate } from '../../models/client-dto-update';
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Specialization } from '../../models/enums/specialization';
 import { DoctorDtoGet } from '../../models/doctor-dto-get';
 import { DoctorService } from '../../services/doctor-services/doctor.service';
 import Swal from 'sweetalert2';
+import { ClientService } from '../../client/services/client.service';
 
 @Component({
   selector: 'app-doctor-update',

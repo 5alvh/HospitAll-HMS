@@ -1,0 +1,99 @@
+<div class="profile-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading profile...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="!isLoading && doctor" class="profile-content">
+    <!-- Header Section -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <div class="avatar-placeholder">
+          {{ doctor.fullName.charAt(0) }}
+        </div>
+      </div>
+      <div class="profile-info">
+        <h1 class="doctor-name">Dr. {{ doctor.fullName }}</h1>
+        <p class="doctor-specialization">{{ doctor.specialization }}</p>
+        <p class="doctor-department">{{ doctor.department.name }}</p>
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="profile-details">
+      <div class="details-grid">
+        <!-- Contact Information -->
+        <div class="detail-card">
+          <h3 class="card-title">Contact Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ doctor.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ doctor.phoneNumber }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Address</span>
+            <span class="detail-value">{{ doctor.address }}</span>
+          </div>
+        </div>
+
+        <!-- Professional Information -->
+        <div class="detail-card">
+          <h3 class="card-title">Professional Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Medical License</span>
+            <span class="detail-value">{{ doctor.medicalLicenseNumber }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Department</span>
+            <span class="detail-value">{{ doctor.department.name }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Specialization</span>
+            <span class="detail-value">{{ doctor.specialization }}</span>
+          </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="detail-card">
+          <h3 class="card-title">Personal Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Date of Birth</span>
+            <span class="detail-value">{{ doctor.dateOfBirth | date:'longDate' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Doctor ID</span>
+            <span class="detail-value">#{{ doctor.id }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Member Since</span>
+            <span class="detail-value">{{ doctor.createdAt | date:'MMMM yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="profile-actions">
+      <button class="btn-primary" routerLink="/edit-profile-doctor">
+        Edit Profile
+      </button>
+      <button class="btn-secondary" routerLink="/dashboard-doctor/summary">
+        Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && !doctor" class="error-container">
+    <h2>Unable to load profile</h2>
+    <p>Please try refreshing the page or contact support if the problem persists.</p>
+    <button class="btn-primary" (click)="loadDoctor()">
+      Try Again
+    </button>
+  </div>
+</div>

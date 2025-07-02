@@ -1,0 +1,155 @@
+<div class="modal-backdrop" *ngIf="selectedAppointment">
+    <div class="summary-card appointment-modal">
+        <div class="card-header">
+            <h3>Appointment Details</h3>
+            <button class="close-btn" (click)="closeDetails()">×</button>
+        </div>
+        <div class="card-body">
+            <ul class="details-list">
+                <li><strong>Appointment ID:</strong> {{ selectedAppointment.id }}</li>
+                <li><strong>Client:</strong> {{ selectedAppointment.clientFullName }}</li>
+                <li><strong>Date & Time:</strong> {{ selectedAppointment.appointmentDateTime | date:'MMM d, y' }}</li>
+                <li><strong>Reason:</strong> {{ selectedAppointment.reason }}</li>
+                <li><strong>Status:</strong> {{ selectedAppointment.status }}</li>
+                <li><strong>Type:</strong> {{ selectedAppointment.type }}</li>
+            </ul>
+            <button class="btn-outline btn-sm download-btn" (click)="downloadAppointment(selectedAppointment.id)">
+                <i class="fas fa-download"></i> Download Summary
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="section-header">
+    <h2>Appointments Management</h2>
+    <div class="section-tabs">
+        <div class="tab active">All Appointments</div>
+       <div class="tab">Today</div>
+            <div class="tab">This Week</div>
+    </div>
+</div>
+-->
+<div class="appointments-container">
+    <div class="appointments-filters">
+        <div class="filter-group">
+            <label>Status:</label>
+            <select class="form-control" [(ngModel)]="filterStatus" (ngModelChange)="applyFilter()">
+                <option value="all">All Status</option>
+                <option value="SCHEDULED">Scheduled</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+            </select>
+        </div>
+
+        <div class="filter-group date-range-inline">
+            <label>Date Range:</label>
+            <div class="date-range-fields">
+                <input type="date" class="form-control" [(ngModel)] = "after" (ngModelChange)="applyFilter()">
+                <span>to</span>
+                <input type="date" class="form-control" [(ngModel)] = "before" (ngModelChange)="applyFilter()">
+            </div>
+        </div>
+    </div>
+    <div class="checkbox-wrapper">
+        <label>
+            <input type="checkbox" [(ngModel)]="showCancelledAppointments"
+                (change)="filterFromCancelledAppointments()" />
+            Hide canceled appointments
+        </label>
+    </div>
+    <div class="data-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Diagnosis</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let appointment of filteredAppointments">
+                    <td>
+                        <div class="patient-info">
+                            <strong>{{ appointment.clientFullName }}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="appointment-datetime">
+                            <div>{{ appointment.appointmentDateTime | date: 'MMM d, y HH:mm' }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge" [ngClass]="appointment.status.toLowerCase()">
+                            {{ appointment.status }}
+                        </span>
+                    </td>
+                    <td>{{ appointment.reason || 'General consultation' }}</td>
+                    <td>
+                        <div class="prescription-status">
+                            <span *ngIf="appointment.diagnosis === 'UNAVAILABLE'" class="no-prescription">
+                                <i class="fas fa-minus-circle"></i> No diagnosis
+                            </span>
+                            <span *ngIf="appointment.diagnosis !== 'UNAVAILABLE'" class="has-prescription">
+                                <i class="fas fa-check-circle"></i> {{appointment.diagnosis}}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="actions">
+                        <button class="btn-icon" title="Confirm Appointment" *ngIf="appointment.status === 'SCHEDULED'"
+                            (click)="confirmAppointment(appointment.id)">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </button>
+                        <button class="btn-icon" title="Completed Appointment"
+                            *ngIf="appointment.status === 'CONFIRMED'" (click)="completeAppointment(appointment.id)">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                        <button class="btn-icon" title="View Details" (click)="showDetails(appointment)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-icon" title="Create Prescription" *ngIf=" appointment.status !== 'CANCELLED'"
+                            (click)="createPrescriptionForAppointment(appointment)">
+                            <i class="fas fa-prescription"></i>
+                        </button>
+                        <button class="btn-icon" title="View Prescription"
+                            *ngIf="appointment.diagnosis !== 'UNAVAILABLE'">
+                            <i class="fas fa-file-medical"></i>
+                        </button>
+                        <button class="btn-icon" title="Edit" *ngIf="appointment.status !== 'CANCELLED'"
+                            (click)="toggleDiagnosisForm(appointment)">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </button>
+                        <!-- Publish Diagnosis Form -->
+                        <div *ngIf="showDiagnosisForm[appointment.id]" class="diagnosis-form">
+                            <input type="text" placeholder="Enter diagnosis"
+                                [(ngModel)]="diagnosisInputs[appointment.id]" class="diagnosis-input" />
+                            <button class="btn-success btn-sm" (click)="submitDiagnosis(appointment.id)">
+                                Diagnose
+                            </button>
+                        </div>
+
+
+
+                    </td>
+                </tr>
+                <tr *ngIf="!appointments || appointments.length === 0">
+                    <td colspan="6" class="no-data">No appointments found</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-controls">
+            <button (click)="previousPage()" [disabled]="currentPage === 0">
+                <fa-icon [icon]="icons.chevronLeft"></fa-icon> Previous
+            </button>
+
+            <span>Page {{ currentPage+1 }} of {{ totalPages+1 }}</span>
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+                Next <fa-icon [icon]="icons.chevronRight"></fa-icon>
+            </button>
+        </div>
+    </div>
+</div>

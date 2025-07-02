@@ -1,0 +1,98 @@
+<!-- patients.component.html -->
+<div class="admin-dashboard">
+  <!-- User List Section -->
+  <div *ngIf="!selectedUser" class="user-list-container">
+    <div class="header">
+      <h2><fa-icon [icon]="icons.user"></fa-icon> Patient Management</h2>
+      <div class="search-box">
+        <fa-icon [icon]="icons.search" class="search-icon"></fa-icon>
+        <input type="text" placeholder="Search patients..." [(ngModel)]="searchTerm" (input)="onSearchChange()"
+          class="search-input">
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <h3>Total Patients</h3>
+        <div class="stat-value">{{ filteredUsers.length }}</div>
+      </div>
+      <div class="stat-card">
+        <h3>Active Today</h3>
+        <div class="stat-value">24</div>
+      </div>
+      <div class="stat-card">
+        <h3>New This Week</h3>
+        <div class="stat-value">5</div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active">
+        <fa-icon [icon]="icons.user"></fa-icon> All Patients
+      </button>
+      <button class="filter-btn">
+        <fa-icon [icon]="icons.prescription"></fa-icon> With Prescriptions
+      </button>
+      <button class="filter-btn">
+        <fa-icon [icon]="icons.appointment"></fa-icon> Upcoming Appointments
+      </button>
+    </div>
+
+    <div class="user-cards">
+      <div *ngFor="let user of filteredUsers" class="user-card" (click)="selectUser(user)">
+        <div class="card-header">
+          <div class="avatar">
+            <fa-icon [icon]="icons.user"></fa-icon>
+          </div>
+          <div class="user-info">
+            <h3>{{ user.fullName }}</h3>
+            <p>Patient</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="user-detail">
+            <div class="detail-icon">
+              <fa-icon [icon]="icons.envelope"></fa-icon>
+            </div>
+            <div class="detail-content">
+              <h4>Email</h4>
+              <p>{{ user.email }}</p>
+            </div>
+          </div>
+          <div class="user-detail">
+            <div class="detail-icon">
+              <fa-icon [icon]="icons.phone"></fa-icon>
+            </div>
+            <div class="detail-content">
+              <h4>Phone</h4>
+              <p>{{ user.phoneNumber || 'N/A' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="role-badge patient">Patient</div>
+          <button class="action-btn">
+            <fa-icon [icon]="icons.chevronRight"></fa-icon> View
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <button (click)="prevPage()" [disabled]="currentPage === 0">
+        <fa-icon [icon]="icons.chevronLeft"></fa-icon> Previous
+      </button>
+
+      <span>Page {{ currentPage + 1 }} of {{ totalPages + 1 }}</span>
+
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+        Next <fa-icon [icon]="icons.chevronRight"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- User Profile Section -->
+  <app-patient-details *ngIf="selectedUser" [selectedUser]="selectedUser" [userId]="selectedUser.id"
+    (goBackEvent)="goBack()"></app-patient-details>
+</div>
