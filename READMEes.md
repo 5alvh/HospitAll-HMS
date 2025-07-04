@@ -1,186 +1,321 @@
 # HospitAll 🏥
 
-Un sistema integral de gestión hospitalaria construido con tecnologías web modernas, diseñado para optimizar las operaciones sanitarias y mejorar la atención al paciente.
+Un sistema de gestión hospitalaria (SGH) completo diseñado para pequeños centros de salud, que ofrece una gestión eficiente de la atención al paciente y operaciones de salud optimizadas.
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repositorio-blue)](https://github.com/5alvh/HospitAll)
-[![Java](https://img.shields.io/badge/Java-Spring_Boot-green)](https://spring.io/projects/spring-boot)
-[![Angular](https://img.shields.io/badge/Angular-Frontend-red)](https://angular.io/)
-[![MySQL](https://img.shields.io/badge/MySQL-Base_de_Datos-orange)](https://www.mysql.com/)
+## 📋 Tabla de contenidos
 
-## 📋 Tabla de Contenidos
-
-- [Descripción General](#descripción-general)
+- [Descripción general](#descripción-general)
 - [Características](#características)
-- [Stack Tecnológico](#stack-tecnológico)
-- [Arquitectura del Sistema](#arquitectura-del-sistema)
-- [Primeros Pasos](#primeros-pasos)
-- [Documentación API](#documentación-api)
-- [Esquema de Base de Datos](#esquema-de-base-de-datos)
-- [Seguridad](#seguridad)
-- [Contribuir](#contribuir)
-- [Licencia](#licencia)
+- [Stack tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Información de la API](#información-de-la-api)
+- [Contribución](#contribución)
 
-## 🎯 Descripción General
+## 🎯 Descripción general
 
-HospitAll es un sistema de gestión hospitalaria full-stack que digitaliza y automatiza los procesos sanitarios. Proporciona interfaces separadas para pacientes (clientes) y proveedores de atención médica (médicos) mientras mantiene una gestión segura de datos y automatización eficiente del flujo de trabajo.
-
-### Objetivos Clave
-- **Atención Centrada en el Paciente**: Reserva simplificada de citas y acceso a historiales médicos
-- **Eficiencia del Proveedor**: Herramientas integrales para que los médicos gestionen pacientes y recetas
-- **Seguridad de Datos**: Mecanismos robustos de autenticación y autorización
-- **Automatización de Procesos**: Notificaciones automatizadas, generación de PDF y gestión de flujos de trabajo
+HospitAll es un sistema de gestión hospitalaria moderno basado en web, adaptado para pequeños centros de salud. Proporciona una solución integral para la gestión de historiales de pacientes, citas, recetas médicas, resultados de laboratorio y flujos de trabajo de proveedores de atención médica. El sistema asegura una comunicación eficiente entre pacientes y proveedores de atención médica mientras mantiene registros médicos completos.
 
 ## ✨ Características
 
-### 👥 Gestión de Usuarios
-- **Autenticación Multi-Rol**: Sistemas de login separados para clientes y médicos
-- **Gestión de Cuentas**: Registro, actualizaciones de perfil, cambios de contraseña
-- **Control de Estado de Cuenta**: Capacidades de activación, suspensión y desactivación
-- **Recuperación Segura de Contraseña**: Sistema de restablecimiento de contraseña basado en tokens
+### 👨‍⚕️ Para Pacientes
 
-### 📅 Sistema de Citas
-- **Reserva Inteligente**: Verificación en tiempo real de disponibilidad y reserva de horarios
-- **Múltiples Métodos de Reserva**: Auto-reserva del cliente y citas iniciadas por el médico
-- **Gestión de Estado**: Ciclo de vida completo de citas (programada → confirmada → completada/cancelada)
-- **Gestión de Disponibilidad**: Horarios dinámicos de médicos y gestión de franjas horarias
+#### Gestión de cuenta
+- **Registro de usuario**: Crear nuevas cuentas de pacientes con autenticación segura
+- **Sistema de inicio de sesión**: Acceso seguro al portal del paciente
+- **Gestión de perfil**: Actualizar información personal y detalles médicos
 
-### 💊 Gestión Médica
-- **Recetas Digitales**: Crear, actualizar y publicar recetas médicas
-- **Resultados de Laboratorio**: Gestión y compartición segura de resultados de laboratorio
-- **Historiales Médicos**: Seguimiento integral del historial del paciente y diagnósticos
-- **Generación de PDF**: Documentos PDF profesionales para recetas y resúmenes de citas
+#### Notificaciones
+- **Notificaciones en tiempo real**: Recibir actualizaciones instantáneas vía WebSocket
+- **Gestión de notificaciones**: Marcar notificaciones como leídas/no leídas
+- **Historial de notificaciones**: Ver el historial completo de notificaciones
 
-### 🏥 Operaciones Hospitalarias
-- **Gestión de Departamentos**: Organizar médicos por departamentos médicos
-- **Especializaciones de Médicos**: Seguimiento y gestión de especialidades médicas
-- **Retroalimentación de Pacientes**: Sistema de recopilación y gestión de comentarios
-- **Sistema de Notificaciones**: Notificaciones en tiempo real para citas y actualizaciones
+#### Citas
+- **Reservar citas**: Programar citas con médicos disponibles
+- **Cancelar citas**: Cancelar citas programadas si es necesario
+- **Próximas citas**: Ver citas programadas con paginación y filtros
+- **Historial de citas**: Acceder al historial completo de citas con funcionalidad de búsqueda
+- **Detalles de la cita**: Ver información completa de la cita
+- **Exportar PDF**: Descargar detalles de la cita en formato PDF
 
-### 📊 Características Avanzadas
-- **Notificaciones en Tiempo Real**: Notificaciones push para actualizaciones importantes
-- **Gestión de Documentos**: Manejo seguro de documentos médicos
-- **Panel de Análisis**: Estadísticas de pacientes y métricas de citas
-- **Membresía Multi-nivel**: Diferentes niveles de membresía para clientes
+#### Recetas médicas
+- **Recibir recetas**: Obtener recetas digitales de los médicos
+- **Gestión de recetas**: Ver todas las recetas con paginación y filtros
+- **Detalles de recetas**: Acceder a información detallada de las recetas
+- **Exportar PDF**: Descargar recetas en formato PDF
 
-## 🛠 Stack Tecnológico
+#### Resultados de laboratorio
+- **Recibir resultados**: Obtener resultados de laboratorio digitalmente
+- **Gestión de resultados**: Ver todos los resultados de laboratorio con paginación y filtros
+- **Exportar PDF**: Descargar resultados de laboratorio en formato PDF
+
+#### Sistema de retroalimentación
+- **Retroalimentación general**: Dar retroalimentación sobre el centro de salud
+- **Retroalimentación específica del médico**: Evaluar y reseñar médicos específicos
+- **Gestión de retroalimentación**: Ver, actualizar y eliminar sus comentarios
+
+### 👩‍⚕️ Para Médicos
+
+#### Gestión de cuenta
+- **Registro de médico**: Crear cuentas de proveedores de atención médica
+- **Sistema de inicio de sesión**: Acceso seguro al portal del médico
+- **Gestión de perfil**: Gestionar información profesional
+
+#### Gestión de pacientes
+- **Directorio de pacientes**: Ver todos los pacientes con filtros avanzados y paginación
+- **Historial de pacientes**: Acceder al historial médico completo de los pacientes
+- **Registros médicos**: Ver citas, resultados de laboratorio y recetas
+- **Atención al paciente**: Programar citas, ordenar pruebas de laboratorio y recetar medicamentos
+- **Gestión de registros**: Actualizar y eliminar registros médicos
+
+#### Gestión de recetas
+- **Crear recetas**: Emitir recetas digitales a los pacientes
+- **Historial de recetas**: Ver todas las recetas emitidas con filtros y paginación
+
+#### Gestión de citas
+- **Resumen de citas**: Ver todas las citas con filtros y paginación
+- **Gestión de horarios**: Gestionar horarios de citas de manera eficiente
+
+#### Análisis de retroalimentación
+- **Revisión de retroalimentación**: Ver comentarios de pacientes con calificaciones
+- **Análisis de rendimiento**: Seguir calificaciones promedio y satisfacción del paciente
+
+## 🛠 Stack tecnológico
 
 ### Backend
-- **Framework**: Spring Boot 3.x
+- **Framework**: Spring Boot 3.4.5
+- **Versión de Java**: 21
 - **Seguridad**: Spring Security con autenticación JWT
-- **Base de Datos**: MySQL con JPA/Hibernate
-- **Documentación**: Swagger/OpenAPI 3
-- **Generación de PDF**: Librería iText7
-- **Validación**: Jakarta Bean Validation
+- **Base de datos**: MySQL con Spring Data JPA
+- **Comunicación en tiempo real**: WebSocket (Spring WebSocket)
+- **Servicio de correo electrónico**: Spring Mail
+- **Generación de PDF**: iText PDF
+- **Documentación de API**: OpenAPI 3 (Swagger)
+
+#### Dependencias del Backend
+```xml
+<!-- Core Spring Boot Starters -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+
+<!-- JWT Authentication -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.11.5</version>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.11.5</version>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.11.5</version>
+</dependency>
+
+<!-- PDF Generation -->
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>kernel</artifactId>
+    <version>8.0.3</version>
+</dependency>
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>layout</artifactId>
+    <version>8.0.3</version>
+</dependency>
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>io</artifactId>
+    <version>8.0.3</version>
+</dependency>
+
+<!-- Documentation -->
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.8.8</version>
+</dependency>
+
+<!-- Database -->
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
+<!-- Development Tools -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+```
 
 ### Frontend
-- **Framework**: Angular (Versión más reciente)
-- **Componentes UI**: Diseño responsivo moderno
-- **Cliente HTTP**: Angular HttpClient para comunicación API
-- **Rutas**: Angular Router para navegación
-- **Gestión de Estado**: Servicios Angular y RxJS
+- **Framework**: Angular 19
+- **Estilos**: Tailwind CSS 4.0.17
+- **Iconos**: Font Awesome 6.7.2
+- **Comunicación en tiempo real**: STOMP.js con SockJS
+- **Notificaciones**: ngx-sonner
+- **Alertas**: SweetAlert2
+- **Renderizado del lado del servidor**: Angular SSR
 
-### Base de Datos
-- **Base de Datos Principal**: MySQL
-- **ORM**: Hibernate/JPA
-- **Pool de Conexiones**: HikariCP
-- **Migraciones**: Flyway/Liquibase (recomendado)
+#### Dependencias del Frontend
+```json
+{
+  "dependencies": {
+    "@angular/animations": "^19.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.0",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
+    "@angular/platform-server": "^19.0.0",
+    "@angular/router": "^19.0.0",
+    "@angular/ssr": "^19.0.5",
+    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@stomp/stompjs": "^7.1.1",
+    "@tailwindcss/postcss": "^4.0.17",
+    "express": "^4.18.2",
+    "ngx-sonner": "^3.1.0",
+    "postcss": "^8.5.3",
+    "rxjs": "~7.8.0",
+    "sockjs-client": "^1.6.1",
+    "sweetalert2": "^11.21.2",
+    "tailwindcss": "^4.0.17",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  }
+}
+```
 
-### DevOps y Herramientas
-- **Herramienta de Construcción**: Maven
-- **Control de Versiones**: Git
-- **Pruebas de API**: Postman/Swagger UI
-- **IDE**: IntelliJ IDEA/VS Code
-
-## 🏗 Arquitectura del Sistema
+## 🏗 Arquitectura
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Angular UI    │    │  Spring Boot    │    │     MySQL       │
-│   (Frontend)    │◄──►│   (Backend)     │◄──►│ (Base de Datos) │
-│                 │    │                 │    │                 │
-│ • Portal Cliente│    │ • APIs REST     │    │ • Datos Usuario │
-│ • Portal Médico │    │ • Seguridad     │    │ • Citas         │
-│ • Panel Admin   │    │ • Lógica de     │    │ • Historiales   │
-│                 │    │   Negocio       │    │   Médicos       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+HospitAll/
+├── backend/                    # Aplicación Spring Boot
+│   ├── src/main/java/
+│   │   └── com/tfg/back/
+│   │       ├── annotations/  
+│   │       ├── controller/  
+│   │       ├── dto/         
+│   │       ├── entity/      
+│   │       ├── repository/  
+│   │       ├── service/      
+│   │       ├── configuration/      
+│   │       ├── constants/      
+│   │       ├── exceptions/
+│   │       ├── mappers/       
+│   │       ├── model/         
+│   │       └── utils/  
+│   └── src/main/resources/
+│       ├── application.properties
+│       └── static/
+├── frontend/                   # Aplicación Angular
+    ├── src/app/
+    │   ├── doctor/     
+    │   ├── client/        
+    │   ├── guards/           
+    │   ├── models/            
+    │   ├── services/           
+    │   ├── shared/          
+    │   └── interceptors/             
+    └── src/assets/
 ```
 
-### Componentes Clave
+## 🚀 Instalación
 
-#### Capa de Controladores
-- `AuthController`: Gestión de autenticación y login
-- `ClientController`: Operaciones de pacientes/clientes
-- `DoctorController`: Funcionalidades específicas de médicos
-- `AppointmentController`: Gestión del ciclo de vida de citas
-- `MedicalPrescriptionController`: Gestión de recetas
-- `PdfController`: Servicios de generación de documentos
-
-#### Capa de Seguridad
-- Autenticación basada en JWT
-- Control de acceso basado en roles (RBAC)
-- Cifrado de contraseñas con BCrypt
-- Validación de estado de cuenta (activa/suspendida/bloqueada)
-
-#### Capa de Servicios
-- Implementación de lógica de negocio
-- Validación y procesamiento de datos
-- Notificaciones por email
-- Generación de documentos PDF
-
-## 🚀 Primeros Pasos
-
-### Requisitos Previos
-
-- **Java**: JDK 17 o superior
-- **Node.js**: Versión 16+ con npm
-- **MySQL**: Versión 8.0+
-- **Maven**: Versión 3.6+
-- **Git**: Versión más reciente
+### Prerrequisitos
+- Java 21 o superior
+- Node.js 18 o superior
+- MySQL 8.0 o superior
+- Maven 3.6 o superior
 
 ### Configuración del Backend
 
 1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/5alvh/HospitAll.git
-   cd HospitAll
+   cd hospitall
    ```
 
-2. **Configurar Base de Datos MySQL**
-   ```sql
+2. **Configurar la base de datos**
+   ```bash
+   # Crear la base de datos MySQL
+   mysql -u root -p
    CREATE DATABASE hospitall;
-   CREATE USER 'hospitall_user'@'localhost' IDENTIFIED BY 'tu_contraseña';
-   GRANT ALL PRIVILEGES ON hospitall.* TO 'hospitall_user'@'localhost';
-   FLUSH PRIVILEGES;
    ```
 
-3. **Actualizar Propiedades de la Aplicación**
+3. **Actualizar application.properties**
    ```properties
-   # src/main/resources/application.properties
+   # Configuración de la base de datos
    spring.datasource.url=jdbc:mysql://localhost:3306/hospitall
-   spring.datasource.username=hospitall_user
+   spring.datasource.username=tu_nombre_usuario
    spring.datasource.password=tu_contraseña
    
+   # Configuración JPA
+   spring.jpa.hibernate.ddl-auto=update
+   spring.jpa.show-sql=true
+   
    # Configuración JWT
-   jwt.secret=tu-clave-secreta
+   jwt.secret=tu_clave_secreta_jwt
    jwt.expiration=86400000
    
-   # Configuración de Email (para restablecimiento de contraseña)
+   # Configuración de correo electrónico
    spring.mail.host=smtp.gmail.com
    spring.mail.port=587
-   spring.mail.username=tu-email@gmail.com
-   spring.mail.password=tu-contraseña-app
+   spring.mail.username=tu_email@gmail.com
+   spring.mail.password=tu_contraseña_app
    ```
 
-4. **Ejecutar el Backend**
+4. **Construir y ejecutar el backend**
    ```bash
-   ./mvnw spring-boot:run
+   cd backend
+   mvn clean install
+   mvn spring-boot:run
    ```
 
 ### Configuración del Frontend
 
-1. **Navegar al directorio frontend**
+1. **Navegar al directorio del frontend**
    ```bash
-   cd frontend  # Ajustar ruta según sea necesario
+   cd frontend
    ```
 
 2. **Instalar dependencias**
@@ -188,12 +323,13 @@ HospitAll es un sistema de gestión hospitalaria full-stack que digitaliza y aut
    npm install
    ```
 
-3. **Configurar endpoints de API**
+3. **Configurar el entorno**
    ```typescript
    // src/environments/environment.ts
    export const environment = {
      production: false,
-     apiUrl: 'http://localhost:8080/api'
+     apiUrl: 'http://localhost:8080/api',
+     wsUrl: 'http://localhost:8080/ws'
    };
    ```
 
@@ -202,152 +338,97 @@ HospitAll es un sistema de gestión hospitalaria full-stack que digitaliza y aut
    ng serve
    ```
 
-### Acceder a la Aplicación
+## 🎯 Uso
+
+### Acceder a la aplicación
 
 - **Frontend**: http://localhost:4200
-- **API Backend**: http://localhost:8080
-- **Documentación API**: http://localhost:8080/swagger-ui.html
+- **API Backend**: http://localhost:8080/api
+- **Documentación de la API**: http://localhost:8080/swagger-ui.html
 
-## 📚 Documentación API
+### Cuentas por defecto
 
-### Endpoints de Autenticación
+#### Cuenta de Paciente
+- Email: patient@example.com
+- Contraseña: password123
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/auth/login` | Login de usuario |
-| POST | `/auth/forgot-password` | Iniciar restablecimiento de contraseña |
-| POST | `/auth/reset-password` | Restablecer contraseña con token |
+#### Cuenta de Médico
+- Email: doctor@example.com
+- Contraseña: password123
 
-### Gestión de Clientes
+### Flujos de trabajo clave
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/clients/register` | Registrar nuevo cliente |
-| GET | `/clients/profile` | Obtener perfil del cliente actual |
-| PUT | `/clients/{id}` | Actualizar información del cliente |
-| GET | `/clients/appointments` | Obtener citas del cliente |
-| PUT | `/clients/change-password` | Cambiar contraseña |
+#### Recorrido del Paciente
+1. Registrarse/Iniciar sesión en el portal del paciente
+2. Completar información del perfil
+3. Reservar citas con médicos disponibles
+4. Recibir notificaciones en tiempo real
+5. Acceder a registros médicos y recetas
+6. Descargar informes en PDF
+7. Proporcionar retroalimentación
 
-### Gestión de Médicos
+#### Recorrido del Médico
+1. Iniciar sesión en el portal del médico
+2. Ver pacientes asignados
+3. Gestionar citas y horarios
+4. Emitir recetas y órdenes de laboratorio
+5. Revisar retroalimentación de pacientes
+6. Generar informes médicos
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/doctors/register` | Registrar nuevo médico |
-| GET | `/doctors/profile` | Obtener perfil del médico actual |
-| GET | `/doctors/all` | Obtener todos los médicos |
-| POST | `/doctors/available-doctors` | Obtener médicos disponibles |
-| POST | `/doctors/available-slots` | Obtener horarios disponibles |
+## 📚 Información de la API
 
-### Gestión de Citas
+La documentación de la API se genera automáticamente con OpenAPI 3 y se puede ver en:
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/appointment/book-appointment` | Reservar nueva cita |
-| GET | `/appointment/{id}` | Obtener detalles de cita |
-| PUT | `/appointment/{id}/cancel` | Cancelar cita |
-| PUT | `/appointment/{id}/confirm` | Confirmar cita |
-| PUT | `/appointment/{id}/complete` | Marcar cita como completada |
+### Endpoints principales de la API
 
-### Servicios Médicos
+#### ESTARÁ DISPONIBLE PRONTO
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/medical-prescriptions/create` | Crear receta |
-| GET | `/medical-prescriptions/get/{id}` | Obtener receta |
-| PATCH | `/medical-prescriptions/publish/{id}` | Publicar receta |
-| POST | `/lab-results/create` | Crear resultado de laboratorio |
-| GET | `/pdf/appointment/{id}` | Generar PDF de cita |
-| GET | `/pdf/medication-prescription/{id}` | Generar PDF de receta |
+## 🧪 Pruebas
 
-## 🗄 Esquema de Base de Datos
+### Pruebas del Backend
+```bash
+cd backend
+mvn test
+```
 
-### Entidades Principales
+### Pruebas del Frontend
+```bash
+cd frontend
+ng test
+```
 
-#### Usuarios
-- **Cliente**: Información del paciente, niveles de membresía, detalles de contacto
-- **Médico**: Profesionales médicos, especializaciones, departamentos, números de licencia
-- **Admin**: Administradores del sistema (si aplica)
+## 🤝 Contribución
 
-#### Registros Médicos
-- **Cita**: Detalles de reserva, estado, diagnóstico, tipo
-- **RecetaMédica**: Detalles de medicación, dosis, duración
-- **ResultadoLaboratorio**: Resultados de pruebas de laboratorio e informes
-- **Departamento**: Departamentos médicos y especialidades
+¡Damos la bienvenida a las contribuciones a HospitAll! Por favor, sigue estos pasos:
 
-#### Entidades del Sistema
-- **Notificación**: Notificaciones y alertas de usuario
-- **Retroalimentación**: Comentarios y calificaciones de pacientes
-- **IntervaloTiempo**: Horarios de citas disponibles
-
-### Relaciones
-- Cliente ↔ Cita (Uno-a-Muchos)
-- Médico ↔ Cita (Uno-a-Muchos)
-- Médico ↔ Departamento (Muchos-a-Uno)
-- Cliente ↔ RecetaMédica (Uno-a-Muchos)
-- Médico ↔ RecetaMédica (Uno-a-Muchos)
-
-## 🔐 Seguridad
-
-### Autenticación y Autorización
-- **Tokens JWT**: Autenticación segura sin estado
-- **Acceso Basado en Roles**: Permisos separados para clientes y médicos
-- **Seguridad de Contraseñas**: Hash BCrypt con sal
-- **Gestión de Cuentas**: Control de acceso basado en estado (activa/suspendida/bloqueada)
-
-### Seguridad de API
-- **Configuración CORS**: Solicitudes de origen cruzado controladas
-- **Validación de Solicitudes**: Sanitización y validación de entrada
-- **Manejo de Errores**: Mensajes de error seguros sin exposición de datos sensibles
-- **Limitación de Velocidad**: Protección contra abuso (implementación recomendada)
-
-### Protección de Datos
-- **Cifrado de Datos Sensibles**: Registros médicos e información personal
-- **Registro de Auditoría**: Seguimiento de acceso a datos médicos sensibles
-- **Manejo Seguro de Archivos**: Generación de PDF y almacenamiento de documentos
-- **Seguridad de Base de Datos**: Conexiones cifradas y consultas parametrizadas
-
-## 🤝 Contribuir
-
-¡Damos la bienvenida a contribuciones a HospitAll! Por favor, sigue estas pautas:
-
-### Proceso de Desarrollo
 1. Hacer fork del repositorio
-2. Crear una rama de característica (`git checkout -b feature/caracteristica-increible`)
-3. Hacer commit de tus cambios (`git commit -m 'Agregar característica increíble'`)
-4. Hacer push a la rama (`git push origin feature/caracteristica-increible`)
+2. Crear una rama de característica (`git checkout -b feature/NuevaCaracteristica`)
+3. Hacer commit de tus cambios (`git commit -m 'Agregar nueva característica'`)
+4. Hacer push a la rama (`git push origin feature/NuevaCaracteristica`)
 5. Abrir un Pull Request
 
-### Estándares de Codificación
-- Seguir convenciones de nomenclatura de Java
-- Usar principios apropiados de diseño de API REST
-- Implementar manejo integral de errores
-- Agregar pruebas unitarias para nuevas características
-- Actualizar documentación para cambios de API
+### Pautas de desarrollo
+- Seguir las mejores prácticas de Spring Boot para el desarrollo del backend
+- Usar la guía de estilo de Angular para el desarrollo del frontend
+- Escribir pruebas completas para nuevas características
+- Actualizar documentación para cambios en la API
+- Asegurar que el código esté correctamente formateado y verificado
 
-### Reportes de Errores
-Al reportar errores, por favor incluye:
-- Descripción detallada del problema
-- Pasos para reproducir
-- Comportamiento esperado vs real
-- Detalles del entorno del sistema
-- Logs de error (si aplica)
-
-## 🙋‍♂️ Soporte
+## 🆘 Soporte
 
 Para soporte y preguntas:
+- Crear un issue en el repositorio de GitHub
+- Email: salahforquestions@gmail.com
 
-- **GitHub Issues**: [Crear un issue](https://github.com/5alvh/HospitAll/issues)
-- **Documentación**: Revisar la documentación de API en `/swagger-ui.html`
-- **Email**: Contactar al equipo de desarrollo
+## 🎉 Agradecimientos
 
-## 🎉 Reconocimientos
-
-- Comunidad de Spring Boot por la excelente documentación
-- Equipo de Angular por el framework frontend robusto
-- iText7 por las capacidades de generación de PDF
-- MySQL por el almacenamiento confiable de datos
-- Todos los contribuyentes que ayudaron a construir este sistema
+- El equipo de Spring Boot por el excelente framework
+- El equipo de Angular por el framework frontend robusto
+- iText por las capacidades de generación de PDF
+- Todos los contribuyentes que han ayudado a hacer posible este proyecto
 
 ---
 
-**HospitAll** - Revolucionando la gestión hospitalaria a través de la tecnología 🏥✨
+**HospitAll** - Empoderando pequeños centros de salud con tecnología moderna 🏥✨
