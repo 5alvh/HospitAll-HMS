@@ -1,186 +1,321 @@
 # HospitAll 🏥
 
-A comprehensive hospital management system built with modern web technologies, designed to streamline healthcare operations and improve patient care.
-
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/5alvh/HospitAll)
-[![Java](https://img.shields.io/badge/Java-Spring_Boot-green)](https://spring.io/projects/spring-boot)
-[![Angular](https://img.shields.io/badge/Angular-Frontend-red)](https://angular.io/)
-[![MySQL](https://img.shields.io/badge/MySQL-Database-orange)](https://www.mysql.com/)
+A comprehensive Hospital Management System (HMS) designed for small health centers, providing efficient patient care management and streamlined healthcare operations.
 
 ## 📋 Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
-- [Technology Stack](#technology-stack)
-- [System Architecture](#system-architecture)
-- [Getting Started](#getting-started)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
-- [Security](#security)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Informations](#api-documentation)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## 🎯 Overview
 
-HospitAll is a full-stack hospital management system that digitizes and automates healthcare processes. It provides separate interfaces for patients (clients) and healthcare providers (doctors) while maintaining secure data management and efficient workflow automation.
-
-### Key Objectives
-- **Patient-Centered Care**: Streamlined appointment booking and medical record access
-- **Provider Efficiency**: Comprehensive tools for doctors to manage patients and prescriptions
-- **Data Security**: Robust authentication and authorization mechanisms
-- **Process Automation**: Automated notifications, PDF generation, and workflow management
+HospitAll is a modern web-based Hospital Management System tailored for small health centers. It provides a complete solution for managing patient records, appointments, medical prescriptions, lab results, and healthcare provider workflows. The system ensures efficient communication between patients and healthcare providers while maintaining comprehensive medical records.
 
 ## ✨ Features
 
-### 👥 User Management
-- **Multi-Role Authentication**: Separate login systems for clients and doctors
-- **Account Management**: Registration, profile updates, password changes
-- **Account Status Control**: Activation, suspension, and deactivation capabilities
-- **Secure Password Recovery**: Token-based password reset system
+### 👨‍⚕️ For Patients
 
-### 📅 Appointment System
-- **Smart Booking**: Real-time availability checking and slot reservation
-- **Multiple Booking Methods**: Client self-booking and doctor-initiated appointments
-- **Status Management**: Complete appointment lifecycle (scheduled → confirmed → completed/cancelled)
-- **Availability Management**: Dynamic doctor schedule and time slot management
+#### Account Management
+- **User Registration**: Create new patient accounts with secure authentication
+- **Login System**: Secure access to patient portal
+- **Profile Management**: Update personal information and medical details
 
-### 💊 Medical Management
-- **Digital Prescriptions**: Create, update, and publish medical prescriptions
-- **Lab Results**: Secure lab result management and sharing
-- **Medical Records**: Comprehensive patient history and diagnosis tracking
-- **PDF Generation**: Professional PDF documents for prescriptions and appointment summaries
+#### Notifications
+- **Real-time Notifications**: Receive instant updates via WebSocket
+- **Notification Management**: Mark notifications as read/unread
+- **Notification History**: View complete notification history
 
-### 🏥 Hospital Operations
-- **Department Management**: Organize doctors by medical departments
-- **Doctor Specializations**: Track and manage medical specialties
-- **Patient Feedback**: Feedback collection and management system
-- **Notification System**: Real-time notifications for appointments and updates
+#### Appointments
+- **Book Appointments**: Schedule appointments with available doctors
+- **Cancel Appointments**: Cancel scheduled appointments when needed
+- **Upcoming Appointments**: View scheduled appointments with pagination and filters
+- **Appointment History**: Access complete appointment history with search functionality
+- **Appointment Details**: View comprehensive appointment information
+- **PDF Export**: Download appointment details as PDF documents
 
-### 📊 Advanced Features
-- **Real-time Notifications**: Push notifications for important updates
-- **Document Management**: Secure handling of medical documents
-- **Analytics Dashboard**: Patient statistics and appointment metrics
-- **Multi-level Membership**: Different client membership tiers
+#### Medical Prescriptions
+- **Receive Prescriptions**: Get digital prescriptions from doctors
+- **Prescription Management**: View all prescriptions with pagination and filters
+- **Prescription Details**: Access detailed prescription information
+- **PDF Export**: Download prescriptions as PDF documents
 
-## 🛠 Technology Stack
+#### Lab Results
+- **Receive Results**: Get lab results digitally
+- **Results Management**: View all lab results with pagination and filters
+- **PDF Export**: Download lab results as PDF documents
+
+#### Feedback System
+- **General Feedback**: Provide feedback about the health center
+- **Doctor-specific Feedback**: Rate and review specific doctors
+- **Feedback Management**: View, update, and delete your feedback
+
+### 👩‍⚕️ For Doctors
+
+#### Account Management
+- **Doctor Registration**: Create healthcare provider accounts
+- **Login System**: Secure access to doctor portal
+- **Profile Management**: Manage professional information
+
+#### Patient Management
+- **Patient Directory**: View all patients with advanced filters and pagination
+- **Patient History**: Access complete patient medical history
+- **Medical Records**: View appointments, lab results, and prescriptions
+- **Patient Care**: Schedule appointments, order lab tests, and prescribe medications
+- **Record Management**: Update and delete medical records
+
+#### Prescription Management
+- **Create Prescriptions**: Issue digital prescriptions to patients
+- **Prescription History**: View all issued prescriptions with filters and pagination
+
+#### Appointment Management
+- **Appointment Overview**: View all appointments with filters and pagination
+- **Schedule Management**: Manage appointment schedules efficiently
+
+#### Feedback Analytics
+- **Feedback Review**: View patient feedback with ratings
+- **Performance Analytics**: Track average ratings and patient satisfaction
+
+## 🛠 Tech Stack
 
 ### Backend
-- **Framework**: Spring Boot 3.x
-- **Security**: Spring Security with JWT authentication
-- **Database**: MySQL with JPA/Hibernate
-- **Documentation**: Swagger/OpenAPI 3
-- **PDF Generation**: iText7 library
-- **Validation**: Jakarta Bean Validation
+- **Framework**: Spring Boot 3.4.5
+- **Java Version**: 21
+- **Security**: Spring Security with JWT Authentication
+- **Database**: MySQL with Spring Data JPA
+- **Real-time Communication**: WebSocket (Spring WebSocket)
+- **Email Service**: Spring Mail
+- **PDF Generation**: iText PDF
+- **API Documentation**: OpenAPI 3 (Swagger)
+
+#### Backend Dependencies
+```xml
+<!-- Core Spring Boot Starters -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+
+<!-- JWT Authentication -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.11.5</version>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.11.5</version>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.11.5</version>
+</dependency>
+
+<!-- PDF Generation -->
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>kernel</artifactId>
+    <version>8.0.3</version>
+</dependency>
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>layout</artifactId>
+    <version>8.0.3</version>
+</dependency>
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>io</artifactId>
+    <version>8.0.3</version>
+</dependency>
+
+<!-- Documentation -->
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.8.8</version>
+</dependency>
+
+<!-- Database -->
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
+<!-- Development Tools -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+```
 
 ### Frontend
-- **Framework**: Angular (Latest version)
-- **UI Components**: Modern responsive design
-- **HTTP Client**: Angular HttpClient for API communication
-- **Routing**: Angular Router for navigation
-- **State Management**: Angular services and RxJS
+- **Framework**: Angular 19
+- **Styling**: Tailwind CSS 4.0.17
+- **Icons**: Font Awesome 6.7.2
+- **Real-time Communication**: STOMP.js with SockJS
+- **Notifications**: ngx-sonner
+- **Alerts**: SweetAlert2
+- **Server-Side Rendering**: Angular SSR
 
-### Database
-- **Primary Database**: MySQL
-- **ORM**: Hibernate/JPA
-- **Connection Pooling**: HikariCP
-- **Migrations**: Flyway/Liquibase (recommended)
+#### Frontend Dependencies
+```json
+{
+  "dependencies": {
+    "@angular/animations": "^19.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.0",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
+    "@angular/platform-server": "^19.0.0",
+    "@angular/router": "^19.0.0",
+    "@angular/ssr": "^19.0.5",
+    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@stomp/stompjs": "^7.1.1",
+    "@tailwindcss/postcss": "^4.0.17",
+    "express": "^4.18.2",
+    "ngx-sonner": "^3.1.0",
+    "postcss": "^8.5.3",
+    "rxjs": "~7.8.0",
+    "sockjs-client": "^1.6.1",
+    "sweetalert2": "^11.21.2",
+    "tailwindcss": "^4.0.17",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  }
+}
+```
 
-### DevOps & Tools
-- **Build Tool**: Maven
-- **Version Control**: Git
-- **API Testing**: Postman/Swagger UI
-- **IDE**: IntelliJ IDEA/VS Code
-
-## 🏗 System Architecture
+## 🏗 Architecture
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Angular UI    │    │  Spring Boot    │    │     MySQL       │
-│   (Frontend)    │◄──►│   (Backend)     │◄──►│   (Database)    │
-│                 │    │                 │    │                 │
-│ • Client Portal │    │ • REST APIs     │    │ • User Data     │
-│ • Doctor Portal │    │ • Security      │    │ • Appointments  │
-│ • Admin Panel   │    │ • Business      │    │ • Medical       │
-│                 │    │   Logic         │    │   Records       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+HospitAll/
+├── backend/                    # Spring Boot Application
+│   ├── src/main/java/
+│   │   └── com/tfg/back/
+│   │       ├── annotations/  
+│   │       ├── controller/  
+│   │       ├── dto/         
+│   │       ├── entity/      
+│   │       ├── repository/  
+│   │       ├── service/      
+│   │       ├── configuration/      
+│   │       ├── constants/      
+│   │       ├── exceptions/
+│   │       ├── mappers/       
+│   │       ├── model/         
+│   │       └── utils/  
+│   └── src/main/resources/
+│       ├── application.properties
+│       └── static/
+├── frontend/                   # Angular Application
+    ├── src/app/
+    │   ├── doctor/     
+    │   ├── client/        
+    │   ├── guards/           
+    │   ├── models/            
+    │   ├── services/           
+    │   ├── shared/          
+    │   └── interceptors/             
+    └── src/assets/
 ```
 
-### Key Components
-
-#### Controllers Layer
-- `AuthController`: Authentication and login management
-- `ClientController`: Patient/client operations
-- `DoctorController`: Doctor-specific functionalities
-- `AppointmentController`: Appointment lifecycle management
-- `MedicalPrescriptionController`: Prescription management
-- `PdfController`: Document generation services
-
-#### Security Layer
-- JWT-based authentication
-- Role-based access control (RBAC)
-- Password encryption with BCrypt
-- Account status validation (active/suspended/locked)
-
-#### Service Layer
-- Business logic implementation
-- Data validation and processing
-- Email notifications
-- PDF document generation
-
-## 🚀 Getting Started
+## 🚀 Installation
 
 ### Prerequisites
-
-- **Java**: JDK 17 or higher
-- **Node.js**: Version 16+ with npm
-- **MySQL**: Version 8.0+
-- **Maven**: Version 3.6+
-- **Git**: Latest version
+- Java 21 or higher
+- Node.js 18 or higher
+- MySQL 8.0 or higher
+- Maven 3.6 or higher
 
 ### Backend Setup
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/5alvh/HospitAll.git
-   cd HospitAll
+   git clone https://github.com/yourusername/hospitall.git](https://github.com/5alvh/HospitAll.git
+   cd hospitall
    ```
 
-2. **Configure MySQL Database**
-   ```sql
+2. **Configure Database**
+   ```bash
+   # Create MySQL database
+   mysql -u root -p
    CREATE DATABASE hospitall;
-   CREATE USER 'hospitall_user'@'localhost' IDENTIFIED BY 'your_password';
-   GRANT ALL PRIVILEGES ON hospitall.* TO 'hospitall_user'@'localhost';
-   FLUSH PRIVILEGES;
    ```
 
-3. **Update Application Properties**
+3. **Update application.properties**
    ```properties
-   # src/main/resources/application.properties
+   # Database Configuration
    spring.datasource.url=jdbc:mysql://localhost:3306/hospitall
-   spring.datasource.username=hospitall_user
+   spring.datasource.username=your_username
    spring.datasource.password=your_password
    
+   # JPA Configuration
+   spring.jpa.hibernate.ddl-auto=update
+   spring.jpa.show-sql=true
+   
    # JWT Configuration
-   jwt.secret=your-secret-key
+   jwt.secret=your_jwt_secret_key
    jwt.expiration=86400000
    
-   # Email Configuration (for password reset)
+   # Email Configuration
    spring.mail.host=smtp.gmail.com
    spring.mail.port=587
-   spring.mail.username=your-email@gmail.com
-   spring.mail.password=your-app-password
+   spring.mail.username=your_email@gmail.com
+   spring.mail.password=your_app_password
    ```
 
-4. **Run the Backend**
+4. **Build and run the backend**
    ```bash
-   ./mvnw spring-boot:run
+   cd backend
+   mvn clean install
+   mvn spring-boot:run
    ```
 
 ### Frontend Setup
 
 1. **Navigate to frontend directory**
    ```bash
-   cd frontend  # Adjust path as needed
+   cd frontend
    ```
 
 2. **Install dependencies**
@@ -188,12 +323,13 @@ HospitAll is a full-stack hospital management system that digitizes and automate
    npm install
    ```
 
-3. **Configure API endpoints**
+3. **Configure environment**
    ```typescript
    // src/environments/environment.ts
    export const environment = {
      production: false,
-     apiUrl: 'http://localhost:8080/api'
+     apiUrl: 'http://localhost:8080/api',
+     wsUrl: 'http://localhost:8080/ws'
    };
    ```
 
@@ -202,152 +338,98 @@ HospitAll is a full-stack hospital management system that digitizes and automate
    ng serve
    ```
 
-### Access the Application
+## 🎯 Usage
+
+### Accessing the Application
 
 - **Frontend**: http://localhost:4200
-- **Backend API**: http://localhost:8080
+- **Backend API**: http://localhost:8080/api
 - **API Documentation**: http://localhost:8080/swagger-ui.html
+
+### Default Accounts
+
+#### Patient Account
+- Email: patient@example.com
+- Password: password123
+
+#### Doctor Account
+- Email: doctor@example.com
+- Password: password123
+
+### Key Workflows
+
+#### Patient Journey
+1. Register/Login to the patient portal
+2. Complete profile information
+3. Book appointments with available doctors
+4. Receive real-time notifications
+5. Access medical records and prescriptions
+6. Download PDF reports
+7. Provide feedback
+
+#### Doctor Journey
+1. Login to the doctor portal
+2. View assigned patients
+3. Manage appointments and schedules
+4. Issue prescriptions and lab orders
+5. Review patient feedback
+6. Generate medical reports
 
 ## 📚 API Documentation
 
-### Authentication Endpoints
+The API documentation is automatically generated using OpenAPI 3 and can be accessed at:
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/auth/login` | User login |
-| POST | `/auth/forgot-password` | Initiate password reset |
-| POST | `/auth/reset-password` | Reset password with token |
+### Key API Endpoints
 
-### Client Management
+#### WILL BE AVAILABLE SOON
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/clients/register` | Register new client |
-| GET | `/clients/profile` | Get current client profile |
-| PUT | `/clients/{id}` | Update client information |
-| GET | `/clients/appointments` | Get client appointments |
-| PUT | `/clients/change-password` | Change password |
+## 🧪 Testing
 
-### Doctor Management
+### Backend Testing
+```bash
+cd backend
+mvn test
+```
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/doctors/register` | Register new doctor |
-| GET | `/doctors/profile` | Get current doctor profile |
-| GET | `/doctors/all` | Get all doctors |
-| POST | `/doctors/available-doctors` | Get available doctors |
-| POST | `/doctors/available-slots` | Get available time slots |
-
-### Appointment Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/appointment/book-appointment` | Book new appointment |
-| GET | `/appointment/{id}` | Get appointment details |
-| PUT | `/appointment/{id}/cancel` | Cancel appointment |
-| PUT | `/appointment/{id}/confirm` | Confirm appointment |
-| PUT | `/appointment/{id}/complete` | Mark appointment as completed |
-
-### Medical Services
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/medical-prescriptions/create` | Create prescription |
-| GET | `/medical-prescriptions/get/{id}` | Get prescription |
-| PATCH | `/medical-prescriptions/publish/{id}` | Publish prescription |
-| POST | `/lab-results/create` | Create lab result |
-| GET | `/pdf/appointment/{id}` | Generate appointment PDF |
-| GET | `/pdf/medication-prescription/{id}` | Generate prescription PDF |
-
-## 🗄 Database Schema
-
-### Core Entities
-
-#### Users
-- **Client**: Patient information, membership levels, contact details
-- **Doctor**: Medical professionals, specializations, departments, license numbers
-- **Admin**: System administrators (if applicable)
-
-#### Medical Records
-- **Appointment**: Booking details, status, diagnosis, type
-- **MedicalPrescription**: Medication details, dosage, duration
-- **LabResult**: Laboratory test results and reports
-- **Department**: Medical departments and specialties
-
-#### System Entities
-- **Notification**: User notifications and alerts
-- **Feedback**: Patient feedback and ratings
-- **TimeInterval**: Available appointment slots
-
-### Relationships
-- Client ↔ Appointment (One-to-Many)
-- Doctor ↔ Appointment (One-to-Many)
-- Doctor ↔ Department (Many-to-One)
-- Client ↔ MedicalPrescription (One-to-Many)
-- Doctor ↔ MedicalPrescription (One-to-Many)
-
-## 🔐 Security
-
-### Authentication & Authorization
-- **JWT Tokens**: Secure stateless authentication
-- **Role-Based Access**: Separate permissions for clients and doctors
-- **Password Security**: BCrypt hashing with salt
-- **Account Management**: Status-based access control (active/suspended/locked)
-
-### API Security
-- **CORS Configuration**: Controlled cross-origin requests
-- **Request Validation**: Input sanitization and validation
-- **Error Handling**: Secure error messages without sensitive data exposure
-- **Rate Limiting**: Protection against abuse (recommended implementation)
-
-### Data Protection
-- **Sensitive Data Encryption**: Medical records and personal information
-- **Audit Logging**: Track access to sensitive medical data
-- **Secure File Handling**: PDF generation and document storage
-- **Database Security**: Encrypted connections and parameterized queries
+### Frontend Testing
+```bash
+cd frontend
+ng test
+```
 
 ## 🤝 Contributing
 
-We welcome contributions to HospitAll! Please follow these guidelines:
+We welcome contributions to HospitAll! Please follow these steps:
 
-### Development Process
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-### Coding Standards
-- Follow Java naming conventions
-- Use proper REST API design principles
-- Implement comprehensive error handling
-- Add unit tests for new features
+### Development Guidelines
+- Follow Spring Boot best practices for backend development
+- Use Angular style guide for frontend development
+- Write comprehensive tests for new features
 - Update documentation for API changes
+- Ensure code is properly formatted and linted
 
-### Bug Reports
-When reporting bugs, please include:
-- Detailed description of the issue
-- Steps to reproduce
-- Expected vs actual behavior
-- System environment details
-- Error logs (if applicable)
 
-## 🙋‍♂️ Support
+## 🆘 Support
 
 For support and questions:
-
-- **GitHub Issues**: [Create an issue](https://github.com/5alvh/HospitAll/issues)
-- **Documentation**: Check the API documentation at `/swagger-ui.html`
-- **Email**: Contact the development team
+- Create an issue in the GitHub repository
+- Email: salahforquestions@gmail.com
 
 ## 🎉 Acknowledgments
 
-- Spring Boot community for excellent documentation
+- Spring Boot team for the excellent framework
 - Angular team for the robust frontend framework
-- iText7 for PDF generation capabilities
-- MySQL for reliable data storage
-- All contributors who helped build this system
+- iText for PDF generation capabilities
+- All contributors who helped make this project possible
 
 ---
 
-**HospitAll** - Revolutionizing hospital management through technology 🏥✨
+**HospitAll** - Empowering small health centers with modern technology 🏥✨
