@@ -51,7 +51,7 @@ public class LabResultsServiceImpl implements LabResultsService {
 
     @Override
     public LabResultDtoGet createLabResult(LabResultDtoCreate labResult, User prescribedBy) {
-        Client client = clientService.findByEmail(labResult.getPatientEmail());
+        Client client = clientService.findClientById(labResult.getPatientId());
         Doctor doctor = doctorService.findDoctorById(prescribedBy.getId());
         LabResult labResultEntity = labResultMapper.toEntity(labResult, doctor, client);
         notificationService.createNotification(client,"New Lab Result" , "You have a new lab result", NotificationType.LAB_RESULT);

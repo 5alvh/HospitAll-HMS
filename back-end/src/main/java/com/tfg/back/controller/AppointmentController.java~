@@ -42,6 +42,11 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.bookAppointment(request, patient));
     }
 
+    @PostMapping("/doctor/email")
+    public ResponseEntity<AppointmentDtoGet> bookAppointmentWithClientEmail(@RequestBody  BookAppointmentByDoctorRequest request, @AuthenticationPrincipal User doctor) {
+        return ResponseEntity.ok(appointmentService.bookByDoctorWithClientEmail(request, doctor));
+    }
+
     @PostMapping("/doctor/id")
     public ResponseEntity<AppointmentDtoGet> bookAppointmentWithClientId(@RequestBody BookAppointmentByDoctorRequest request, @AuthenticationPrincipal User doctor) {
         return ResponseEntity.ok(appointmentService.bookByDoctorWithClientId(request, doctor));

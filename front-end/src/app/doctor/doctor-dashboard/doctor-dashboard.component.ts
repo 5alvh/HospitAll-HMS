@@ -26,18 +26,15 @@ export interface Feedback {
 }
 
 export interface BookAppRequest {
-  searchType: string,
-  patientIdentifier: string,
+  patientId: string,
   date: Date,
-  time: string,
+  startTime: string,
   reason: string
 }
 
 export interface prescriptionRequest {
-  searchType: string,
-  patientIdentifier: string,
+  clientId: string,
   medications: [{ medicationName: string, dosage: string, frequency: string, duration: string, notes: string }],
-  appointmentId: number,
   status: string
 }
 
@@ -87,18 +84,15 @@ export class DoctorDashboardComponent {
   };
 
   newAppointment: BookAppRequest = {
-    searchType: 'id',
-    patientIdentifier: '',
+    patientId: '',
     date: new Date(),
-    time: '',
+    startTime: '',
     reason: ''
   };
 
   newPrescription: prescriptionRequest = {
-    searchType: 'id',
-    patientIdentifier: '',
+    clientId: '',
     medications: [{ medicationName: '', dosage: '', frequency: '', duration: '', notes: '' }],
-    appointmentId: 0,
     status: ''
   };
   changeSection(section: string): void {
@@ -293,7 +287,7 @@ export class DoctorDashboardComponent {
 
   bookAppointment(): void {
 
-    if (!this.newAppointment.searchType || !this.newAppointment.patientIdentifier || !this.newAppointment.date || !this.newAppointment.time || !this.newAppointment.reason) {
+    if (!this.newAppointment.date || !this.newAppointment.startTime || !this.newAppointment.reason) {
       Swal.fire({
         title: 'Error',
         text: 'Please fill in all required fields.',
@@ -303,12 +297,11 @@ export class DoctorDashboardComponent {
       return;
     }
 
-    if (this.newAppointment.searchType === 'id') {
+    if (true) {
       const newAppointment = {
-        searchType: this.newAppointment.searchType,
-        id: this.newAppointment.patientIdentifier,
+        id: this.newAppointment.patientId,
         date: this.newAppointment.date,
-        startTime: this.newAppointment.time,
+        startTime: this.newAppointment.startTime,
         status: 'CONFIRMED',
         reason: this.newAppointment.reason
       };
@@ -337,46 +330,14 @@ export class DoctorDashboardComponent {
       return;
     }
 
-    if (this.newAppointment.searchType === 'email') {
-      const newAppointment = {
-        searchType: this.newAppointment.searchType,
-        patientEmail: this.newAppointment.patientIdentifier,
-        date: this.newAppointment.date,
-        startTime: this.newAppointment.time,
-        status: 'CONFIRMED',
-        reason: this.newAppointment.reason
-      };
-      this.appService.bookAppobookAppointmentByDoctorUsingClientEmail(newAppointment).subscribe({
-        next: (response) => {
-          this.appointments.push(response);
-          this.refreshAppointmentsForm();
-          Swal.fire({
-            title: 'Success',
-            text: 'Appointment booked successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          });
-        },
-        error: (error) => {
-          console.error('Error booking appointment:', error);
-          Swal.fire({
-            title: 'Error',
-            text: 'Failed to book appointment. Please try again later. Check if the patient Email is valid.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-        }
-      });
-      return;
-    }
+    
   }
 
   refreshAppointmentsForm(): void {
     this.newAppointment = {
-      searchType: 'id',
-      patientIdentifier: '',
+      patientId: '',
       date: new Date(),
-      time: '',
+      startTime: '',
       reason: ''
     };
   }
@@ -419,12 +380,7 @@ export class DoctorDashboardComponent {
     console.log(this.newPrescription);
 
     const prescriptionRequest = {
-      searchType: this.newPrescription.searchType.toUpperCase(),
-      ...(this.newPrescription.searchType.toUpperCase() === 'EMAIL'
-        ? { clientEmail: this.newPrescription.patientIdentifier }
-        : { clientId: this.newPrescription.patientIdentifier }),
       medications: this.newPrescription.medications,
-      appointmentId: this.newPrescription.appointmentId,
       status: status.toUpperCase()
     };
 
@@ -451,13 +407,7 @@ export class DoctorDashboardComponent {
   }
 
   refreshPrescriptionsForm(): void {
-    this.newPrescription = {
-      searchType: 'id',
-      patientIdentifier: '',
-      medications: [{ medicationName: '', dosage: '', frequency: '', duration: '', notes: '' }],
-      appointmentId: 0,
-      status: ''
-    };
+    
   }
 
   addMedication(): void {
@@ -611,7 +561,6 @@ export class DoctorDashboardComponent {
 
   createPrescriptionForAppointment(appointment: any) {
     this.changeSection('create-prescription');
-    this.newPrescription.appointmentId = appointment.id;
   }
 
   getConnectedAppointment(prescriptionId: number): any {

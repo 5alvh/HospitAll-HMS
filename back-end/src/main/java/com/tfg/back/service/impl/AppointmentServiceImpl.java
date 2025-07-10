@@ -112,12 +112,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
 
-    //Doctor function
-    @Override
-    public AppointmentDtoGet bookByDoctorWithClientEmail(BookAppointmentByDoctorRequest request, User doctor) {
-        Client client = clientService.findByEmail(request.patientEmail());
-        return bookAppointmentByDoctor(client, request, doctor);
-    }
+
 
     //Doctor function
     @Override

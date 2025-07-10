@@ -31,6 +31,12 @@ import {
   faHeart
 } from '@fortawesome/free-solid-svg-icons';
 import { DoctorService } from '../../../../services/doctor-services/doctor.service';
+import { BookAppRequest, prescriptionRequest } from '../../doctor-dashboard.component';
+import { PrescriptionStatus } from '../../../../models/enums/prescription-status';
+import Swal from 'sweetalert2';
+import { AppointmentService } from '../../../../client/services/appointment.service';
+import { LabResultService } from '../../../../client/services/lab-result.service';
+import { LabResultsService } from '../../../services/lab-results.service';
 
 @Component({
   selector: 'app-patient-details',
@@ -90,7 +96,11 @@ export class PatientDetailsComponent implements OnInit {
     download: faDownload
   };
 
-  constructor(private fb: FormBuilder, private doctorService: DoctorService) {
+  constructor(private fb: FormBuilder,
+    private doctorService: DoctorService,
+    private appService: AppointmentService,
+    private labResultsService: LabResultsService
+  ) {
 
     // Initialize forms
     this.prescriptionForm = this.fb.group({
@@ -101,14 +111,14 @@ export class PatientDetailsComponent implements OnInit {
       date: ['', Validators.required],
       time: ['', Validators.required],
       reason: ['', Validators.required],
-      status: ['scheduled', Validators.required],
-      notes: ['']
     });
 
     this.labResultForm = this.fb.group({
       testName: ['', Validators.required],
-      result: ['', Validators.required],
-      normalRange: ['', Validators.required],
+      resultValue: ['', Validators.required],
+      unit:['', Validators.required],
+      referenceRange: ['', Validators.required],
+      resultDate: [Date.now()],
       status: ['normal', Validators.required],
       notes: ['']
     });
@@ -165,30 +175,109 @@ export class PatientDetailsComponent implements OnInit {
 
 
   addPrescription(): void {
+    console.log();
     if (this.prescriptionForm.valid) {
-      const newPrescription = {
-        ...this.prescriptionForm.value,
-        id: Date.now(),
-        date: new Date().toISOString().split('T')[0]
+      const newPrescription: prescriptionRequest = {
+        clientId: this.selectedUser.id,
+        medications: this.prescriptionForm.value.medications,
+        status: PrescriptionStatus.PUBLISHED
       };
-      this.prescriptions = [newPrescription, ...this.prescriptions];
       this.resetForms();
+
+      this.doctorService.createPrescription(newPrescription).subscribe({
+        next: (response) => {
+          Swal.fire({
+            title: 'Success',
+            text: 'Prescription created successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        },
+        error: (error) => {
+          console.error('Error creating prescription:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to create prescription. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      })
     }
   }
 
   addAppointment(): void {
+
     if (this.appointmentForm.valid) {
-      const newAppointment = {
-        ...this.appointmentForm.value,
-        id: Date.now()
+      const newAppointment: BookAppRequest = {
+        patientId: this.selectedUser.id,
+        date: this.appointmentForm.value.date,
+        startTime: this.appointmentForm.value.time,
+        reason: this.appointmentForm.value.reason
       };
-      this.appointments = [newAppointment, ...this.appointments];
-      this.resetForms();
+
+      this.appService.bookAppointmentByDoctorUsingClientId(newAppointment).subscribe({
+        next: (response) => {
+          console.log("response"+response)
+          this.appointments.push(response);
+          this.resetForms();
+          Swal.fire({
+            title: 'Success',
+            text: 'Appointment booked successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        },
+        error: (error) => {
+          console.error('Error booking appointment:', error);
+
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to book appointment. Please try again later. Check if the patient ID is valid.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+      return;
     }
   }
 
   addLabResult(): void {
     if (this.labResultForm.valid) {
+      const postRequest ={
+        patientId: this.selectedUser.id,
+        testName: this.labResultForm.value.testName,
+        resultValue: this.labResultForm.value.resultValue,
+        unit: this.labResultForm.value.unit,
+        referenceRange: this.labResultForm.value.referenceRange,
+        resultDate: this.labResultForm.value.resultDate,
+        status: this.labResultForm.value.status,
+        notes: this.labResultForm.value.notes
+      }
+
+      this.labResultsService.createLabResults(postRequest).subscribe({
+        next: (response) => {
+          this.labResults = [response, ...this.labResults];
+          this.resetForms();
+          Swal.fire({
+            title: 'Success',
+            text: 'Lab result added successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        },
+        error: (error) => {
+          console.error('Error adding lab result:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to add lab result. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      })
+
       const newLabResult = {
         ...this.labResultForm.value,
         id: Date.now(),

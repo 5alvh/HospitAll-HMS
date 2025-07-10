@@ -1,0 +1,123 @@
+<div class="modal-backdrop" *ngIf="selectedAppointment && !isLoading">
+    <div class="modal-container">
+        <div class="modal-card">
+            <div class="modal-header accent-blue">
+                <h3><i class="fas fa-calendar-check"></i> Appointment Details</h3>
+                <button class="close-btn" (click)="closeDetails()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Appointment ID:</span>
+                        <span class="detail-value">{{ selectedAppointment.id }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Client:</span>
+                        <span class="detail-value">{{ selectedAppointment.clientFullName }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Doctor:</span>
+                        <span class="detail-value">{{ selectedAppointment.doctorFullName }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Department:</span>
+                        <span class="detail-value">{{ selectedAppointment.departmentName }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date & Time:</span>
+                        <span class="detail-value">{{ selectedAppointment.appointmentDateTime | date:'medium ' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Reason:</span>
+                        <span class="detail-value">{{ selectedAppointment.reason }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status:</span>
+                        <span class="status-badge" [ngClass]="'status-' + selectedAppointment.status.toLowerCase()">
+                            {{ selectedAppointment.status }}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">{{ selectedAppointment.type }}</span>
+                    </div>
+                </div>
+                <button class="btn-download" (click)="downloadAppointment(selectedAppointment.id)">
+                    <i class="fas fa-download"></i> Download Summary
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="appointments-card" *ngIf="!isLoading">
+    <div class="appointments-header">
+        <h3><i class="fas fa-calendar-plus"></i> Upcoming Appointments</h3>
+        <div class="checkbox-wrapper">
+            <label class="custom-checkbox">
+                <input type="checkbox" [(ngModel)]="hideCancelled" (change)="loadUpcomingAppointments()" />
+                <span class="checkmark"></span>
+                Hide canceled appointments
+            </label>
+        </div>
+    </div>
+
+    <div class="data-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Doctor</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="upcomingAppointments.length === 0">
+                    <td colspan="5" class="no-data">
+                        <i class="far fa-calendar-check"></i> No upcoming appointments
+                    </td>
+                </tr>
+                <tr *ngFor="let appointment of upcomingAppointments">
+                    <td>{{ appointment.appointmentDateTime | date: 'mediumDate' }}<br>
+                        <span class="time">{{ appointment.appointmentDateTime | date: 'h:mm a' }}</span>
+                    </td>
+                    <td>{{appointment.doctorFullName}}</td>
+                    <td>{{appointment.departmentName}}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="'status-' + appointment.status.toLowerCase()">
+                            {{appointment.status}}
+                        </span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn-icon" title="Reschedule" (click)="sorryMessage()"
+                            *ngIf="appointment.status !== 'COMPLETED'">
+                            <i class="fas fa-clock"></i>
+                        </button>
+                        <button class="btn-icon" title="Cancel" *ngIf="canBeCancelled(appointment.status)"
+                            (click)="cancelAppointment(appointment.id)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button class="btn-icon" title="View Details" (click)="showDetailsAppointment(appointment)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-controls">
+        <button (click)="prevPageAU()" [disabled]="currentPageAU === 0">
+            <fa-icon [icon]="icons.chevronLeft"></fa-icon> Previous
+        </button>
+
+        <span>Page {{ currentPageAU+1 }} of {{ totalPagesAU+1 }}</span>
+
+        <button (click)="nextPageAU()" [disabled]="currentPageAU === totalPagesAU">
+            Next <fa-icon [icon]="icons.chevronRight"></fa-icon>
+        </button>
+    </div>
+</div>

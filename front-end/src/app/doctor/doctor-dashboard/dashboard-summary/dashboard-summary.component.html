@@ -91,7 +91,7 @@
     <div class="panel">
       <div class="panel-header">
         <h3 class="panel-title">Today's Appointments</h3>
-        <a routerLink="/appointments" class="view-all">View All</a>
+        <a routerLink="/dashboard-doctor/calendar" class="view-all">View All</a>
       </div>
       
       <div *ngIf="isLoading" class="loading-overlay">
@@ -134,14 +134,14 @@
       </div>
       
       <div class="actions-grid">
-        <div class="action-card" routerLink="/appointments/new">
+        <div class="action-card"  routerLink="/dashboard-doctor/patients">
           <div class="action-icon">
             <fa-icon [icon]="icons.calendarPlus"></fa-icon>
           </div>
           <div class="action-title">New Appointment</div>
         </div>
         
-        <div class="action-card" routerLink="/prescriptions">
+        <div class="action-card" routerLink="/dashboard-doctor/patients">
           <div class="action-icon">
             <fa-icon [icon]="icons.filePrescription"></fa-icon>
           </div>
@@ -169,7 +169,7 @@
           <div class="action-title">Refer Specialist</div>
         </div>
         
-        <div class="action-card" routerLink="/lab-tests">
+        <div class="action-card" routerLink="/dashboard-doctor/patients">
           <div class="action-icon">
             <fa-icon [icon]="icons.vial"></fa-icon>
           </div>

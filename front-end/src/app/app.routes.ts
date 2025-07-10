@@ -20,14 +20,6 @@ export const routes: Routes = [
       import('./doctor/doctor-signup/doctor-signup.component').then((c) => c.DoctorSignupComponent)
   },
   //client routes
-
-  {
-    path: 'edit-profile',
-    loadComponent: () =>
-      import('./client/components/client-update/client-update.component').then((c) => c.ClientUpdateComponent),
-    canActivate: [RoleGuard],
-    data: { expectedRole: Roles.ROLE_PATIENT }
-  },
   {
     path: 'dashboard-client',
     loadComponent: () =>
@@ -54,6 +46,23 @@ export const routes: Routes = [
         path: 'appointments',
         loadComponent: () =>
           import('./client/components/dashboard/client-appointments/client-appointments.component').then((c) => c.ClientAppointmentsComponent),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: '/dashboard-client/appointments/upcoming'
+          },
+          {
+            path: 'upcoming',
+            loadComponent: () =>
+              import('./client/components/dashboard/client-appointments/upcoming/upcoming.component').then((c) => c.UpcomingComponent),
+          },
+          {
+            path: 'history',
+            loadComponent: () =>
+              import('./client/components/dashboard/client-appointments/history/history.component').then((c) => c.HistoryComponent),
+          },
+        ]
       },
       {
         path: 'records',
@@ -82,11 +91,17 @@ export const routes: Routes = [
       },
     ]
   },
-
   {
     path: 'book-appointment',
     loadComponent: () =>
       import('./client/components/client-appointment/client-appointment.component').then((c) => c.ClientAppointmentComponent),
+    canActivate: [RoleGuard],
+    data: { expectedRole: Roles.ROLE_PATIENT }
+  },
+  {
+    path: 'edit-profile',
+    loadComponent: () =>
+      import('./client/components/client-update/client-update.component').then((c) => c.ClientUpdateComponent),
     canActivate: [RoleGuard],
     data: { expectedRole: Roles.ROLE_PATIENT }
   },
@@ -167,5 +182,9 @@ export const routes: Routes = [
     path: 'unauthorized',
     loadComponent: () =>
       import('./shared/unauthorized/unauthorized.component').then((c) => c.UnauthorizedComponent),
-  }
+  },
+  {
+    path: '**',
+    redirectTo: '/login'
+  },
 ];

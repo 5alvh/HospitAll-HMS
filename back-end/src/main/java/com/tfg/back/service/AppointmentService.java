@@ -51,7 +51,6 @@ public interface AppointmentService {
 
     Long countPatientsForDoctor(User doctor);
 
-    AppointmentDtoGet bookByDoctorWithClientEmail(BookAppointmentByDoctorRequest request, User doctor);
 
     AppointmentDtoGet bookByDoctorWithClientId(BookAppointmentByDoctorRequest request, User doctor);
 

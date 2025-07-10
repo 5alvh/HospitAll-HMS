@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -22,11 +23,10 @@ public class LabResultDtoCreate {
 
     private LocalDate resultDate;
 
-    private String notes;
-
-    private String patientEmail;
-
     private String status;
 
+    private String notes;
+
+    private UUID patientId;
 
 }

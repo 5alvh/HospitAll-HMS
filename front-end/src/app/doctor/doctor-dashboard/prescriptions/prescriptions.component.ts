@@ -24,10 +24,8 @@ export class PrescriptionsComponent implements OnInit {
   isEditModalOpen: boolean = false;
   totalElements: number = 0
   newPrescription: prescriptionRequest = {
-    searchType: 'id',
-    patientIdentifier: '',
+    clientId: '',
     medications: [{ medicationName: '', dosage: '', frequency: '', duration: '', notes: '' }],
-    appointmentId: 0,
     status: ''
   };
 
@@ -207,10 +205,8 @@ export class PrescriptionsComponent implements OnInit {
 
   refreshPrescriptionsForm(): void {
     this.newPrescription = {
-      searchType: 'id',
-      patientIdentifier: '',
+      clientId: '',
       medications: [{ medicationName: '', dosage: '', frequency: '', duration: '', notes: '' }],
-      appointmentId: 0,
       status: ''
     };
   }

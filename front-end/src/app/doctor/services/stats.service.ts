@@ -9,7 +9,7 @@ import { AppointmentDtoGet } from '../../models/appointment-dto-get';
 export class StatsService {
 
   private todaysAppointments: any[] = [];
-  private isLoaded = false; 
+  private isLoaded = false;
 
   private sharedStatsSubject = new BehaviorSubject<{
     todayAppointments: any[],
@@ -35,6 +35,8 @@ export class StatsService {
 
     this.docService.getSummary().subscribe({
       next: (response) => {
+        console.log('Loading stats...');
+        console.log(response);
         this.sharedStatsSubject.next({
           todayAppointments: response.todayAppointments,
           pendingPrescriptions: response.pendingPrescriptions,

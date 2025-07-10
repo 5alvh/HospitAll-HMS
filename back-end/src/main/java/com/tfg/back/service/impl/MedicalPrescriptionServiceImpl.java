@@ -67,17 +67,9 @@ public class MedicalPrescriptionServiceImpl implements MedicalPrescriptionServic
     @Override
     public Boolean createPrescription(MedicalPrescriptionDtoCreate dtoCreate, User prescribedBy) {
 
-        if (dtoCreate.clientId() == null && dtoCreate.clientEmail() == null) throw new IllegalArgumentException("You must specify the client id or the client email");
-        Client client = null;
-        if (dtoCreate.searchType().equals(SearchType.EMAIL)){
-             client = clientService.findByEmail(dtoCreate.clientEmail());
-        }
 
-        if (dtoCreate.searchType().equals(SearchType.ID)){
-             client = clientService.findClientById(dtoCreate.clientId());
-        }
+        Client client = clientService.findClientById(dtoCreate.clientId());
 
-        if (client == null) throw new UserNotFoundException(String.valueOf(dtoCreate.searchType().equals(SearchType.EMAIL) ? dtoCreate.clientEmail() : dtoCreate.clientId()), dtoCreate.searchType());
 
         Doctor doctor = doctorService.findDoctorById(prescribedBy.getId());
         PrescriptionStatus status = dtoCreate.status();

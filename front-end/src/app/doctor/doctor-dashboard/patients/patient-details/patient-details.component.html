@@ -137,12 +137,12 @@
                     <div class="medications-section">
                         <h4>Medications</h4>
                         <div formArrayName="medications">
-                            <div *ngFor="let medication of medications.controls; let i = index" 
-                                 [formGroupName]="i" class="medication-card">
+                            <div *ngFor="let medication of medications.controls; let i = index" [formGroupName]="i"
+                                class="medication-card">
                                 <div class="medication-header">
                                     <h5>Medication {{ i + 1 }}</h5>
                                     <button type="button" class="btn-remove" (click)="removeMedication(i)"
-                                            *ngIf="medications.length > 1">
+                                        *ngIf="medications.length > 1">
                                         <fa-icon [icon]="icons.close"></fa-icon>
                                     </button>
                                 </div>
@@ -154,8 +154,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Dosage</label>
-                                        <input type="text" formControlName="dosage" class="form-control" 
-                                               placeholder="e.g., 500mg">
+                                        <input type="text" formControlName="dosage" class="form-control"
+                                            placeholder="e.g., 500mg">
                                     </div>
                                     <div class="form-group">
                                         <label>Frequency</label>
@@ -265,7 +265,7 @@
                             <label>Time</label>
                             <input type="time" formControlName="time" class="form-control">
                         </div>
-                        
+
                     </div>
 
                     <div class="form-group">
@@ -340,7 +340,6 @@
                 </button>
             </div>
 
-            <!-- Lab Result Form -->
             <div *ngIf="showLabResultForm" class="form-container">
                 <form (ngSubmit)="addLabResult()" [formGroup]="labResultForm">
                     <div class="form-grid">
@@ -349,17 +348,23 @@
                             <input type="text" formControlName="testName" class="form-control" placeholder="Test name">
                         </div>
                         <div class="form-group">
-                            <label>Date</label>
-                            <input type="date" formControlName="date" class="form-control">
+                            <label>Result Date</label>
+                            <input type="date" formControlName="resultDate" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>Result</label>
-                            <input type="text" formControlName="result" class="form-control" placeholder="Result value">
+                            <label>Result Value</label>
+                            <input type="text" formControlName="resultValue" class="form-control"
+                                placeholder="Result value">
                         </div>
                         <div class="form-group">
-                            <label>Normal Range</label>
-                            <input type="text" formControlName="normalRange" class="form-control"
-                                placeholder="Normal range">
+                            <label>Unit</label>
+                            <input type="text" formControlName="unit" class="form-control"
+                                placeholder="Unit (e.g., mg/dL, mmol/L)">
+                        </div>
+                        <div class="form-group">
+                            <label>Reference Range</label>
+                            <input type="text" formControlName="referenceRange" class="form-control"
+                                placeholder="Reference range">
                         </div>
                     </div>
 

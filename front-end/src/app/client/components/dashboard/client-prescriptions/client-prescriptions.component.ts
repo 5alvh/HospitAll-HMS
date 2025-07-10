@@ -88,7 +88,7 @@ export class ClientPrescriptionsComponent implements OnInit {
     this.labResultService.getAllLabResults(this.currentPageLR, this.pageSizeLR).subscribe(
       (response) => {
         this.labResults = response.content || [];
-        this.totalPagesLR = response.totalPages;
+        this.totalPagesLR = response.totalPages-1;
         this.isLoadingLabResults = false;
       }
     )

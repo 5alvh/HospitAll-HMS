@@ -25,6 +25,10 @@ export class HeaderComponent implements OnInit {
 
   @Output() sectionChange = new EventEmitter<string>();
 
+  get abbreviatedName(): string {
+    const names = this.fullName.split(' ');
+    return names.map(name => name.charAt(0)).join('');
+  }
   changeSection(section: string) {
     this.activeSection = section;
     this.sectionChange.emit(section);

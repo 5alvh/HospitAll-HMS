@@ -18,6 +18,10 @@ public record BookAppointmentByDoctorRequest(
         @Nullable
         UUID patientId,
 
+        @Email(message = "Email should be valid")
+        @Schema(description = "Email of the patient", example = "john.doe@example.com")
+        String patientEmail,
+
         @NotNull(message = "Date must not be null")
         @FutureOrPresent(message = "Date must be today or in the future")
         @Schema(description = "Date of the appointment", example = "2025-01-01")
