@@ -1,7 +1,8 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { LocalStorageManagerService } from '../../../services/auth/local-storage-manager.service';
 import { Router, RouterLink } from '@angular/router';
+import { DoctorService } from '../../../services/doctor-services/doctor.service';
 
 @Component({
   selector: 'app-header',
@@ -10,10 +11,11 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './header.component.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
   @Input() activeSection!: string;
   showUserMenu: boolean = false;
+  fullName: string = '';
   @Input() dashboardStats: any = {
     todayAppointments: 0,
     pendingPrescriptions: 0,
@@ -28,8 +30,11 @@ export class HeaderComponent {
     this.sectionChange.emit(section);
   }
   constructor(private localStorageService: LocalStorageManagerService,
-    private router: Router) {
+    private router: Router, private docService: DoctorService) {
 
+  }
+  ngOnInit(): void {
+    this.loadDoctor();
   }
   toggleUserMenu() {
     this.showUserMenu = !this.showUserMenu;
@@ -40,6 +45,18 @@ export class HeaderComponent {
     console.log('Logging out...');
 
   }
+
+  loadDoctor() {
+    this.docService.getProfile().subscribe({
+      next: (response) => {
+        this.fullName = response.fullName;
+      },
+      error: (error) => {
+        console.error('Error fetching doctor profile:', error);
+      }
+    });
+  }
+
   getPageTitle(): string {
     const titles: { [key: string]: string } = {
       'dashboard': 'Dashboard Overview',

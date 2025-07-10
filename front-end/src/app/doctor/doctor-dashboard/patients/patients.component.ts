@@ -55,7 +55,7 @@ export class PatientsComponent implements OnInit {
   filteredUsers: ClientDtoGet[] = [];
   searchBouncer: any;
   selectedUser: any = null;
-
+  totalElements: number = 0;
   ngOnInit(): void {
     this.loadPatients();
   }
@@ -64,6 +64,7 @@ export class PatientsComponent implements OnInit {
       .subscribe(response => {
         this.filteredUsers = response.content;
         this.totalPages = response.totalPages - 1;
+        this.totalElements = response.totalElements
       });
   }
 

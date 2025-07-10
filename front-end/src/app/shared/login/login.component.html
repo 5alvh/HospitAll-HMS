@@ -11,12 +11,9 @@
       </div>
 
       <div class="login-content">
-        
 
-        <div *ngIf="loginError" class="error-message">
-          <h3>Login Failed</h3>
-          <p>{{ errorMessage }}</p>
-        </div>
+
+
 
         <div *ngIf="!loginSuccess">
           <!-- Social Login Buttons -->
@@ -67,6 +64,10 @@
               </div>
             </div>
 
+            <div *ngIf="loginError" class="error-message">
+              <h1>Login Failed</h1>
+              <p>{{ errorMessage }}</p>
+            </div>
             <button type="submit" class="signin-btn" [disabled]="processing">
               <span *ngIf="!processing">SIGN IN</span>
               <span *ngIf="processing" class="loading-spinner">

@@ -1,6 +1,7 @@
 import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { DoctorService } from '../../../services/doctor-services/doctor.service';
+import { StatsService } from '../../services/stats.service';
 
 @Component({
   selector: 'app-feedback',
@@ -8,24 +9,27 @@ import { DoctorService } from '../../../services/doctor-services/doctor.service'
   templateUrl: './feedback.component.html',
   styleUrl: './feedback.component.scss'
 })
-export class FeedbackComponent implements OnInit{
-  
-  constructor(private doctorService: DoctorService){}
+export class FeedbackComponent implements OnInit {
 
+  constructor(private doctorService: DoctorService, private statsService: StatsService) { }
+
+  isLoading = true;
   feedbacks!: any[];
-  dashboardStats: any = {
-    todayAppointments: 0,
-    pendingPrescriptions: 0,
-    totalPatients: 0,
-    averageRating: 403
-  };
-  
+  dashboardStats: any ;
+
   ngOnInit(): void {
+    this.statsService.loadStats();
+    this.statsService.sharedStats$.subscribe((stats) => {
+      this.dashboardStats = stats;
+    });
+
     this.doctorService.getMyFeedback().subscribe(
-      (response)=>{
+      (response) => {
+        this.isLoading = false;
+
         this.feedbacks = response
       },
-      (error)=>{
+      (error) => {
 
       }
     )

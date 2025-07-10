@@ -12,14 +12,6 @@ import Swal from 'sweetalert2';
 import { PrescriptionStatus } from '../../models/enums/prescription-status';
 import { FilesGeneratorService } from '../../services/shared-services/files-generator.service';
 import { AppointmentService } from '../../client/services/appointment.service';
-import { DashboardSummaryComponent } from "./dashboard-summary/dashboard-summary.component";
-import { CalendarComponent } from "./calendar/calendar.component";
-import { ProfileComponent } from "./profile/profile.component";
-import { AppointmentListComponent } from "./appointment-list/appointment-list.component";
-import { SupportComponent } from "./support/support.component";
-import { FeedbackComponent } from "./feedback/feedback.component";
-import { PrescriptionsComponent } from "./prescriptions/prescriptions.component";
-import { PatientsComponent } from "./patients/patients.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { HeaderComponent } from "./header/header.component";
 

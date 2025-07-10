@@ -1,6 +1,6 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, output, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faSearch,
@@ -61,7 +61,7 @@ export class PatientDetailsComponent implements OnInit {
   appointments: any[] = [];
   labResults: any[] = [];
 
-  goBackEvent= output();
+  goBackEvent = output();
   icons = {
     search: faSearch,
     user: faUser,
@@ -91,13 +91,10 @@ export class PatientDetailsComponent implements OnInit {
   };
 
   constructor(private fb: FormBuilder, private doctorService: DoctorService) {
+
     // Initialize forms
     this.prescriptionForm = this.fb.group({
-      medication: ['', Validators.required],
-      dosage: ['', Validators.required],
-      frequency: ['', Validators.required],
-      duration: ['', Validators.required],
-      instructions: ['']
+      medications: this.fb.array([this.createMedicationForm()])
     });
 
     this.appointmentForm = this.fb.group({
@@ -115,6 +112,31 @@ export class PatientDetailsComponent implements OnInit {
       status: ['normal', Validators.required],
       notes: ['']
     });
+  }
+
+  private createMedicationForm(): FormGroup {
+    return this.fb.group({
+      medicationName: ['', Validators.required],
+      dosage: ['', Validators.required],
+      frequency: ['', Validators.required],
+      duration: ['', Validators.required],
+      notes: ['']
+    });
+  }
+
+  get medications(): FormArray {
+    return this.prescriptionForm.get('medications') as FormArray;
+  }
+
+  removeMedication(index: number): void {
+    if (this.medications.length > 1) {
+      this.medications.removeAt(index);
+    }
+  }
+
+  // Medication management
+  addMedication(): void {
+    this.medications.push(this.createMedicationForm());
   }
 
   goBack() {

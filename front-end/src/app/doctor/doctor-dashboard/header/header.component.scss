@@ -44,7 +44,6 @@ body {
   background: white;
   border-bottom: 1px solid var(--border);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: relative;
   z-index: 100;
 }
 
@@ -164,7 +163,8 @@ body {
 
 .dropdown-menu {
   position: absolute;
-  top: 100%;
+  top: 100%; // Positions it below the user profile
+    z-index: 1000; 
   right: 0;
   background: white;
   border-radius: 8px;
@@ -172,7 +172,6 @@ body {
   width: 220px;
   padding: 10px 0;
   margin-top: 10px;
-  z-index: 200;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);

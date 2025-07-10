@@ -16,9 +16,9 @@ public class LabResultDtoCreate {
 
     private String resultValue;
 
-    private String unit; // Optional: e.g., "mg/dL", "mmol/L"
+    private String unit;
 
-    private String referenceRange; // Optional: e.g., "70-110 mg/dL"
+    private String referenceRange;
 
     private LocalDate resultDate;
 

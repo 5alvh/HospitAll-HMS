@@ -129,34 +129,55 @@
             </div>
 
             <!-- Prescription Form -->
+            <!-- Prescription Form -->
             <div *ngIf="showPrescriptionForm" class="form-container">
                 <form (ngSubmit)="addPrescription()" [formGroup]="prescriptionForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Medication</label>
-                            <input type="text" formControlName="medication" class="form-control"
-                                placeholder="Medication name">
-                        </div>
-                        <div class="form-group">
-                            <label>Dosage</label>
-                            <input type="text" formControlName="dosage" class="form-control" placeholder="e.g., 500mg">
-                        </div>
-                        <div class="form-group">
-                            <label>Frequency</label>
-                            <input type="text" formControlName="frequency" class="form-control"
-                                placeholder="e.g., Twice daily">
-                        </div>
-                        <div class="form-group">
-                            <label>Duration</label>
-                            <input type="text" formControlName="duration" class="form-control"
-                                placeholder="e.g., 7 days">
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Instructions</label>
-                        <textarea formControlName="instructions" class="form-control" rows="3"
-                            placeholder="Special instructions"></textarea>
+                    <!-- Medications Section -->
+                    <div class="medications-section">
+                        <h4>Medications</h4>
+                        <div formArrayName="medications">
+                            <div *ngFor="let medication of medications.controls; let i = index" 
+                                 [formGroupName]="i" class="medication-card">
+                                <div class="medication-header">
+                                    <h5>Medication {{ i + 1 }}</h5>
+                                    <button type="button" class="btn-remove" (click)="removeMedication(i)"
+                                            *ngIf="medications.length > 1">
+                                        <fa-icon [icon]="icons.close"></fa-icon>
+                                    </button>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Medication Name</label>
+                                        <input type="text" formControlName="medicationName" class="form-control"
+                                            placeholder="Medication name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dosage</label>
+                                        <input type="text" formControlName="dosage" class="form-control" 
+                                               placeholder="e.g., 500mg">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Frequency</label>
+                                        <input type="text" formControlName="frequency" class="form-control"
+                                            placeholder="e.g., Twice daily">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Duration</label>
+                                        <input type="text" formControlName="duration" class="form-control"
+                                            placeholder="e.g., 7 days">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea formControlName="notes" class="form-control" rows="2"
+                                        placeholder="Special instructions"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add-medication" (click)="addMedication()">
+                            <fa-icon [icon]="icons.plus"></fa-icon> Add Another Medication
+                        </button>
                     </div>
 
                     <div class="form-actions">
@@ -244,32 +265,12 @@
                             <label>Time</label>
                             <input type="time" formControlName="time" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <label>Doctor</label>
-                            <select formControlName="doctor" class="form-control">
-                                <option value="Dr. Smith">Dr. Smith</option>
-                                <option value="Dr. Johnson">Dr. Johnson</option>
-                                <option value="Dr. Williams">Dr. Williams</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select formControlName="status" class="form-control">
-                                <option value="scheduled">Scheduled</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
+                        
                     </div>
 
                     <div class="form-group">
                         <label>Reason</label>
                         <input type="text" formControlName="reason" class="form-control" placeholder="Reason for visit">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Notes</label>
-                        <textarea formControlName="notes" class="form-control" rows="3"></textarea>
                     </div>
 
                     <div class="form-actions">

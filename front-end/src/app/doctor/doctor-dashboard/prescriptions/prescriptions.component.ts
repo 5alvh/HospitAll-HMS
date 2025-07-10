@@ -22,6 +22,7 @@ export class PrescriptionsComponent implements OnInit {
   prescriptions!: any[];
   selectedPrescription: MedicalPrescriptionDtoUpdate | null = null;
   isEditModalOpen: boolean = false;
+  totalElements: number = 0
   newPrescription: prescriptionRequest = {
     searchType: 'id',
     patientIdentifier: '',
@@ -55,7 +56,8 @@ export class PrescriptionsComponent implements OnInit {
       (response) => {
         console.log(response)
         this.totalPages = response.totalPages-1;
-        this.prescriptions = response.content
+        this.prescriptions = response.content;
+        this.totalElements = response.totalElements
       },
       (error) => {
         console.log("error")

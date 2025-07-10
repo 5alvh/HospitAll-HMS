@@ -14,15 +14,12 @@
     <div class="stats-bar">
       <div class="stat-card">
         <h3>Total Patients</h3>
-        <div class="stat-value">{{ filteredUsers.length }}</div>
+        <div class="stat-value">{{ totalElements }}</div>
       </div>
-      <div class="stat-card">
-        <h3>Active Today</h3>
-        <div class="stat-value">24</div>
-      </div>
+      
       <div class="stat-card">
         <h3>New This Week</h3>
-        <div class="stat-value">5</div>
+        <div class="stat-value">V2</div>
       </div>
     </div>
 
@@ -30,12 +27,14 @@
       <button class="filter-btn active">
         <fa-icon [icon]="icons.user"></fa-icon> All Patients
       </button>
+      <!-- filters 
       <button class="filter-btn">
         <fa-icon [icon]="icons.prescription"></fa-icon> With Prescriptions
       </button>
       <button class="filter-btn">
         <fa-icon [icon]="icons.appointment"></fa-icon> Upcoming Appointments
       </button>
+      -->
     </div>
 
     <div class="user-cards">

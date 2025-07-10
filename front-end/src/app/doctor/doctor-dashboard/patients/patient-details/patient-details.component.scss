@@ -546,3 +546,80 @@ textarea.form-control {
     width: 100%;
   }
 }
+/* Medications Section */
+.medications-section {
+  margin-bottom: 25px;
+  
+  h4 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.medication-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.medication-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  
+  h5 {
+    font-size: 16px;
+    color: #34495e;
+    margin: 0;
+  }
+}
+
+.btn-remove {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fdedec;
+  border: 1px solid #e74c3c;
+  color: #c0392b;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #e74c3c;
+    color: white;
+  }
+}
+
+.btn-add-medication {
+  padding: 10px 20px;
+  background: #27ae60;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: #219a52;
+  }
+}
+
+/* Responsive design */

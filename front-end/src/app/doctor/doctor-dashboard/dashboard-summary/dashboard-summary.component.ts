@@ -7,6 +7,7 @@ import { AppointmentDtoGet } from '../../../models/appointment-dto-get';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowTrendUp, faCalendar, faCalendarPlus, faCalendarTimes, faCheck, faComment, faDashboard, faEllipsis, faFileInvoice, faFilePrescription, faPlay, faPrescription, faStar, faStethoscope, faUserMd, faUsers, faVial, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { StatsService } from '../../services/stats.service';
 
 @Component({
   selector: 'app-dashboard-summary',
@@ -28,9 +29,9 @@ export class DashboardSummaryComponent implements OnInit {
   isLoading = false;
   currentDate = Date.now()
 
-  icons={
+  icons = {
     dashboard: faDashboard,
-    calendar:faCalendar,
+    calendar: faCalendar,
     trendUp: faArrowTrendUp,
     check: faCheck,
     prescription: faPrescription,
@@ -51,19 +52,21 @@ export class DashboardSummaryComponent implements OnInit {
   getAppointmentTrend(): string {
     return this.dashboardStats.todayAppointments > 5 ? 'Busy day' : 'Manageable schedule';
   }
-  constructor(private docService: DoctorService) { }
+
+  constructor(private docService: DoctorService, private statsService: StatsService) { }
+
   ngOnInit(): void {
     this.isLoading = true;
-    this.docService.getSummary().subscribe(
-      (response) => {
-
+    this.statsService.loadStats();
+    this.statsService.sharedStats$.subscribe(
+      (stats) => {
         this.dashboardStats = {
-          todayAppointments: response.todayAppointments.length,
-          pendingPrescriptions: response.pendingPrescriptions,
-          totalPatients: response.totalPatients,
-          averageRating: response.averageRating
+          todayAppointments: stats.todayAppointments.length,
+          pendingPrescriptions: stats.pendingPrescriptions,
+          totalPatients: stats.totalPatients,
+          averageRating: stats.averageRating
         };
-        response.todayAppointments.forEach(
+        stats.todayAppointments.forEach(
           (appointment: AppointmentDtoGet) => {
             const date = new Date(appointment.appointmentDateTime);
             this.todaysAppointments.push(
@@ -81,11 +84,8 @@ export class DashboardSummaryComponent implements OnInit {
             )
           }
         )
-        console.log("x" + response.todayAppointments)
-        console.log("y" + this.todaysAppointments)
         this.isLoading = false;
-
       }
-    )
+    );    
   }
 }
