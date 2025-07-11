@@ -1,4 +1,4 @@
-<img width="500" height="500" alt="blue-background-with-tiny-bubbles" src="https://github.com/user-attachments/assets/c88b56a6-c2b0-429e-9f1f-e6139264df18" />
+<img width="1000" height="215" alt="blue-background-with-tiny-bubbles" src="https://github.com/user-attachments/assets/077b94db-252d-4b3c-a4bf-f0f0ead914ea" />
 
 A comprehensive Hospital Management System (HMS) designed for small health centers, providing efficient patient care management and streamlined healthcare operations.
 
