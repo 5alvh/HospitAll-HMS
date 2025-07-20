@@ -38,17 +38,14 @@ export class LoginComponent implements OnInit {
   }
   signInWithGoogle() {
     console.log('Google sign in');
-    // Add Google OAuth logic
   }
 
   signInWithFacebook() {
     console.log('Facebook sign in');
-    // Add Facebook OAuth logic
   }
 
   signInWithLinkedIn() {
     console.log('LinkedIn sign in');
-    // Add LinkedIn OAuth logic
   }
   checkRole(): void {
     const role = this.localStorageManager.getUserData();

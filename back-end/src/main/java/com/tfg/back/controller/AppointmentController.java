@@ -56,6 +56,7 @@ public class AppointmentController {
         return ResponseEntity.ok(appointments);
     }
 
+    
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDtoGet> getById(@PathVariable @Positive Long id) {
         AppointmentDtoGet appointment = appointmentService.findAppointmentById(id);
