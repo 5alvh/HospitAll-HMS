@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgIf, TitleCasePipe } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, RouterOutlet } from '@angular/router';
 import { ClientDtoGet } from '../../../../models/client-dto-get';
 import { ClientService } from '../../../services/client.service';
 
 @Component({
   selector: 'app-client-profile',
-  imports: [TitleCasePipe, RouterLink, NgIf],
+  imports: [TitleCasePipe, RouterLink, NgIf, RouterOutlet],
   templateUrl: './client-profile.component.html',
   styleUrl: './client-profile.component.scss',
   providers: [TitleCasePipe],
@@ -16,9 +16,15 @@ export class ClientProfileComponent implements OnInit {
   patient!: ClientDtoGet;
   isLoading = true;
   constructor(private clientService: ClientService, private router: Router) { }
-  
+
   ngOnInit(): void {
     this.getProfile();
+  }
+  get showMainProfile(): boolean {
+    return !this.router.isActive('/dashboard-client/profile/edit-profile', false);
+  }
+  goBack() {
+    this.router.navigate(['/dashboard-client/profile']);
   }
 
   getProfile() {

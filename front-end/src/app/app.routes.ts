@@ -41,6 +41,13 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./client/components/dashboard/client-profile/client-profile.component').then((c) => c.ClientProfileComponent),
+        children: [
+          {
+            path: 'edit-profile',
+            loadComponent: () =>
+              import('./client/components/dashboard/client-profile/edit-profile/edit-profile.component').then((c) => c.EditProfileComponent)
+          }
+        ]
       },
       {
         path: 'appointments',

@@ -1,11 +1,16 @@
 <div class="section-header">
     <h2><i class="fas fa-user-circle"></i> Profile & Personal Information</h2>
-    <button class="btn-outline" [routerLink]="['/edit-profile']">
+
+    <button class="btn-outline" [routerLink]="['/dashboard-client/profile/edit-profile']" *ngIf="showMainProfile">
         <i class="fas fa-pencil-alt"></i> Edit Profile
+    </button>
+
+    <button class="btn-outline" (click)="goBack()"  *ngIf="!showMainProfile">
+        <i class="fas fa-arrow-left"></i> Go Back
     </button>
 </div>
 
-<div class="profile-section" *ngIf="!isLoading">
+<div class="profile-section" *ngIf="!isLoading && showMainProfile">
     <div class="profile-card">
         <div class="profile-header">
             <div class="profile-avatar">
@@ -91,3 +96,4 @@
         </div>
     </div>
 </div>
+<router-outlet></router-outlet>
