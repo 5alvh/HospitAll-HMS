@@ -1,4 +1,4 @@
-import { NgIf, TitleCasePipe } from '@angular/common';
+import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { ClientDtoUpdate } from '../../../../../models/client-dto-update';
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-profile',
-  imports: [NgIf, FormsModule, TitleCasePipe],
+  imports: [NgIf, FormsModule, TitleCasePipe, NgFor],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss',
   providers: [TitleCasePipe]
@@ -22,7 +22,7 @@ export class EditProfileComponent {
     new: '',
     confirm: ''
   };
-
+  activeSection = 'basic';
   patient!: ClientDtoGet;
   processing = false;
   isLoading = true;
@@ -30,15 +30,19 @@ export class EditProfileComponent {
   membershipLevels = Object.values(MembershipLevel);
 
 
+  setActiveSection(section: string) {
+    this.activeSection = section;
+  }
   updatePassprocessing: boolean = false;
 
   constructor(
-    private fb: FormBuilder,
     private clientService: ClientService,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
+    console.log('Available blood types:', this.bloodTypes);
+
     this.getProfile();
   }
 
@@ -74,7 +78,6 @@ export class EditProfileComponent {
         setTimeout(() => {
           this.clientService.setPatient(response);
           this.processing = false;
-          Swal.fire('Profile updated successfully.');
           this.router.navigate(['/dashboard-client']);
         }, 2000);
       },
@@ -99,12 +102,11 @@ export class EditProfileComponent {
       newPassword: this.passwords.new
     }).subscribe({
       next: () => {
-        Swal.fire('Password changed successfully!');
         this.router.navigate(['/dashboard-client']);
         this.updatePassprocessing = false;
       },
       error: (error) => {
-        Swal.fire('Error changing password, please try again.');
+        Swal.fire('The old password is incorrect, please try again.');
         this.updatePassprocessing = false;
       }
     });
@@ -117,5 +119,5 @@ export class EditProfileComponent {
   onFileSelected($event: Event) {
     throw new Error('Method not implemented.');
   }
-  
+
 }

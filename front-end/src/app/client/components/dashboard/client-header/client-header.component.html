@@ -5,8 +5,8 @@
         </h1>
     </div>
     <div class="header-actions">
-        <div class="notification-icon">
-            <i class="fas fa-bell"></i>
+        <div class="notification-icon" routerLink="/dashboard-client/notifications">
+            <i class="fas fa-bell" ></i>
             <span class="badge" *ngIf="unreadNotificationsCount() > 0">{{unreadNotificationsCount()}}</span>
         </div>
         <div (click)="onShowOptions()" class="user-profile">
