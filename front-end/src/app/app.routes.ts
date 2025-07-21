@@ -69,7 +69,13 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./client/components/dashboard/client-appointments/history/history.component').then((c) => c.HistoryComponent),
           },
+          {
+            path: 'book-appointment',
+            loadComponent: () =>
+              import('./client/components/dashboard/client-appointments/book-appointment/book-appointment.component').then((c) => c.BookAppointmentComponent),
+          },
         ]
+
       },
       {
         path: 'records',

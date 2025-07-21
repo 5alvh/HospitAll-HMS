@@ -1,14 +1,14 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NgClass, NgIf, NgFor } from '@angular/common';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { Component } from '@angular/core';
+import { ClientDtoGet } from '../../../../../models/client-dto-get';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DepartmentService } from '../../../../../services/shared-services/department.service';
+import { ClientService } from '../../../../services/client.service';
+import { AppointmentService } from '../../../../services/appointment.service';
 import { Router, RouterLink } from '@angular/router';
-import { DepartmentService } from '../../../services/shared-services/department.service';
-import { ClientDtoGet } from '../../../models/client-dto-get';
-import { AppointmentType } from '../../../models/enums/appointment-type';
+import { AppointmentType } from '../../../../../models/enums/appointment-type';
 import Swal from 'sweetalert2';
-import { ClientService } from '../../services/client.service';
-import { AppointmentService } from '../../services/appointment.service';
+
 
 interface Department {
   id: number;
@@ -20,16 +20,15 @@ interface TimeSlot {
   time: string;
   available: boolean;
 }
-@Component({
-  selector: 'app-client-appointment',
-  imports: [FormsModule, ReactiveFormsModule, NgClass, NgIf, NgFor, DatePipe, RouterLink],
-  templateUrl: './client-appointment.component.html',
-  styleUrl: './client-appointment.component.scss',
-  providers: [DatePipe],
-  encapsulation: ViewEncapsulation.None,
-})
-export class ClientAppointmentComponent {
 
+@Component({
+  selector: 'app-book-appointment',
+  imports: [NgIf, NgClass, NgFor, FormsModule, ReactiveFormsModule, DatePipe],
+  templateUrl: './book-appointment.component.html',
+  styleUrl: './book-appointment.component.scss',
+  providers: [DatePipe]
+})
+export class BookAppointmentComponent {
   prefferedDateChosen: boolean = false;
   departmentSelected = false;
   doctorsSearched = false;

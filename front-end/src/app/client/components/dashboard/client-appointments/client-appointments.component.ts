@@ -62,6 +62,10 @@ export class ClientAppointmentsComponent {
     });
   }
 
+  get bookAppointment(): boolean {
+    return !this.angularRouter.isActive('/dashboard-client/appointments/history', false) && !this.angularRouter.isActive('/dashboard-client/appointments/upcoming', false);
+  }
+
   private syncTabWithRoute(): void {
     const url = this.angularRouter.url;
     if (url.includes('/history')) {
