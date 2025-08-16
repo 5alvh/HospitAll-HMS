@@ -38,13 +38,15 @@ HospitAll is a modern web-based Hospital Management System tailored for small he
 - **Real-time Notifications**: Receive instant updates via WebSocket
 <img width="1881" height="903" alt="image" src="https://github.com/user-attachments/assets/6fe9393b-16f4-48b9-abb9-9def76299b2f" />
 - **Notification Management**: Mark notifications as read/unread
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/176e0f47-5fc7-464d-b5f6-fb82f7cd7e49" />
+<img width="553" height="712" alt="Captura de pantalla (4)" src="https://github.com/user-attachments/assets/a70cc06a-44fd-496b-bc49-f32fb4cfddfd" />
 - **Notification History**: View complete notification history
 <img width="1880" height="908" alt="image" src="https://github.com/user-attachments/assets/11a1e78a-04ed-4384-bbe1-9842ce9cf198" />
 
 #### Appointments
 - **Book Appointments**: Schedule appointments with available doctors
 - **Cancel Appointments**: Cancel scheduled appointments when needed
+<img width="1529" height="284" alt="Captura de pantalla (6)" src="https://github.com/user-attachments/assets/ed1490b9-3353-448b-9334-1be5b7306733" />
+<img width="1920" height="899" alt="Captura de pantalla (7)" src="https://github.com/user-attachments/assets/32a73224-1ce0-4086-8f31-bc3b5915350c" />
 - **Upcoming Appointments**: View scheduled appointments with pagination and filters
 - **Appointment History**: Access complete appointment history with search functionality
 - **Appointment Details**: View comprehensive appointment information
