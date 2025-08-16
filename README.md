@@ -37,8 +37,10 @@ HospitAll is a modern web-based Hospital Management System tailored for small he
 #### Notifications
 - **Real-time Notifications**: Receive instant updates via WebSocket
 <img width="1881" height="903" alt="image" src="https://github.com/user-attachments/assets/6fe9393b-16f4-48b9-abb9-9def76299b2f" />
+
 - **Notification Management**: Mark notifications as read/unread
 <img width="553" height="712" alt="Captura de pantalla (4)" src="https://github.com/user-attachments/assets/a70cc06a-44fd-496b-bc49-f32fb4cfddfd" />
+
 - **Notification History**: View complete notification history
 <img width="1880" height="908" alt="image" src="https://github.com/user-attachments/assets/11a1e78a-04ed-4384-bbe1-9842ce9cf198" />
 
