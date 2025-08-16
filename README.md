@@ -24,8 +24,10 @@ HospitAll is a modern web-based Hospital Management System tailored for small he
 #### Account Management
 - **User Registration**: Create new patient accounts with secure authentication
 <img width="1902" height="912" alt="image" src="https://github.com/user-attachments/assets/9f58884e-0ff7-4d9c-9e02-49203db69df4" />
+
 - **Login System**: Secure access to patient portal
 <img width="1918" height="907" alt="image" src="https://github.com/user-attachments/assets/36794c3d-f3c4-4088-8a5a-addb9790f05c" />
+
 - **Profile Management**: Update personal information and medical details
 <img width="1897" height="907" alt="image" src="https://github.com/user-attachments/assets/e4dc28ce-afde-456e-9b18-535fab3f71f2" />
 <img width="1877" height="912" alt="image" src="https://github.com/user-attachments/assets/c8aa4940-fb47-4b24-8a8d-8418eded84aa" />
@@ -49,6 +51,7 @@ HospitAll is a modern web-based Hospital Management System tailored for small he
 - **Cancel Appointments**: Cancel scheduled appointments when needed
 <img width="1529" height="284" alt="Captura de pantalla (6)" src="https://github.com/user-attachments/assets/ed1490b9-3353-448b-9334-1be5b7306733" />
 <img width="1920" height="899" alt="Captura de pantalla (7)" src="https://github.com/user-attachments/assets/32a73224-1ce0-4086-8f31-bc3b5915350c" />
+
 - **Upcoming Appointments**: View scheduled appointments with pagination and filters
 - **Appointment History**: Access complete appointment history with search functionality
 - **Appointment Details**: View comprehensive appointment information
