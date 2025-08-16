@@ -23,8 +23,16 @@ HospitAll is a modern web-based Hospital Management System tailored for small he
 
 #### Account Management
 - **User Registration**: Create new patient accounts with secure authentication
+<img width="1902" height="912" alt="image" src="https://github.com/user-attachments/assets/9f58884e-0ff7-4d9c-9e02-49203db69df4" />
 - **Login System**: Secure access to patient portal
+<img width="1918" height="907" alt="image" src="https://github.com/user-attachments/assets/36794c3d-f3c4-4088-8a5a-addb9790f05c" />
 - **Profile Management**: Update personal information and medical details
+<img width="1897" height="907" alt="image" src="https://github.com/user-attachments/assets/e4dc28ce-afde-456e-9b18-535fab3f71f2" />
+<img width="1877" height="912" alt="image" src="https://github.com/user-attachments/assets/c8aa4940-fb47-4b24-8a8d-8418eded84aa" />
+<img width="1900" height="911" alt="image" src="https://github.com/user-attachments/assets/604a3fa5-7035-42c5-b7aa-66550e765266" />
+<img width="1882" height="911" alt="image" src="https://github.com/user-attachments/assets/eb71af19-5706-44e0-97bd-6f21667c438d" />
+
+
 
 #### Notifications
 - **Real-time Notifications**: Receive instant updates via WebSocket
