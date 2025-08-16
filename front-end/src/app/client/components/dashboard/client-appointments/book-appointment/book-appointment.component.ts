@@ -161,7 +161,6 @@ export class BookAppointmentComponent {
     const type = AppointmentType.IN_PERSON;
     const reason = this.appointmentForm.get('reasonForVisit')!.value;
     const timeSlot = this.appointmentForm.get('timeSlot')!.value;
-    setTimeout(() => {
       this.appointmentService.bookAppointment({
         doctorId: doctorId,
         date: this.date,
@@ -174,15 +173,14 @@ export class BookAppointmentComponent {
             this.submitting = false;
             Swal.fire('Appointment booked successfully.');
             this.router.navigate(['/dashboard-client']);
-          }, 2000);
+          }, 500);
         },
         error: (error) => {
-          Swal.fire('Error updating profile.');
+          Swal.fire('Error booking appointment.');
           this.submitting = false;
         }
       }
       );
-    }, 1500);
   }
 
   getProfile() {

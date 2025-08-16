@@ -191,9 +191,7 @@ export class ClientSignupComponent implements OnInit {
           const role = response.role;
           this.localStorageManager.setToken(response.token);
           this.localStorageManager.setUserData(role);
-          setTimeout(() => {
             this.router.navigate(['/login']);
-          }, 3000);
         }, 1500);
       },
       error: error => {
