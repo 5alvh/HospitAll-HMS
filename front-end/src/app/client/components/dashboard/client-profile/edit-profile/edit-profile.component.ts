@@ -17,6 +17,10 @@ import Swal from 'sweetalert2';
   providers: [TitleCasePipe]
 })
 export class EditProfileComponent {
+  disableEditButton = true;
+  disableEditButton2 = true; 
+  disableEditButton3 = true;
+
   passwords = {
     current: '',
     new: '',
@@ -29,6 +33,18 @@ export class EditProfileComponent {
   bloodTypes = Object.values(BloodType);
   membershipLevels = Object.values(MembershipLevel);
 
+
+  onFormChanged() {
+    this.disableEditButton = false;
+  }
+
+  onForm2Changed() {
+    this.disableEditButton2 = false;
+  }
+
+  onForm3Changed() {
+    this.disableEditButton3 = false;
+  }
 
   setActiveSection(section: string) {
     this.activeSection = section;

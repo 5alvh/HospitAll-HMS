@@ -171,9 +171,8 @@ export class BookAppointmentComponent {
         next: (appointment) => {
           setTimeout(() => {
             this.submitting = false;
-            Swal.fire('Appointment booked successfully.');
             this.router.navigate(['/dashboard-client']);
-          }, 500);
+          }, 2000);
         },
         error: (error) => {
           Swal.fire('Error booking appointment.');

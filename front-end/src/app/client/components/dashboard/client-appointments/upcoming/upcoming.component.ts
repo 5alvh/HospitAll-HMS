@@ -102,11 +102,7 @@ export class UpcomingComponent implements OnInit {
           next: () => {
             const index = this.upcomingAppointments.findIndex(appointment => appointment.id === appId);
             this.upcomingAppointments[index].status = AppointmentStatus.CANCELLED;
-            Swal.fire(
-              'Cancelled!',
-              'Your appointment has been cancelled.',
-              'success'
-            );
+            this.upcomingAppointments = this.upcomingAppointments.filter(appointment => appointment.id !== appId);
           },
           error: () => {
             Swal.fire(

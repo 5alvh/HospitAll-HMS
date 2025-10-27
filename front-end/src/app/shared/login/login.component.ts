@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   processing = false;
   loginSuccess = false;
   loginError = false;
-  errorMessage = '';
+  errorMessage = 'The password you’ve entered is incorrect.';
   passwordVisible = false;
 
   constructor(

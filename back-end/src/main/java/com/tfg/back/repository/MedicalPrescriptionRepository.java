@@ -14,8 +14,14 @@ import java.util.UUID;
 
 public interface MedicalPrescriptionRepository extends JpaRepository<MedicalPrescription, Long> {
 
-    @Query("SELECT p FROM MedicalPrescription p WHERE p.prescribedTo.id = :id AND LOWER(p.medicationName) LIKE %:search% OR LOWER(p.prescribedTo.fullName) LIKE %:search%")
-    Page<MedicalPrescription> findByPrescribedToId(@Param("id")UUID id, @Param("search")String search, Pageable pageable);
+    @Query("SELECT p FROM MedicalPrescription p " +
+            "WHERE p.prescribedTo.id = :id " +
+            "AND (LOWER(p.medicationName) LIKE LOWER(CONCAT('%', :search, '%')) " +
+            "     OR LOWER(p.prescribedTo.fullName) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<MedicalPrescription> findByPrescribedToId(@Param("id") UUID id,
+                                                   @Param("search") String search,
+                                                   Pageable pageable);
+
 
     @Query("SELECT p FROM MedicalPrescription p WHERE p.prescribedBy.id = :id AND LOWER(p.medicationName) LIKE %:search% OR LOWER(p.prescribedTo.fullName) LIKE %:search%")
     Page<MedicalPrescription> findByPrescribedById(@Param("id")UUID id, @Param("search")String search, Pageable pageable);

@@ -3,6 +3,7 @@ import { toast } from 'ngx-sonner';
 import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client/dist/sockjs.min.js';
 import { LocalStorageManagerService } from '../../services/auth/local-storage-manager.service';
+import { NotificationStateService } from './notification-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class NotificationSocketService {
   private connectionStatus: 'disconnected' | 'connecting' | 'connected' = 'disconnected';
 
   constructor(
-    private localS: LocalStorageManagerService
+    private localS: LocalStorageManagerService,
+    private notifStateService: NotificationStateService
   ) { }
 
   connect(): void {
@@ -26,11 +28,11 @@ export class NotificationSocketService {
       });
       return;
     }
-    
+
     if (this.connectionStatus === 'connected' || this.connectionStatus === 'connecting') {
       return;
     }
-    
+
     this.connectWithQueryParam(token);
   }
 
@@ -54,20 +56,20 @@ export class NotificationSocketService {
     this.stompClient.onConnect = (frame) => {
       //console.log('✅ WebSocket connected successfully');
       this.connectionStatus = 'connected';
-      
+
       toast.dismiss(connectingToast);
       toast.success('Infos Loaded successfully', {
         description: 'You will now receive real-time notifications',
         duration: 3000,
         position: 'top-center'
       });
-      
+
       this.subscribeToChannels();
     };
 
     this.stompClient.onStompError = (frame) => {
       this.connectionStatus = 'disconnected';
-      
+
       toast.dismiss(connectingToast);
       toast.error('Connection failed', {
         description: 'Failed to connect to notification service. Retrying...',
@@ -83,7 +85,7 @@ export class NotificationSocketService {
     this.stompClient.onWebSocketError = (event) => {
       console.error('❌ WebSocket error:', event);
       this.connectionStatus = 'disconnected';
-      
+
       toast.dismiss(connectingToast);
       toast.error('Network error', {
         description: 'Please check your internet connection',
@@ -95,7 +97,7 @@ export class NotificationSocketService {
     this.stompClient.onDisconnect = (frame) => {
       console.log('🔌 WebSocket disconnected');
       this.connectionStatus = 'disconnected';
-      
+
       toast.info('Notifications disconnected', {
         description: 'Real-time notifications are no longer active',
         duration: 4000,
@@ -120,7 +122,7 @@ export class NotificationSocketService {
         position: 'top-center',
         action: {
           label: 'Dismiss',
-          onClick: () => {}
+          onClick: () => { }
         }
       });
     });
@@ -129,20 +131,25 @@ export class NotificationSocketService {
   private handleNotification(message: Message): void {
     try {
       const notification = JSON.parse(message.body);
-      
+
       const notificationType = notification.type || 'info';
       const title = notification.title || 'New Notification';
       const description = notification.message || message.body;
+
+      setTimeout(() => {
+        this.notifStateService.refreshUnseenNotificationCount();
+      }, 2000);
       
       switch (notificationType.toLowerCase()) {
         case 'success':
-          toast.success(title, {
+          toast.success(
+            title, {
             description,
             duration: 5000,
             position: 'top-center'
           });
           break;
-          
+
         case 'error':
           toast.error(title, {
             description,
@@ -156,7 +163,7 @@ export class NotificationSocketService {
             }
           });
           break;
-          
+
         case 'warning':
           toast.warning(title, {
             description,
@@ -164,18 +171,21 @@ export class NotificationSocketService {
             position: 'top-center'
           });
           break;
-          
+
         default:
-          toast.info(title, {
-            description,
-            duration: 5000,
-            position: 'top-center'
-          });
+          setTimeout(() => {
+            toast.info(title, {
+              description,
+              duration: 5000,
+              position: 'top-center'
+            });
+          }, 2000)
+
       }
-      
+
     } catch (e) {
       console.warn('Failed to parse notification JSON:', e);
-      
+
       toast.info('New Notification', {
         description: message.body,
         duration: 5000,

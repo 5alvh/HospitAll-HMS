@@ -11,12 +11,14 @@ import com.tfg.back.model.FeedBack;
 import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.feedBack.FeedbackDtoCreate;
+import com.tfg.back.model.dtos.feedBack.FeedbackDtoUpdate;
 import com.tfg.back.repository.ClientRepository;
 import com.tfg.back.repository.DoctorRepository;
 import com.tfg.back.repository.FeedbackRepository;
 import com.tfg.back.service.ClientServiceLookUp;
 import com.tfg.back.service.DoctorServiceLookUp;
 import com.tfg.back.service.FeedbackService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,12 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public FeedBackDtoGet getFeedBackById(Long feedbackId) {
+        FeedBack feedBack = feedbackRepository.getById(feedbackId);
+        return FeedbackMapper.toFeedBackDtoGet(feedBack);
+    }
+
+    @Override
     public FeedBackDtoGet writeFeedback(User patient, FeedbackDtoCreate feedbackDtoCreate) {
 
         Client author = clientService.findClientById(patient.getId());
@@ -59,6 +67,24 @@ public class FeedbackServiceImpl implements FeedbackService {
         FeedBack savedFeedback = feedbackRepository.save(fb);
 
         return FeedbackMapper.toFeedBackDtoGet(savedFeedback);
+    }
+
+    @Override
+    public FeedBackDtoGet editFeedback(Long id, FeedbackDtoUpdate feedbackDtoUpdate) {
+        FeedBack feedBack = feedbackRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Feedback not found with id: " + id));
+        feedBack.setComment(feedbackDtoUpdate.comment());
+        feedBack.setRating(feedbackDtoUpdate.rating());
+        Doctor writtenTo;
+        if (!(feedbackDtoUpdate.type() == FeedBackType.GENERAL)) {
+            writtenTo = doctorService.findDoctorById(feedbackDtoUpdate.writtenToId());
+        }else{
+            writtenTo = null;
+        }
+        feedBack.setWrittenTo(writtenTo);
+        feedBack.setType(feedbackDtoUpdate.type());
+        FeedBack feedBackSaved = feedbackRepository.save(feedBack);
+        return FeedbackMapper.toFeedBackDtoGet(feedBackSaved);
     }
 
     @Override

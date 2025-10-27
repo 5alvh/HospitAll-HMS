@@ -5,6 +5,7 @@ import static com.tfg.back.constants.BaseRoutes.*;
 import com.tfg.back.model.User;
 import com.tfg.back.model.dtos.feedBack.FeedBackDtoGet;
 import com.tfg.back.model.dtos.feedBack.FeedbackDtoCreate;
+import com.tfg.back.model.dtos.feedBack.FeedbackDtoUpdate;
 import com.tfg.back.service.FeedbackService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,17 @@ public class FeedBackController {
     private final FeedbackService feedbackService;
 
 
+    @GetMapping("/by-id/{id}")
+    public ResponseEntity<FeedBackDtoGet> getFeedBackById(@PathVariable Long id){
+        FeedBackDtoGet feedback = feedbackService.getFeedBackById(id);
+        return ResponseEntity.status(200).body(feedback);
+    }
+
+    @PutMapping("/edit-feedback/{id}")
+    public ResponseEntity<FeedBackDtoGet> editFeedbackById(@PathVariable Long id, @RequestBody FeedbackDtoUpdate feedbackDtoUpdate){
+        FeedBackDtoGet feedback = feedbackService.editFeedback(id, feedbackDtoUpdate);
+        return ResponseEntity.status(200).body(feedback);
+    }
     @GetMapping("/my")
     public ResponseEntity<List<FeedBackDtoGet>> getFeedBacksByPatient(@AuthenticationPrincipal User patient){
         List<FeedBackDtoGet> feedbacks = feedbackService.findMyFeedbacks(patient);

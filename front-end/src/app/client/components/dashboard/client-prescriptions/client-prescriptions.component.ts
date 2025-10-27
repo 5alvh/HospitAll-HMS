@@ -78,8 +78,12 @@ export class ClientPrescriptionsComponent implements OnInit {
   loadPrescriptions() {
     this.prescriptionService.getAllPrescriptions(this.searchTerm, this.currentPage, this.pageSize).subscribe(
       (response) => {
-        this.medications = response.content || [];
-        this.totalPages = response.totalPages - 1;
+        console.log("response", response);
+        if (response != null) {
+          this.totalPages = response.totalPages - 1
+          this.medications = response.content || [];
+        }
+        
         this.isLoadingPrescriptions = false;
       }
     )

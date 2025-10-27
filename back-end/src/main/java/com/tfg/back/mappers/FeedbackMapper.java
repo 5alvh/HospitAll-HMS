@@ -32,6 +32,8 @@ public class FeedbackMapper {
                 .rating(feedback.getRating())
                 .createdAt(feedback.getCreatedAt())
                 .patientName(feedback.getAuthor().getFullName())
+                .doctorName(feedback.getWrittenTo() == null ? "404" : feedback.getWrittenTo().getFullName())
+                .type(feedback.getType())
                 .build();
     }
 

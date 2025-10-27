@@ -16,7 +16,7 @@
                     <div class="select-wrapper">
                         <select id="feedback-type" (change)="onFeedbackTypeChange()" [(ngModel)]="selectedFeedbackType">
                             <option value="general">General Feedback</option>
-                            <option value="doctor">Feedback To Doctor</option>
+                            <option value="doctor" [disabled]="noDoctors">Feedback To Doctor</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -28,7 +28,7 @@
                     </label>
                     <div class="select-wrapper">
                         <select id="department-feedback" [(ngModel)]="doctorFeedbackId">
-                            <option value="">Select Doctor</option>
+                            <option [ngValue]="null">Select Doctor</option>
                             <option *ngFor="let dept of feedbackDoctors" [value]="dept.id">{{dept.fullName}}</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
@@ -81,23 +81,16 @@
                         <div class="feedback-header">
                             <div class="feedback-type">
                                 <i class="fas fa-comments"></i>
-                                {{ feedback.comment === 'general' ? 'General Feedback' : 'Doctor Feedback' }}
+                                {{ feedback.type === 'GENERAL' ? 'General Feedback' : 'Doctor Feedback' }}
                             </div>
                             <div class="feedback-date">
                                 {{ feedback.createdAt | date:'mediumDate' }}
                             </div>
                         </div>
-                        <!--
-            <div class="feedback-type">
-                <i *ngIf="feedback.type === 'general'" class="fas fa-comments"></i>
-                <i *ngIf="feedback.type === 'doctor'" class="fas fa-user-md"></i>
-                {{ feedback.type === 'general' ? 'General Feedback' : 'Doctor Feedback' }}
-              </div>
-              -->
-                        <!--<div *ngIf="feedback.doctorName" class="feedback-doctor">
-              <i class="fas fa-user-md"></i> Dr. {{ feedback.doctorName }}
-            </div>-->
 
+                        <div *ngIf="feedback.doctorName !== '404' " class="feedback-doctor">
+                            <i class="fas fa-user-md"></i> Dr. {{ feedback.doctorName }}
+                        </div>
                         <div class="feedback-comment">
                             <i class="fas fa-quote-left"></i>
                             <p>{{ feedback.comment }}</p>
@@ -122,6 +115,78 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Feedback Modal -->
+<div class="modal-overlay" *ngIf="modalOpen" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fas fa-edit"></i> Edit Feedback</h3>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="edit-feedback-type">
+                    <i class="fas fa-tag"></i> Feedback Type
+                </label>
+                <div class="select-wrapper">
+                    <select id="edit-feedback-type" (change)="onEditFeedbackTypeChange()" [(ngModel)]="editFeedbackType">
+                        <option value="general">General Feedback</option>
+                        <option value="doctor" [disabled]="noDoctors">Feedback To Doctor</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="!editIsGeneralFeedback">
+                <label for="edit-department-feedback">
+                    <i class="fas fa-user-md"></i> Doctor
+                </label>
+                <div class="select-wrapper">
+                    <select id="edit-department-feedback" [(ngModel)]="editDoctorFeedbackId">
+                        <option [ngValue]="null">Select Doctor</option>
+                        <option *ngFor="let dept of feedbackDoctors" [value]="dept.id">{{dept.fullName}}</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-feedback-message">
+                    <i class="fas fa-comment-dots"></i> Your Feedback
+                </label>
+                <div class="textarea-wrapper">
+                    <textarea id="edit-feedback-message" rows="5" placeholder="Please share your thoughts with us..."
+                        [(ngModel)]="editFeedbackMessage"></textarea>
+                    <i class="fas fa-pencil-alt"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-star"></i> Rate Your Experience
+                </label>
+                <div class="rating">
+                    <i *ngFor="let star of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{
+             'fas text-amber': (editHoveredRating >= star) || (editHoveredRating === 0 && editSelectedRating >= star),
+             'far text-muted': (editHoveredRating < star && editSelectedRating < star)
+           }" (click)="setEditRating(star)" (mouseenter)="setEditHover(star)" (mouseleave)="clearEditHover()"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-secondary" (click)="closeModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-primary" (click)="updateFeedback()">
+                <i class="fas fa-save"></i> Update Feedback
+            </button>
         </div>
     </div>
 </div>

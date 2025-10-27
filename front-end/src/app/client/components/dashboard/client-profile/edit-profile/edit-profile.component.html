@@ -34,7 +34,7 @@
     </div>
 
     <div class="profile-section">
-        <form (ngSubmit)="onUpdateProfile()" class="profile-card">
+        <form (ngSubmit)="onUpdateProfile()" class="profile-card" >
             <!-- Basic Information Section -->
             <div *ngIf="activeSection === 'basic'" class="section-content">
                 <div class="section-header-inline">
@@ -58,17 +58,17 @@
                     <div class="profile-info">
                         <div class="form-group">
                             <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" [(ngModel)]="patient.fullName" name="fullName" required>
+                            <input type="text" class="form-control" [(ngModel)]="patient.fullName" name="fullName" required (ngModelChange)="onFormChanged()">
                         </div>
                         <div class="info-badges">
                             <span class="info-badge">ID: {{patient.id}}</span>
                             <div class="form-group inline-form">
                                 <label class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control compact" [(ngModel)]="patient.dateOfBirth" name="dob" required>
+                                <input type="date" class="form-control compact" (ngModelChange)="onFormChanged()" [(ngModel)]="patient.dateOfBirth" name="dob" required>
                             </div>
                             <div class="form-group inline-form">
                                 <label class="form-label">Blood Type</label>
-                                <select class="form-control compact" [(ngModel)]="patient.bloodType" name="bloodType" required>
+                                <select class="form-control compact" (ngModelChange)="onFormChanged()" [(ngModel)]="patient.bloodType" name="bloodType" required>
                                     <option value="">Select</option>
                                     <option *ngFor="let type of bloodTypes" [value]="type">
                                         {{type.replace('_', ' ') | titlecase}}
@@ -89,7 +89,7 @@
                             <div class="info-row">
                                 <span class="info-label">Membership Type:</span>
                                 <div class="info-input">
-                                    <select class="form-control" [(ngModel)]="patient.membershipLevel" name="membershipLevel" required>
+                                    <select class="form-control" (ngModelChange)="onFormChanged()" [(ngModel)]="patient.membershipLevel" name="membershipLevel" required>
                                         <option value="">Select Membership</option>
                                         <option *ngFor="let level of membershipLevels" [value]="level">
                                             {{level.replace('_', ' ') | titlecase}}
@@ -109,7 +109,7 @@
                     <button type="button" class="btn-cancel" (click)="goBack()">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    <button type="submit" class="btn-primary" [disabled]="processing">
+                    <button type="submit" class="btn-primary" [disabled]="processing || disableEditButton">
                         <span *ngIf="!processing">
                             <i class="fas fa-save"></i> Update Profile
                         </span>
@@ -132,19 +132,19 @@
                             <div class="info-row">
                                 <span class="info-label">Phone Number:</span>
                                 <div class="info-input">
-                                    <input type="tel" class="form-control" [(ngModel)]="patient.phoneNumber" name="phone" required>
+                                    <input type="tel" class="form-control" (ngModelChange)="onForm2Changed()" [(ngModel)]="patient.phoneNumber" name="phone" required>
                                 </div>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Email Address:</span>
                                 <div class="info-input">
-                                    <input type="email" class="form-control" [(ngModel)]="patient.email" name="email" required>
+                                    <input type="email" class="form-control" (ngModelChange)="onForm2Changed()" [(ngModel)]="patient.email" name="email" required>
                                 </div>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Home Address:</span>
                                 <div class="info-input">
-                                    <textarea class="form-control" [(ngModel)]="patient.address" name="address" required rows="4"></textarea>
+                                    <textarea class="form-control" (ngModelChange)="onForm2Changed()" [(ngModel)]="patient.address" name="address" required rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -155,7 +155,7 @@
                     <button type="button" class="btn-cancel" (click)="goBack()">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    <button type="submit" class="btn-primary" [disabled]="processing">
+                    <button type="submit" class="btn-primary" [disabled]="processing || disableEditButton2">
                         <span *ngIf="!processing">
                             <i class="fas fa-save"></i> Update Profile
                         </span>
@@ -178,19 +178,19 @@
                             <div class="info-row">
                                 <span class="info-label">Contact Name:</span>
                                 <div class="info-input">
-                                    <input type="text" class="form-control" [(ngModel)]="patient.emergencyContact.contactName" name="emergencyName" required>
+                                    <input type="text" class="form-control" (ngModelChange)="onForm3Changed()" [(ngModel)]="patient.emergencyContact.contactName" name="emergencyName" required>
                                 </div>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Relationship:</span>
                                 <div class="info-input">
-                                    <input type="text" class="form-control" [(ngModel)]="patient.emergencyContact.relationship" name="relation" required>
+                                    <input type="text" class="form-control" (ngModelChange)="onForm3Changed()" [(ngModel)]="patient.emergencyContact.relationship" name="relation" required>
                                 </div>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Phone Number:</span>
                                 <div class="info-input">
-                                    <input type="tel" class="form-control" [(ngModel)]="patient.emergencyContact.contactPhone" name="emergencyPhone" required>
+                                    <input type="tel" class="form-control" (ngModelChange)="onForm3Changed()" [(ngModel)]="patient.emergencyContact.contactPhone" name="emergencyPhone" required>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                     <button type="button" class="btn-cancel" (click)="goBack()">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    <button type="submit" class="btn-primary" [disabled]="processing">
+                    <button type="submit" class="btn-primary" [disabled]="processing || disableEditButton3">
                         <span *ngIf="!processing">
                             <i class="fas fa-save"></i> Update Profile
                         </span>
