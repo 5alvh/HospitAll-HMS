@@ -23,17 +23,35 @@ HospitAll is a modern web-based Hospital Management System tailored for small he
 
 #### Account Management
 - **User Registration**: Create new patient accounts with secure authentication
+<img width="1902" height="912" alt="image" src="https://github.com/user-attachments/assets/9f58884e-0ff7-4d9c-9e02-49203db69df4" />
+
 - **Login System**: Secure access to patient portal
+<img width="1918" height="907" alt="image" src="https://github.com/user-attachments/assets/36794c3d-f3c4-4088-8a5a-addb9790f05c" />
+
 - **Profile Management**: Update personal information and medical details
+<img width="1897" height="907" alt="image" src="https://github.com/user-attachments/assets/e4dc28ce-afde-456e-9b18-535fab3f71f2" />
+<img width="1877" height="912" alt="image" src="https://github.com/user-attachments/assets/c8aa4940-fb47-4b24-8a8d-8418eded84aa" />
+<img width="1900" height="911" alt="image" src="https://github.com/user-attachments/assets/604a3fa5-7035-42c5-b7aa-66550e765266" />
+<img width="1882" height="911" alt="image" src="https://github.com/user-attachments/assets/eb71af19-5706-44e0-97bd-6f21667c438d" />
+
+
 
 #### Notifications
 - **Real-time Notifications**: Receive instant updates via WebSocket
+<img width="1881" height="903" alt="image" src="https://github.com/user-attachments/assets/6fe9393b-16f4-48b9-abb9-9def76299b2f" />
+
 - **Notification Management**: Mark notifications as read/unread
+<img width="553" height="712" alt="Captura de pantalla (4)" src="https://github.com/user-attachments/assets/a70cc06a-44fd-496b-bc49-f32fb4cfddfd" />
+
 - **Notification History**: View complete notification history
+<img width="1880" height="908" alt="image" src="https://github.com/user-attachments/assets/11a1e78a-04ed-4384-bbe1-9842ce9cf198" />
 
 #### Appointments
 - **Book Appointments**: Schedule appointments with available doctors
 - **Cancel Appointments**: Cancel scheduled appointments when needed
+<img width="1529" height="284" alt="Captura de pantalla (6)" src="https://github.com/user-attachments/assets/ed1490b9-3353-448b-9334-1be5b7306733" />
+<img width="1920" height="899" alt="Captura de pantalla (7)" src="https://github.com/user-attachments/assets/32a73224-1ce0-4086-8f31-bc3b5915350c" />
+
 - **Upcoming Appointments**: View scheduled appointments with pagination and filters
 - **Appointment History**: Access complete appointment history with search functionality
 - **Appointment Details**: View comprehensive appointment information
