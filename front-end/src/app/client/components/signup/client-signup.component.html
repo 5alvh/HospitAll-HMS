@@ -1,3 +1,4 @@
+
 <!-- signup-stepper.component.html -->
 <div class="signup-container">
   <div class="left-section">
@@ -112,7 +113,6 @@
               <label for="bloodType">Blood Type *</label>
               <select id="bloodType" formControlName="bloodType"
                 [ngClass]="{'is-invalid': step1Submitted && f.bloodType!.errors}">
-                <option value="">Select Blood Type</option>
                 <option *ngFor="let type of bloodTypes" [value]="type">
                   {{ type.replace('_', ' ') | titlecase }}
                 </option>
@@ -202,7 +202,8 @@
               <div class="form-group full-width">
                 <label for="relationship">Relationship</label>
                 <input type="text" id="relationship" formControlName="relationship"
-                  placeholder="e.g. Spouse, Parent, Sibling" [ngClass]="{'is-invalid': step3Submitted && f.contactPhone!.errors}">
+                  placeholder="e.g. Spouse, Parent, Sibling"
+                  [ngClass]="{'is-invalid': step3Submitted && f.contactPhone!.errors}">
                 <div *ngIf="step3Submitted && f.contactPhone!.errors" class="invalid-feedback">
                   <div *ngIf="f.contactPhone!.errors['required']">Relationship is required</div>
                 </div>
@@ -221,11 +222,15 @@
         </div>
       </div>
 
-      <!-- Navigation Buttons -->
       <div class="form-navigation">
         <button type="button" class="nav-btn back-btn" (click)="prevStep()" [disabled]="currentStep === 1">Back</button>
         <button *ngIf="currentStep < 3" type="button" class="nav-btn next-btn" (click)="nextStep()">Next</button>
-        <button *ngIf="currentStep === 3" type="submit" class="nav-btn submit-btn">Submit</button>
+        <button *ngIf="currentStep === 3" type="submit" class="nav-btn submit-btn" [disabled]="submitting">
+          <span *ngIf="!submitting">Submit</span>
+          <span *ngIf="submitting">
+            <i class="fas fa-spinner fa-spin"></i> Submitting...
+          </span>
+        </button>
       </div>
     </form>
 

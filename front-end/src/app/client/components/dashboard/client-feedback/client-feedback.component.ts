@@ -118,9 +118,10 @@ export class ClientFeedbackComponent implements OnInit {
     this.feedbackService.submitFeedback(feedback).subscribe({
 
       next: (response) => {
+        console.log(response);
         Swal.fire('Thank you for your feedback!');
         this.feedbacks.push({
-          id: 0,
+          id: response.id,
           patientName: '',
           rating: feedback.rating,
           createdAt: new Date(),

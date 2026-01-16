@@ -3,7 +3,11 @@ import { RoleGuard } from './guards/role-guard';
 import { Roles } from './models/roles';
 
 export const routes: Routes = [
-  //signup - login routes
+  {
+    path: 'welcome',
+    loadComponent: () =>
+      import('./shared/welcome/welcome.component').then((c) => c.WelcomeComponent)
+  },
   {
     path: 'login',
     loadComponent: () =>
@@ -198,6 +202,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/login'
+    redirectTo: '/welcome'
   },
 ];

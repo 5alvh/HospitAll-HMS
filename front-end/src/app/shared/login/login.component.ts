@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
@@ -7,13 +7,17 @@ import { LocalStorageManagerService } from '../../services/auth/local-storage-ma
 import { AuthService } from '../../services/auth/auth.service';
 import { RouterService } from '../../services/auth/router.service';
 import { Roles } from '../../models/roles';
+import { HeaderWelcomeComponent } from "../header-welcome/header-welcome.component";
+import { FooterComponent } from "../footer/footer.component";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [NgIf, ReactiveFormsModule, NgClass, RouterLink],
-  standalone: true
+  imports: [NgIf, ReactiveFormsModule, NgClass, RouterLink, HeaderWelcomeComponent, FooterComponent],
+  standalone: true,
+  encapsulation: ViewEncapsulation.None  // ← Add this
+
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

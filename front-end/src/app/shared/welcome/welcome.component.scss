@@ -1,0 +1,240 @@
+:root {
+    --primary-blue: #0066cc;
+    --primary-dark: #004999;
+    --primary-light: #3385d6;
+    --accent-teal: #00897b;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --border-color: #d0d0d0;
+    --background-light: #f8f9fb;
+    --white: #ffffff;
+    --error-red: #d32f2f;
+    --success-green: #388e3c;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--white);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+    padding: 5rem 2rem;
+    flex: 1;
+}
+
+.hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-text h2 {
+    font-size: 3rem;
+    color: var(--text-primary);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+}
+
+.hero-text p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-hero {
+    padding: 1rem 2.5rem;
+    border: none;
+    background: var(--primary-blue);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-hero:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-hero.secondary {
+    background: var(--white);
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+}
+
+.btn-hero.secondary:hover {
+    background: var(--background-light);
+}
+
+.hero-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder-image {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 4/3;
+    background: var(--white);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Info Section */
+.info-section {
+    background: var(--white);
+    padding: 5rem 2rem;
+}
+
+.info-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.info-card {
+    padding: 2rem;
+    background: var(--background-light);
+    border-left: 4px solid var(--primary-blue);
+    transition: all 0.3s;
+}
+
+.info-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.info-card h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.info-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .hero-image {
+        order: -1;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-top {
+        display: none;
+    }
+
+    .header-main {
+        padding: 1rem;
+    }
+
+    .header-actions {
+        gap: 0.5rem;
+    }
+
+    .btn-header {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .hero {
+        padding: 3rem 1rem;
+    }
+
+    .hero-text h2 {
+        font-size: 2rem;
+    }
+
+    .hero-text p {
+        font-size: 1.1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .btn-hero {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .info-section {
+        padding: 3rem 1rem;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}

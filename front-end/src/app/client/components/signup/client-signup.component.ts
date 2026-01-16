@@ -7,6 +7,7 @@ import { BloodType } from '../../../models/enums/blood-type';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LocalStorageManagerService } from '../../../services/auth/local-storage-manager.service';
 import { ClientDtoCreate } from '../../../models/client-dto-create';
+import { HeaderWelcomeComponent } from "../../../shared/header-welcome/header-welcome.component";
 
 enum MembershipLevel {
   BASIC = 'BASIC',
@@ -26,11 +27,13 @@ export class ClientSignupComponent implements OnInit {
   currentStep = 1;
   signupForm!: FormGroup;
   membershipLevels = Object.values(MembershipLevel);
+  selectedBloodType = 'A_POSITIVE';
   bloodTypes = Object.values(BloodType);
-  maxDate = new Date();
+  maxDate = new Date(new Date().setFullYear(new Date().getFullYear() - 18));
   passwordVisible = false;
   confirmPasswordVisible = false;
   submitted = false;
+  submitting = false;
 
   step1Submitted = false;
   step2Submitted = false;
@@ -50,13 +53,14 @@ export class ClientSignupComponent implements OnInit {
 
   createForm(): FormGroup {
     return this.fb.group({
+
       personalInfo: this.fb.group({
         fullName: ['', [Validators.required, Validators.maxLength(100)]],
         email: ['', [Validators.required, Validators.email]],
         phoneNumber: ['', [Validators.required, Validators.pattern('^\\+?[0-9\\-\\s()]*$')]],
         dateOfBirth: [null, Validators.required],
         address: ['', [Validators.required, Validators.maxLength(200)]],
-        bloodType: [null, Validators.required],
+        bloodType: [this.selectedBloodType, Validators.required],
         membershipLevel: [MembershipLevel.BASIC, Validators.required]
       }),
       securityInfo: this.fb.group({
@@ -184,17 +188,18 @@ export class ClientSignupComponent implements OnInit {
   }
 
   register(clientData: ClientDtoCreate) {
+    this.submitting = true;
     this.authService.registerClient(clientData).subscribe({
       next: response => {
-        setTimeout(() => {
-          console.log('Client signup data:', clientData);
-          const role = response.role;
-          this.localStorageManager.setToken(response.token);
-          this.localStorageManager.setUserData(role);
-            this.router.navigate(['/login']);
-        }, 1500);
+        console.log('Client signup data:', clientData);
+        const role = response.role;
+        this.localStorageManager.setToken(response.token);
+        this.localStorageManager.setUserData(role);
+        this.router.navigate(['/login']);
+        this.submitting = false;
       },
       error: error => {
+        this.submitting = false;
         console.error('Error registering client:', error);
       }
     })
